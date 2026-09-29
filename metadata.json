@@ -1,0 +1,6 @@
+{
+  "name": "Hariom ID Card",
+  "description": "DTDC Hariom Enterprises AI Employee ID Card Generator - Create, customize, and export official employee badges from passport photos.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
