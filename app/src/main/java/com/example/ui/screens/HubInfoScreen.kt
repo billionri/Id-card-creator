@@ -99,6 +99,25 @@ fun HubInfoScreen(modifier: Modifier = Modifier) {
                     }
                 }
 
+                Spacer(modifier = Modifier.height(14.dp))
+
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(Color.White, RoundedCornerShape(8.dp))
+                        .padding(horizontal = 12.dp, vertical = 8.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.ic_dtdc_logo),
+                        contentDescription = "Official DTDC Logo",
+                        modifier = Modifier
+                            .fillMaxWidth(0.9f)
+                            .height(55.dp),
+                        contentScale = androidx.compose.ui.layout.ContentScale.Fit
+                    )
+                }
+
                 Spacer(modifier = Modifier.height(12.dp))
 
                 Text(
@@ -125,7 +144,7 @@ fun HubInfoScreen(modifier: Modifier = Modifier) {
                 InfoRow(
                     icon = Icons.Default.LocationOn,
                     label = "Hub Office",
-                    value = "Shop No. 4, Ground Floor, Hariom Plaza, Station Road Hub, Bihar - 800001"
+                    value = "Shop No 2, 317-A, Shinde Niwas, Kasturba Cross Road No 6, Opposite Platform No 10, Borivali East, Mumbai — 400066, Maharashtra"
                 )
                 InfoRow(
                     icon = Icons.Default.Call,
@@ -174,6 +193,10 @@ fun HubInfoScreen(modifier: Modifier = Modifier) {
                 GuidelineItem(
                     title = "Consignment Authority",
                     desc = "This badge certifies the bearer to accept signatures, payments, and deliver courier shipments on behalf of DTDC."
+                )
+                GuidelineItem(
+                    title = "Badge Issuance & Registry",
+                    desc = "Every employee added is securely registered in the official hub database with biometric identity verification and CR80 print-ready badge assets."
                 )
             }
         }

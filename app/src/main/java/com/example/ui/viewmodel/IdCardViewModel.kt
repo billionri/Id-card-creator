@@ -50,7 +50,7 @@ private fun createDefaultCard(): EmployeeIdCard {
         dateOfJoining = today,
         validTill = "31 Dec 2027",
         aadhaarMasked = "XXXX-XXXX-8921",
-        branchAddress = "Shop 04, Hariom Plaza, Station Road Hub, Bihar - 800001",
+        branchAddress = "Shop No 2, 317-A, Shinde Niwas, Kasturba Cross Road No 6, Opposite Platform No 10, Borivali East, Mumbai — 400066, Maharashtra",
         photoPath = null,
         aiVerified = false,
         aiNote = "Upload passport photo to enable AI verification"

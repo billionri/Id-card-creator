@@ -6,8 +6,20 @@ import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.Alignment
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Badge
 import androidx.compose.material.icons.filled.Business
@@ -71,12 +83,35 @@ class MainActivity : ComponentActivity() {
                     topBar = {
                         TopAppBar(
                             title = {
-                                Text(
-                                    text = "DTDC • Hariom Enterprises",
-                                    fontWeight = FontWeight.Black,
-                                    fontSize = 18.sp,
-                                    color = Color.White
-                                )
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Image(
+                                        painter = painterResource(id = R.drawable.ic_dtdc_logo),
+                                        contentDescription = "DTDC Logo",
+                                        contentScale = ContentScale.Fit,
+                                        modifier = Modifier
+                                            .height(30.dp)
+                                            .clip(RoundedCornerShape(4.dp))
+                                            .background(Color.White)
+                                            .padding(horizontal = 4.dp, vertical = 2.dp)
+                                    )
+                                    Spacer(modifier = Modifier.width(10.dp))
+                                    Column {
+                                        Text(
+                                            text = "HARIOM ENTERPRISES",
+                                            fontWeight = FontWeight.Black,
+                                            fontSize = 15.sp,
+                                            color = Color.White
+                                        )
+                                        Text(
+                                            text = "DTDC Official ID Portal",
+                                            fontSize = 10.sp,
+                                            color = DtdcGold,
+                                            fontWeight = FontWeight.Bold
+                                        )
+                                    }
+                                }
                             },
                             colors = TopAppBarDefaults.topAppBarColors(
                                 containerColor = DtdcNavy,

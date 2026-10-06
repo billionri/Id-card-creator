@@ -89,43 +89,54 @@ object PhotoUtils {
         val bgPaint = Paint().apply { isAntiAlias = true }
 
         if (isFront) {
+            val textPaint = Paint().apply {
+                isAntiAlias = true
+                textAlign = Paint.Align.CENTER
+            }
+
             // Background
             bgPaint.color = android.graphics.Color.WHITE
             canvas.drawRoundRect(RectF(0f, 0f, width.toFloat(), height.toFloat()), 32f, 32f, bgPaint)
 
-            // Top Header: Deep DTDC Navy
+            // Top Header: Clean White Header with Official DTDC Logo
+            bgPaint.color = android.graphics.Color.WHITE
+            canvas.drawRect(0f, 0f, width.toFloat(), 280f, bgPaint)
+
+            val logoBmp = try {
+                BitmapFactory.decodeResource(context.resources, com.example.R.drawable.ic_dtdc_logo)
+            } catch (e: Exception) {
+                null
+            }
+
+            if (logoBmp != null) {
+                val logoRect = RectF(60f, 20f, width - 60f, 210f)
+                canvas.drawBitmap(logoBmp, null, logoRect, null)
+            } else {
+                textPaint.apply {
+                    color = android.graphics.Color.parseColor("#0A235C")
+                    textAlign = Paint.Align.CENTER
+                    isFakeBoldText = true
+                    textSize = 64f
+                }
+                canvas.drawText("DTDC COURIER", width / 2f, 110f, textPaint)
+            }
+
+            // Franchisee Navy Ribbon
             bgPaint.color = android.graphics.Color.parseColor("#0A235C")
-            canvas.drawRect(0f, 0f, width.toFloat(), 270f, bgPaint)
+            canvas.drawRect(0f, 215f, width.toFloat(), 275f, bgPaint)
+
+            val ribbonTextPaint = Paint().apply {
+                isAntiAlias = true
+                color = android.graphics.Color.parseColor("#FFB300")
+                textAlign = Paint.Align.CENTER
+                isFakeBoldText = true
+                textSize = 28f
+            }
+            canvas.drawText("AUTH. CHANNEL PARTNER: ${card.branchName.uppercase()}", width / 2f, 256f, ribbonTextPaint)
 
             // Red Chevron Accent Stripe
             bgPaint.color = android.graphics.Color.parseColor("#D32F2F")
-            canvas.drawRect(0f, 260f, width.toFloat(), 280f, bgPaint)
-
-            // Gold accent stripe
-            bgPaint.color = android.graphics.Color.parseColor("#FFB300")
-            canvas.drawRect(0f, 280f, width.toFloat(), 288f, bgPaint)
-
-            // Header DTDC text
-            val textPaint = Paint().apply {
-                isAntiAlias = true
-                color = android.graphics.Color.WHITE
-                textAlign = Paint.Align.CENTER
-                isFakeBoldText = true
-                textSize = 68f
-            }
-            canvas.drawText("DTDC COURIER", width / 2f, 95f, textPaint)
-
-            textPaint.apply {
-                textSize = 34f
-                color = android.graphics.Color.parseColor("#FFB300")
-            }
-            canvas.drawText("EXPRESS LOGISTICS PARTNER", width / 2f, 150f, textPaint)
-
-            textPaint.apply {
-                textSize = 38f
-                color = android.graphics.Color.WHITE
-            }
-            canvas.drawText(card.branchName.uppercase(), width / 2f, 215f, textPaint)
+            canvas.drawRect(0f, 275f, width.toFloat(), 285f, bgPaint)
 
             // Employee Passport Photo
             val photoBox = RectF(width / 2f - 180f, 320f, width / 2f + 180f, 800f)
@@ -291,9 +302,29 @@ object PhotoUtils {
             canvas.drawText("BRANCH OFFICE & HUB:", leftMargin, textY, headerPaint)
             textY += 45f
 
-            bodyPaint.textSize = 28f
-            canvas.drawText(card.branchAddress, leftMargin, textY, bodyPaint)
-            textY += 75f
+            bodyPaint.textSize = 25f
+            val addressParts = card.branchAddress.split(", ")
+            val formattedAddressLines = mutableListOf<String>()
+            var currentLine = ""
+            for (part in addressParts) {
+                if (currentLine.isEmpty()) {
+                    currentLine = part
+                } else if ((currentLine + ", " + part).length < 42) {
+                    currentLine += ", $part"
+                } else {
+                    formattedAddressLines.add(currentLine + ",")
+                    currentLine = part
+                }
+            }
+            if (currentLine.isNotEmpty()) {
+                formattedAddressLines.add(currentLine)
+            }
+
+            for (line in formattedAddressLines) {
+                canvas.drawText(line, leftMargin, textY, bodyPaint)
+                textY += 34f
+            }
+            textY += 20f
 
             canvas.drawText("EMERGENCY HELPLINE: ${card.emergencyContact}", leftMargin, textY, headerPaint)
             textY += 90f

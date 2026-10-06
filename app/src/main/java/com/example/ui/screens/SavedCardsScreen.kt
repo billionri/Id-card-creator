@@ -1,5 +1,7 @@
 package com.example.ui.screens
 
+import android.content.Intent
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -118,6 +120,89 @@ fun SavedCardsScreen(
         )
 
         Spacer(modifier = Modifier.height(12.dp))
+
+        // Number of Users Tracker (for personal charging)
+        Card(
+            shape = RoundedCornerShape(14.dp),
+            colors = CardDefaults.cardColors(containerColor = Color(0xFFF8FAFC)),
+            border = BorderStroke(1.dp, Color(0xFFE2E8F0)),
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 14.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Surface(
+                        shape = CircleShape,
+                        color = DtdcNavy.copy(alpha = 0.1f),
+                        modifier = Modifier.size(42.dp)
+                    ) {
+                        Box(contentAlignment = Alignment.Center) {
+                            Icon(
+                                imageVector = Icons.Default.Badge,
+                                contentDescription = null,
+                                tint = DtdcNavy,
+                                modifier = Modifier.size(24.dp)
+                            )
+                        }
+                    }
+                    Spacer(modifier = Modifier.width(12.dp))
+                    Column {
+                        Text(
+                            text = "TOTAL USERS ADDED",
+                            fontSize = 11.sp,
+                            fontWeight = FontWeight.ExtraBold,
+                            color = Color(0xFF64748B),
+                            letterSpacing = 0.5.sp
+                        )
+                        Row(verticalAlignment = Alignment.Bottom) {
+                            Text(
+                                text = "${savedCards.size}",
+                                fontSize = 24.sp,
+                                fontWeight = FontWeight.Black,
+                                color = DtdcNavy
+                            )
+                            Spacer(modifier = Modifier.width(4.dp))
+                            Text(
+                                text = if (savedCards.size == 1) "Employee" else "Employees",
+                                fontSize = 13.sp,
+                                fontWeight = FontWeight.SemiBold,
+                                color = Color(0xFF64748B),
+                                modifier = Modifier.padding(bottom = 2.dp)
+                            )
+                        }
+                    }
+                }
+
+                Column(horizontalAlignment = Alignment.End) {
+                    Text(
+                        text = "YOUR CHARGEABLE TOTAL",
+                        fontSize = 10.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color(0xFF059669),
+                        letterSpacing = 0.5.sp
+                    )
+                    Text(
+                        text = "₹${savedCards.size * 150}",
+                        fontSize = 22.sp,
+                        fontWeight = FontWeight.Black,
+                        color = Color(0xFF0F172A)
+                    )
+                    Text(
+                        text = "(@ ₹150 / user)",
+                        fontSize = 11.sp,
+                        fontWeight = FontWeight.Medium,
+                        color = Color(0xFF64748B)
+                    )
+                }
+            }
+        }
+
+        Spacer(modifier = Modifier.height(14.dp))
 
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -392,18 +477,35 @@ private fun SavedCardItem(
                     )
                 }
 
-                // Blood Group Badge
-                Surface(
-                    color = Color(0xFFFFEBEE),
-                    shape = RoundedCornerShape(6.dp)
-                ) {
-                    Text(
-                        text = card.bloodGroup,
-                        color = DtdcRed,
-                        fontWeight = FontWeight.ExtraBold,
-                        fontSize = 11.sp,
-                        modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
-                    )
+                Column(horizontalAlignment = Alignment.End) {
+                    // Blood Group Badge
+                    Surface(
+                        color = Color(0xFFFFEBEE),
+                        shape = RoundedCornerShape(6.dp)
+                    ) {
+                        Text(
+                            text = card.bloodGroup,
+                            color = DtdcRed,
+                            fontWeight = FontWeight.ExtraBold,
+                            fontSize = 11.sp,
+                            modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(4.dp))
+
+                    Surface(
+                        color = Color(0xFFDCFCE7),
+                        shape = RoundedCornerShape(4.dp)
+                    ) {
+                        Text(
+                            text = "ACTIVE USER",
+                            color = Color(0xFF15803D),
+                            fontWeight = FontWeight.Black,
+                            fontSize = 9.sp,
+                            modifier = Modifier.padding(horizontal = 5.dp, vertical = 1.5.dp)
+                        )
+                    }
                 }
             }
 

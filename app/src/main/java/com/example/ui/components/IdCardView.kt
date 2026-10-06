@@ -213,68 +213,54 @@ fun IdCardFront(
             modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // Header: Deep DTDC Navy Bar with Red Chevron
+            // Header: Official DTDC Company Logo with Franchisee Partner Ribbon
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(84.dp)
-                    .background(
-                        brush = Brush.verticalGradient(
-                            colors = listOf(DtdcNavy, Color(0xFF071B48))
-                        )
-                    )
+                    .height(88.dp)
+                    .background(Color.White)
             ) {
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(top = 10.dp, start = 8.dp, end = 8.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
+                        .padding(horizontal = 8.dp, vertical = 4.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.SpaceBetween
                 ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.ic_dtdc_logo),
+                        contentDescription = "DTDC Official Company Logo",
+                        contentScale = ContentScale.Fit,
+                        modifier = Modifier
+                            .fillMaxWidth(0.92f)
+                            .height(50.dp)
+                    )
+
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.Center
+                        horizontalArrangement = Arrangement.Center,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(DtdcNavy, shape = RoundedCornerShape(4.dp))
+                            .padding(horizontal = 6.dp, vertical = 2.dp)
                     ) {
-                        // DTDC Red Diamond / Logo indicator
-                        Box(
-                            modifier = Modifier
-                                .size(14.dp)
-                                .background(DtdcRed, shape = RoundedCornerShape(2.dp))
-                        )
-                        Spacer(modifier = Modifier.width(6.dp))
                         Text(
-                            text = "DTDC COURIER",
-                            color = Color.White,
+                            text = "AUTH. CHANNEL PARTNER: ${card.branchName.uppercase()}",
+                            color = DtdcGold,
+                            fontSize = 8.5.sp,
                             fontWeight = FontWeight.ExtraBold,
-                            fontSize = 17.sp,
-                            letterSpacing = 1.sp
+                            letterSpacing = 0.5.sp,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
                         )
                     }
-
-                    Text(
-                        text = "EXPRESS LOGISTICS PARTNER",
-                        color = DtdcGold,
-                        fontSize = 9.sp,
-                        fontWeight = FontWeight.Bold,
-                        letterSpacing = 0.5.sp
-                    )
-
-                    Spacer(modifier = Modifier.height(2.dp))
-
-                    Text(
-                        text = card.branchName.uppercase(),
-                        color = Color.White.copy(alpha = 0.95f),
-                        fontSize = 10.sp,
-                        fontWeight = FontWeight.SemiBold,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
-                    )
                 }
 
                 // Bottom Red Chevron Line
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(4.dp)
+                        .height(3.dp)
                         .background(DtdcRed)
                         .align(Alignment.BottomCenter)
                 )
