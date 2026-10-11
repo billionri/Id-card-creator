@@ -91,7 +91,7 @@ class MainActivity : ComponentActivity() {
                                         contentDescription = "DTDC Logo",
                                         contentScale = ContentScale.Fit,
                                         modifier = Modifier
-                                            .height(40.dp)
+                                            .height(44.dp)
                                             .clip(RoundedCornerShape(6.dp))
                                             .background(Color.White)
                                             .padding(horizontal = 6.dp, vertical = 2.dp)

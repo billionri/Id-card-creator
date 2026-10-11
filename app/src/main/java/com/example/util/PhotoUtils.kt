@@ -86,11 +86,23 @@ object PhotoUtils {
         val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
         val canvas = Canvas(bitmap)
 
+        val brandTypeface = try {
+            androidx.core.content.res.ResourcesCompat.getFont(context, com.example.R.font.rajdhani_bold)
+        } catch (e: Exception) {
+            android.graphics.Typeface.DEFAULT_BOLD
+        }
+        val corporateTypeface = try {
+            androidx.core.content.res.ResourcesCompat.getFont(context, com.example.R.font.montserrat_bold)
+        } catch (e: Exception) {
+            android.graphics.Typeface.DEFAULT_BOLD
+        }
+
         val bgPaint = Paint().apply { isAntiAlias = true }
 
         if (isFront) {
             val textPaint = Paint().apply {
                 isAntiAlias = true
+                typeface = brandTypeface
                 textAlign = Paint.Align.CENTER
             }
 
@@ -115,6 +127,7 @@ object PhotoUtils {
                 textPaint.apply {
                     color = android.graphics.Color.parseColor("#0A235C")
                     textAlign = Paint.Align.CENTER
+                    typeface = brandTypeface
                     isFakeBoldText = true
                     textSize = 72f
                 }
@@ -128,9 +141,10 @@ object PhotoUtils {
             val ribbonTextPaint = Paint().apply {
                 isAntiAlias = true
                 color = android.graphics.Color.parseColor("#FFB300")
+                typeface = brandTypeface
                 textAlign = Paint.Align.CENTER
                 isFakeBoldText = true
-                textSize = 28f
+                textSize = 30f
             }
             canvas.drawText("AUTH. CHANNEL PARTNER: ${card.branchName.uppercase()}", width / 2f, 274f, ribbonTextPaint)
 
@@ -190,6 +204,7 @@ object PhotoUtils {
             // Department
             textPaint.apply {
                 color = android.graphics.Color.parseColor("#475569")
+                typeface = corporateTypeface
                 textSize = 34f
                 isFakeBoldText = false
             }
@@ -198,14 +213,17 @@ object PhotoUtils {
             // Details Grid
             val labelPaint = Paint().apply {
                 isAntiAlias = true
+                typeface = brandTypeface
                 color = android.graphics.Color.parseColor("#64748B")
-                textSize = 30f
+                textSize = 32f
+                isFakeBoldText = true
                 textAlign = Paint.Align.LEFT
             }
             val valuePaint = Paint().apply {
                 isAntiAlias = true
+                typeface = brandTypeface
                 color = android.graphics.Color.parseColor("#0F172A")
-                textSize = 34f
+                textSize = 36f
                 isFakeBoldText = true
                 textAlign = Paint.Align.LEFT
             }
@@ -249,60 +267,105 @@ object PhotoUtils {
             canvas.drawText("Branch: ${card.branchCode} | Hariom Enterprises", width / 2f, 1515f, textPaint)
 
         } else {
-            // BACK SIDE
-            bgPaint.color = android.graphics.Color.parseColor("#0F172A")
+            // BACK SIDE (Matching Pure White Corporate Theme)
+            bgPaint.color = android.graphics.Color.WHITE
             canvas.drawRoundRect(RectF(0f, 0f, width.toFloat(), height.toFloat()), 32f, 32f, bgPaint)
 
-            // Top Header: Red stripe
-            bgPaint.color = android.graphics.Color.parseColor("#D32F2F")
-            canvas.drawRect(0f, 0f, width.toFloat(), 130f, bgPaint)
+            // Top Header: Clean White Header with Official DTDC Logo
+            bgPaint.color = android.graphics.Color.WHITE
+            canvas.drawRect(0f, 0f, width.toFloat(), 260f, bgPaint)
 
-            val textPaint = Paint().apply {
+            val logoBmp = try {
+                BitmapFactory.decodeResource(context.resources, com.example.R.drawable.ic_dtdc_logo)
+            } catch (e: Exception) {
+                null
+            }
+
+            if (logoBmp != null) {
+                val logoRect = RectF(60f, 15f, width - 60f, 190f)
+                canvas.drawBitmap(logoBmp, null, logoRect, null)
+            }
+
+            // Franchisee Navy Ribbon
+            bgPaint.color = android.graphics.Color.parseColor("#0A235C")
+            canvas.drawRect(0f, 200f, width.toFloat(), 255f, bgPaint)
+
+            val ribbonTextPaint = Paint().apply {
                 isAntiAlias = true
-                color = android.graphics.Color.WHITE
+                color = android.graphics.Color.parseColor("#FFB300")
+                typeface = brandTypeface
                 textAlign = Paint.Align.CENTER
                 isFakeBoldText = true
-                textSize = 44f
+                textSize = 26f
             }
-            canvas.drawText("TERMS & INSTRUCTIONS", width / 2f, 85f, textPaint)
+            canvas.drawText("TERMS OF IDENTITY & CONSIGNMENT AUTHORITY", width / 2f, 238f, ribbonTextPaint)
+
+            // Red Chevron Accent Stripe
+            bgPaint.color = android.graphics.Color.parseColor("#D32F2F")
+            canvas.drawRect(0f, 255f, width.toFloat(), 265f, bgPaint)
 
             // Terms Content
             val bodyPaint = Paint().apply {
                 isAntiAlias = true
-                color = android.graphics.Color.parseColor("#E2E8F0")
+                typeface = corporateTypeface
+                color = android.graphics.Color.parseColor("#334155")
                 textSize = 28f
                 textAlign = Paint.Align.LEFT
             }
 
-            var textY = 200f
+            var textY = 320f
             val leftMargin = 70f
 
-            val terms = listOf(
-                "1. This card is the property of Hariom Enterprises",
-                "   (Authorized Channel Partner of DTDC Courier Ltd).",
-                "2. The cardholder is authorized to deliver and collect",
-                "   consignments on behalf of DTDC express services.",
-                "3. Display this identity badge visibly during duty hours.",
-                "4. Loss of card must be reported immediately to hub office.",
-                "5. If found, please return to the branch office address."
-            )
-            for (line in terms) {
-                canvas.drawText(line, leftMargin, textY, bodyPaint)
-                textY += 44f
-            }
-
-            textY += 30f
             val headerPaint = Paint().apply {
                 isAntiAlias = true
-                color = android.graphics.Color.parseColor("#FFB300")
+                typeface = brandTypeface
+                color = android.graphics.Color.parseColor("#0A235C")
                 textSize = 34f
                 isFakeBoldText = true
                 textAlign = Paint.Align.LEFT
             }
-            canvas.drawText("BRANCH OFFICE & HUB:", leftMargin, textY, headerPaint)
+            canvas.drawText("AUTHORIZATION & POLICIES:", leftMargin, textY, headerPaint)
             textY += 45f
 
-            bodyPaint.textSize = 25f
+            val terms = listOf(
+                "1. The bearer is an authorized delivery representative of Hariom Enterprises (DTDC Channel Partner).",
+                "2. This identity card is strictly non-transferable and must be presented on demand.",
+                "3. Authorized to handle courier, parcels, and express mail delivery.",
+                "4. If found, please return to the Hub Office address listed below or call helpline."
+            )
+            for (line in terms) {
+                canvas.drawText(line, leftMargin, textY, bodyPaint)
+                textY += 46f
+            }
+
+            textY += 20f
+
+            // Address Card Box Container
+            val addressBox = RectF(leftMargin, textY, width - leftMargin, textY + 230f)
+            val boxBgPaint = Paint().apply {
+                isAntiAlias = true
+                color = android.graphics.Color.parseColor("#F8FAFC")
+            }
+            val boxBorderPaint = Paint().apply {
+                isAntiAlias = true
+                style = Paint.Style.STROKE
+                strokeWidth = 3f
+                color = android.graphics.Color.parseColor("#CBD5E1")
+            }
+            canvas.drawRoundRect(addressBox, 16f, 16f, boxBgPaint)
+            canvas.drawRoundRect(addressBox, 16f, 16f, boxBorderPaint)
+
+            canvas.drawText("HUB OFFICE & RETURN ADDRESS:", leftMargin + 25f, textY + 45f, headerPaint)
+
+            val addrTextPaint = Paint().apply {
+                isAntiAlias = true
+                typeface = corporateTypeface
+                color = android.graphics.Color.parseColor("#0F172A")
+                textSize = 25f
+                isFakeBoldText = true
+                textAlign = Paint.Align.LEFT
+            }
+
             val addressParts = card.branchAddress.split(", ")
             val formattedAddressLines = mutableListOf<String>()
             var currentLine = ""
@@ -320,26 +383,43 @@ object PhotoUtils {
                 formattedAddressLines.add(currentLine)
             }
 
+            var addrY = textY + 85f
             for (line in formattedAddressLines) {
-                canvas.drawText(line, leftMargin, textY, bodyPaint)
-                textY += 34f
+                canvas.drawText(line, leftMargin + 25f, addrY, addrTextPaint)
+                addrY += 34f
             }
-            textY += 20f
 
-            canvas.drawText("EMERGENCY HELPLINE: ${card.emergencyContact}", leftMargin, textY, headerPaint)
-            textY += 90f
+            val emergPaint = Paint().apply {
+                isAntiAlias = true
+                typeface = brandTypeface
+                color = android.graphics.Color.parseColor("#D32F2F")
+                textSize = 28f
+                isFakeBoldText = true
+                textAlign = Paint.Align.LEFT
+            }
+            canvas.drawText("EMERGENCY HELPLINE: ${card.emergencyContact}", leftMargin + 25f, textY + 205f, emergPaint)
+
+            textY += 270f
 
             // Draw Barcode visualization
+            val barBg = RectF(100f, textY, width - 100f, textY + 160f)
+            val barBoxBgPaint = Paint().apply {
+                isAntiAlias = true
+                color = android.graphics.Color.parseColor("#F8FAFC")
+            }
+            val barBoxBorderPaint = Paint().apply {
+                isAntiAlias = true
+                style = Paint.Style.STROKE
+                strokeWidth = 2f
+                color = android.graphics.Color.parseColor("#E2E8F0")
+            }
+            canvas.drawRoundRect(barBg, 12f, 12f, barBoxBgPaint)
+            canvas.drawRoundRect(barBg, 12f, 12f, barBoxBorderPaint)
+
             val barPaint = Paint().apply {
-                color = android.graphics.Color.WHITE
-                strokeWidth = 6f
+                color = android.graphics.Color.BLACK
                 isAntiAlias = true
             }
-            val barBg = RectF(100f, textY, width - 100f, textY + 160f)
-            val whitePaint = Paint().apply { color = android.graphics.Color.WHITE }
-            canvas.drawRoundRect(barBg, 12f, 12f, whitePaint)
-
-            barPaint.color = android.graphics.Color.BLACK
             var barX = 140f
             val barcodeSeed = (card.employeeCode + card.phoneNumber).hashCode()
             var pseudoRand = kotlin.math.abs(barcodeSeed)
@@ -354,22 +434,51 @@ object PhotoUtils {
 
             val codePaint = Paint().apply {
                 color = android.graphics.Color.BLACK
-                textSize = 26f
+                typeface = brandTypeface
+                textSize = 28f
                 isFakeBoldText = true
                 textAlign = Paint.Align.CENTER
                 isAntiAlias = true
             }
-            canvas.drawText("* ${card.employeeCode} *", width / 2f, textY + 150f, codePaint)
+            canvas.drawText("* ${card.employeeCode} *", width / 2f, textY + 148f, codePaint)
 
-            // Authorized Signatory
-            val signPaint = Paint().apply {
-                color = android.graphics.Color.parseColor("#94A3B8")
+            // Authorized Signatory Row
+            val signLabelPaint = Paint().apply {
+                color = android.graphics.Color.parseColor("#64748B")
+                typeface = brandTypeface
                 textSize = 26f
                 textAlign = Paint.Align.RIGHT
+                isFakeBoldText = true
                 isAntiAlias = true
             }
-            canvas.drawText("AUTHORIZED SIGNATORY", width - 80f, 1400f, signPaint)
-            canvas.drawText("HARIOM ENTERPRISES", width - 80f, 1435f, signPaint)
+            val signScriptPaint = Paint().apply {
+                color = android.graphics.Color.parseColor("#0A235C")
+                textSize = 34f
+                textAlign = Paint.Align.RIGHT
+                isFakeBoldText = true
+                isAntiAlias = true
+            }
+            canvas.drawText("Hariom Kr.", width - 80f, 1370f, signScriptPaint)
+            val linePaint = Paint().apply {
+                color = android.graphics.Color.parseColor("#0A235C")
+                strokeWidth = 3f
+            }
+            canvas.drawLine(width - 320f, 1390f, width - 80f, 1390f, linePaint)
+            canvas.drawText("AUTHORIZED SIGNATORY", width - 80f, 1425f, signLabelPaint)
+
+            // Bottom Navy Footer (Matching Front)
+            bgPaint.color = android.graphics.Color.parseColor("#0A235C")
+            canvas.drawRect(0f, 1470f, width.toFloat(), height.toFloat(), bgPaint)
+
+            val footerTextPaint = Paint().apply {
+                isAntiAlias = true
+                typeface = brandTypeface
+                color = android.graphics.Color.WHITE
+                textAlign = Paint.Align.CENTER
+                textSize = 26f
+                isFakeBoldText = true
+            }
+            canvas.drawText("BRANCH: ${card.branchCode} • OFFICIAL CARRIER BADGE", width / 2f, 1515f, footerTextPaint)
         }
 
         return bitmap
