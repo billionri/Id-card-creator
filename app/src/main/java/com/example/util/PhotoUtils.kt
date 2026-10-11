@@ -98,9 +98,9 @@ object PhotoUtils {
             bgPaint.color = android.graphics.Color.WHITE
             canvas.drawRoundRect(RectF(0f, 0f, width.toFloat(), height.toFloat()), 32f, 32f, bgPaint)
 
-            // Top Header: Clean White Header with Official DTDC Logo
+            // Top Header: Clean White Header with Official DTDC Logo (Enlarged)
             bgPaint.color = android.graphics.Color.WHITE
-            canvas.drawRect(0f, 0f, width.toFloat(), 280f, bgPaint)
+            canvas.drawRect(0f, 0f, width.toFloat(), 300f, bgPaint)
 
             val logoBmp = try {
                 BitmapFactory.decodeResource(context.resources, com.example.R.drawable.ic_dtdc_logo)
@@ -109,21 +109,21 @@ object PhotoUtils {
             }
 
             if (logoBmp != null) {
-                val logoRect = RectF(60f, 20f, width - 60f, 210f)
+                val logoRect = RectF(30f, 10f, width - 30f, 230f)
                 canvas.drawBitmap(logoBmp, null, logoRect, null)
             } else {
                 textPaint.apply {
                     color = android.graphics.Color.parseColor("#0A235C")
                     textAlign = Paint.Align.CENTER
                     isFakeBoldText = true
-                    textSize = 64f
+                    textSize = 72f
                 }
-                canvas.drawText("DTDC COURIER", width / 2f, 110f, textPaint)
+                canvas.drawText("DTDC COURIER", width / 2f, 120f, textPaint)
             }
 
             // Franchisee Navy Ribbon
             bgPaint.color = android.graphics.Color.parseColor("#0A235C")
-            canvas.drawRect(0f, 215f, width.toFloat(), 275f, bgPaint)
+            canvas.drawRect(0f, 235f, width.toFloat(), 292f, bgPaint)
 
             val ribbonTextPaint = Paint().apply {
                 isAntiAlias = true
@@ -132,14 +132,14 @@ object PhotoUtils {
                 isFakeBoldText = true
                 textSize = 28f
             }
-            canvas.drawText("AUTH. CHANNEL PARTNER: ${card.branchName.uppercase()}", width / 2f, 256f, ribbonTextPaint)
+            canvas.drawText("AUTH. CHANNEL PARTNER: ${card.branchName.uppercase()}", width / 2f, 274f, ribbonTextPaint)
 
             // Red Chevron Accent Stripe
             bgPaint.color = android.graphics.Color.parseColor("#D32F2F")
-            canvas.drawRect(0f, 275f, width.toFloat(), 285f, bgPaint)
+            canvas.drawRect(0f, 292f, width.toFloat(), 302f, bgPaint)
 
             // Employee Passport Photo
-            val photoBox = RectF(width / 2f - 180f, 320f, width / 2f + 180f, 800f)
+            val photoBox = RectF(width / 2f - 180f, 325f, width / 2f + 180f, 795f)
             val photoPaint = Paint().apply { isAntiAlias = true }
             photoPaint.color = android.graphics.Color.parseColor("#F1F5F9")
             canvas.drawRoundRect(photoBox, 16f, 16f, photoPaint)

@@ -217,13 +217,13 @@ fun IdCardFront(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(88.dp)
+                    .height(98.dp)
                     .background(Color.White)
             ) {
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(horizontal = 8.dp, vertical = 4.dp),
+                        .padding(horizontal = 4.dp, vertical = 2.dp),
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.SpaceBetween
                 ) {
@@ -232,8 +232,8 @@ fun IdCardFront(
                         contentDescription = "DTDC Official Company Logo",
                         contentScale = ContentScale.Fit,
                         modifier = Modifier
-                            .fillMaxWidth(0.92f)
-                            .height(50.dp)
+                            .fillMaxWidth(0.98f)
+                            .height(65.dp)
                     )
 
                     Row(

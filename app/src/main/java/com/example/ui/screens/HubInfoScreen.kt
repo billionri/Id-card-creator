@@ -104,16 +104,16 @@ fun HubInfoScreen(modifier: Modifier = Modifier) {
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .background(Color.White, RoundedCornerShape(8.dp))
-                        .padding(horizontal = 12.dp, vertical = 8.dp),
+                        .background(Color.White, RoundedCornerShape(10.dp))
+                        .padding(horizontal = 14.dp, vertical = 10.dp),
                     contentAlignment = Alignment.Center
                 ) {
                     Image(
                         painter = painterResource(id = R.drawable.ic_dtdc_logo),
                         contentDescription = "Official DTDC Logo",
                         modifier = Modifier
-                            .fillMaxWidth(0.9f)
-                            .height(55.dp),
+                            .fillMaxWidth(0.96f)
+                            .height(85.dp),
                         contentScale = androidx.compose.ui.layout.ContentScale.Fit
                     )
                 }

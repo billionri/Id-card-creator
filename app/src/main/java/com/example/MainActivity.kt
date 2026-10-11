@@ -91,10 +91,10 @@ class MainActivity : ComponentActivity() {
                                         contentDescription = "DTDC Logo",
                                         contentScale = ContentScale.Fit,
                                         modifier = Modifier
-                                            .height(30.dp)
-                                            .clip(RoundedCornerShape(4.dp))
+                                            .height(40.dp)
+                                            .clip(RoundedCornerShape(6.dp))
                                             .background(Color.White)
-                                            .padding(horizontal = 4.dp, vertical = 2.dp)
+                                            .padding(horizontal = 6.dp, vertical = 2.dp)
                                     )
                                     Spacer(modifier = Modifier.width(10.dp))
                                     Column {
