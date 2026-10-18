@@ -213,11 +213,11 @@ fun IdCardFront(
             modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // Header: Official DTDC Company Logo with Franchisee Partner Ribbon (Enlarged)
+            // Header: Official DTDC Company Logo with "DTDC Private Limited Cargo" above logo
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(108.dp)
+                    .height(134.dp)
                     .background(Color.White)
             ) {
                 Column(
@@ -227,13 +227,39 @@ fun IdCardFront(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.SpaceBetween
                 ) {
+                    // Top Corporate Title: DTDC Private Limited (Black) Cargo (Red)
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 2.dp)
+                    ) {
+                        Text(
+                            text = "DTDC Private Limited ",
+                            color = Color(0xFF0F172A),
+                            fontFamily = DtdcBrandFontFamily,
+                            fontSize = 17.5.sp,
+                            fontWeight = FontWeight.Black,
+                            letterSpacing = 0.4.sp
+                        )
+                        Text(
+                            text = "Cargo",
+                            color = DtdcRed,
+                            fontFamily = DtdcBrandFontFamily,
+                            fontSize = 17.5.sp,
+                            fontWeight = FontWeight.Black,
+                            letterSpacing = 0.4.sp
+                        )
+                    }
+
                     Image(
-                        painter = painterResource(id = R.drawable.ic_dtdc_logo),
-                        contentDescription = "DTDC Official Company Logo",
+                        painter = painterResource(id = R.drawable.ic_dtdc_new_brand_logo_1790999618202),
+                        contentDescription = "DTDC Official Brand Logo",
                         contentScale = ContentScale.Fit,
                         modifier = Modifier
-                            .fillMaxWidth(0.98f)
-                            .height(76.dp)
+                            .fillMaxWidth(0.96f)
+                            .height(68.dp)
                     )
 
                     Row(
@@ -242,17 +268,30 @@ fun IdCardFront(
                         modifier = Modifier
                             .fillMaxWidth()
                             .background(DtdcNavy, shape = RoundedCornerShape(4.dp))
-                            .padding(horizontal = 6.dp, vertical = 3.dp)
+                            .padding(horizontal = 6.dp, vertical = 3.5.dp)
                     ) {
                         Text(
-                            text = "AUTH. CHANNEL PARTNER: ${card.branchName.uppercase()} • BRANCH ID: ${card.branchId}",
+                            text = "AUTH. PARTNER: ",
+                            color = Color(0xFFE2E8F0),
+                            fontFamily = DtdcBrandFontFamily,
+                            fontSize = 11.sp,
+                            fontWeight = FontWeight.Bold,
+                            letterSpacing = 0.4.sp
+                        )
+                        Text(
+                            text = card.branchName.uppercase(),
                             color = DtdcGold,
                             fontFamily = DtdcBrandFontFamily,
-                            fontSize = 10.5.sp,
-                            fontWeight = FontWeight.Bold,
-                            letterSpacing = 0.4.sp,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis
+                            fontSize = 18.sp,
+                            fontWeight = FontWeight.Black,
+                            letterSpacing = 0.8.sp
+                        )
+                        Text(
+                            text = " • ${card.branchId}",
+                            color = Color(0xFFE2E8F0),
+                            fontFamily = DtdcBrandFontFamily,
+                            fontSize = 11.sp,
+                            fontWeight = FontWeight.Bold
                         )
                     }
                 }
@@ -439,6 +478,27 @@ fun IdCardFront(
             }
 
             Spacer(modifier = Modifier.weight(1f))
+
+            // Prominent Bottom Brand Label matching user reference badge: "Hari Om enterprises" in bold red
+            Text(
+                text = card.branchName,
+                color = DtdcRed,
+                fontFamily = DtdcBrandFontFamily,
+                fontSize = 24.sp,
+                fontWeight = FontWeight.Black,
+                letterSpacing = 0.5.sp,
+                modifier = Modifier.padding(bottom = 6.dp)
+            )
+
+            // Bottom Navy Accent Bar with rounded corners matching the reference badge
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth(0.92f)
+                    .height(6.dp)
+                    .background(DtdcNavy, shape = RoundedCornerShape(3.dp))
+            )
+
+            Spacer(modifier = Modifier.height(10.dp))
         }
     }
 }
@@ -487,11 +547,11 @@ fun IdCardBack(card: EmployeeIdCard) {
             modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // Header: Matching White Header with Enlarged Official DTDC Company Logo & Title Ribbon
+            // Header: Matching White Header with "DTDC Private Limited Cargo" above logo
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(108.dp)
+                    .height(134.dp)
                     .background(Color.White)
             ) {
                 Column(
@@ -501,13 +561,39 @@ fun IdCardBack(card: EmployeeIdCard) {
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.SpaceBetween
                 ) {
+                    // Top Corporate Title: DTDC Private Limited (Black) Cargo (Red)
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 2.dp)
+                    ) {
+                        Text(
+                            text = "DTDC Private Limited ",
+                            color = Color(0xFF0F172A),
+                            fontFamily = DtdcBrandFontFamily,
+                            fontSize = 17.5.sp,
+                            fontWeight = FontWeight.Black,
+                            letterSpacing = 0.4.sp
+                        )
+                        Text(
+                            text = "Cargo",
+                            color = DtdcRed,
+                            fontFamily = DtdcBrandFontFamily,
+                            fontSize = 17.5.sp,
+                            fontWeight = FontWeight.Black,
+                            letterSpacing = 0.4.sp
+                        )
+                    }
+
                     Image(
-                        painter = painterResource(id = R.drawable.ic_dtdc_logo),
-                        contentDescription = "DTDC Official Company Logo",
+                        painter = painterResource(id = R.drawable.ic_dtdc_new_brand_logo_1790999618202),
+                        contentDescription = "DTDC Official Brand Logo",
                         contentScale = ContentScale.Fit,
                         modifier = Modifier
-                            .fillMaxWidth(0.98f)
-                            .height(76.dp)
+                            .fillMaxWidth(0.96f)
+                            .height(68.dp)
                     )
 
                     Row(
@@ -516,17 +602,22 @@ fun IdCardBack(card: EmployeeIdCard) {
                         modifier = Modifier
                             .fillMaxWidth()
                             .background(DtdcNavy, shape = RoundedCornerShape(4.dp))
-                            .padding(horizontal = 6.dp, vertical = 3.dp)
+                            .padding(horizontal = 6.dp, vertical = 3.5.dp)
                     ) {
                         Text(
-                            text = "TERMS OF IDENTITY & CONSIGNMENT AUTHORITY",
+                            text = "TERMS OF IDENTITY • ",
+                            color = Color(0xFFE2E8F0),
+                            fontFamily = DtdcBrandFontFamily,
+                            fontSize = 10.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                        Text(
+                            text = card.branchName.uppercase(),
                             color = DtdcGold,
                             fontFamily = DtdcBrandFontFamily,
-                            fontSize = 10.5.sp,
+                            fontSize = 17.5.sp,
                             fontWeight = FontWeight.Black,
-                            letterSpacing = 0.5.sp,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis
+                            letterSpacing = 0.8.sp
                         )
                     }
                 }
@@ -560,7 +651,7 @@ fun IdCardBack(card: EmployeeIdCard) {
                 Spacer(modifier = Modifier.height(4.dp))
 
                 val policies = listOf(
-                    "1. The bearer is an authorized delivery representative of Hariom Enterprises (DTDC Channel Partner).",
+                    "1. The bearer is an authorized delivery representative of HARIOM ENTERPRISES (DTDC Channel Partner).",
                     "2. This identity card is strictly non-transferable and must be presented on demand.",
                     "3. Authorized to handle courier, parcels, and express mail delivery.",
                     "4. If found, please return to the Hub Office address listed below or call helpline."
@@ -599,7 +690,16 @@ fun IdCardBack(card: EmployeeIdCard) {
                         )
                         Spacer(modifier = Modifier.height(4.dp))
                         Text(
-                            text = "${card.branchName} • ${card.branchAddress}",
+                            text = card.branchName.uppercase(),
+                            color = DtdcRed,
+                            fontFamily = DtdcBrandFontFamily,
+                            fontSize = 22.sp,
+                            fontWeight = FontWeight.Black,
+                            letterSpacing = 0.8.sp
+                        )
+                        Spacer(modifier = Modifier.height(2.dp))
+                        Text(
+                            text = card.branchAddress,
                             color = Color(0xFF0F172A),
                             fontFamily = DtdcCorporateFontFamily,
                             fontSize = 12.5.sp,

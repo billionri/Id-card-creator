@@ -110,8 +110,8 @@ fun HubInfoScreen(modifier: Modifier = Modifier) {
                     contentAlignment = Alignment.Center
                 ) {
                     Image(
-                        painter = painterResource(id = R.drawable.ic_dtdc_logo),
-                        contentDescription = "Official DTDC Logo",
+                        painter = painterResource(id = R.drawable.ic_dtdc_new_brand_logo_1790999618202),
+                        contentDescription = "Official DTDC Brand Logo",
                         modifier = Modifier
                             .fillMaxWidth(0.98f)
                             .height(95.dp),

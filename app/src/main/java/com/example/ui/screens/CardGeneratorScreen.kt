@@ -17,6 +17,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.border
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -25,12 +27,17 @@ import androidx.compose.material.icons.filled.AddPhotoAlternate
 import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.Badge
 import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Download
 import androidx.compose.material.icons.filled.FolderShared
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Save
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Share
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -43,12 +50,17 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -58,6 +70,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.data.model.EmployeeIdCard
 import com.example.ui.components.InteractiveIdCard
 import com.example.ui.theme.DtdcNavy
 import com.example.ui.theme.DtdcRed
@@ -79,6 +92,21 @@ fun CardGeneratorScreen(
     val context = LocalContext.current
     val card = uiState.currentCard
     val scrollState = rememberScrollState()
+
+    var empIdQuery by remember { mutableStateOf("") }
+    var employeePendingDelete by remember { mutableStateOf<EmployeeIdCard?>(null) }
+
+    val matchedEmployee = remember(empIdQuery, uiState.savedCards) {
+        if (empIdQuery.isBlank()) null
+        else {
+            val q = empIdQuery.trim().lowercase()
+            uiState.savedCards.firstOrNull {
+                it.employeeCode.lowercase().contains(q) ||
+                it.employeeCode.filter { ch -> ch.isDigit() }.contains(q) ||
+                it.fullName.lowercase().contains(q)
+            }
+        }
+    }
 
     val photoPickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickVisualMedia()
@@ -125,15 +153,32 @@ fun CardGeneratorScreen(
                     containerColor = DtdcNavy
                 ),
                 actions = {
-                    IconButton(
+                    Surface(
                         onClick = onNavigateToSaved,
-                        modifier = Modifier.testTag("saved_badges_button")
+                        color = Color.White.copy(alpha = 0.18f),
+                        shape = RoundedCornerShape(20.dp),
+                        modifier = Modifier
+                            .padding(end = 8.dp)
+                            .testTag("saved_badges_button")
                     ) {
-                        Icon(
-                            imageVector = Icons.Default.FolderShared,
-                            contentDescription = "Saved Badges",
-                            tint = Color.White
-                        )
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.FolderShared,
+                                contentDescription = "Employee Directory",
+                                tint = Color.White,
+                                modifier = Modifier.size(18.dp)
+                            )
+                            Spacer(modifier = Modifier.width(5.dp))
+                            Text(
+                                text = "Directory (${uiState.savedCards.size})",
+                                color = Color.White,
+                                fontSize = 12.5.sp,
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
                     }
                 }
             )
@@ -146,6 +191,216 @@ fun CardGeneratorScreen(
                 .verticalScroll(scrollState)
                 .padding(bottom = 32.dp)
         ) {
+            Spacer(modifier = Modifier.height(14.dp))
+
+            // Quick EMP ID Lookup & Manage Employee Card (Details, Regenerate, Delete)
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 14.dp)
+                    .testTag("emp_id_quick_lookup_card"),
+                colors = CardDefaults.cardColors(containerColor = Color(0xFFF8FAFC)),
+                shape = RoundedCornerShape(16.dp),
+                border = BorderStroke(1.5.dp, if (matchedEmployee != null) SecurityGreen else Color(0xFFCBD5E1)),
+                elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+            ) {
+                Column(modifier = Modifier.padding(14.dp)) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Icon(
+                                imageVector = Icons.Default.Search,
+                                contentDescription = "Search EMP ID",
+                                tint = DtdcNavy,
+                                modifier = Modifier.size(22.dp)
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text(
+                                text = "Ask EMP ID to App",
+                                fontSize = 17.sp,
+                                fontWeight = FontWeight.Black,
+                                color = DtdcNavy
+                            )
+                        }
+
+                        Surface(
+                            color = DtdcNavy.copy(alpha = 0.08f),
+                            shape = RoundedCornerShape(12.dp)
+                        ) {
+                            Text(
+                                text = "Details • Regenerate • Delete",
+                                color = DtdcNavy,
+                                fontSize = 11.sp,
+                                fontWeight = FontWeight.Bold,
+                                modifier = Modifier.padding(horizontal = 8.dp, vertical = 3.dp)
+                            )
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Text(
+                        text = "Enter any Employee ID or Name to view details, regenerate badge, or remove if employee left.",
+                        fontSize = 12.5.sp,
+                        color = Color(0xFF475569)
+                    )
+
+                    Spacer(modifier = Modifier.height(10.dp))
+
+                    OutlinedTextField(
+                        value = empIdQuery,
+                        onValueChange = { empIdQuery = it },
+                        placeholder = { Text("Enter EMP ID (e.g. 8941, DTDC/HE/...)") },
+                        leadingIcon = {
+                            Icon(imageVector = Icons.Default.Badge, contentDescription = null, tint = DtdcNavy)
+                        },
+                        trailingIcon = {
+                            if (empIdQuery.isNotEmpty()) {
+                                IconButton(onClick = { empIdQuery = "" }) {
+                                    Icon(imageVector = Icons.Default.Clear, contentDescription = "Clear", tint = Color.Gray)
+                                }
+                            }
+                        },
+                        singleLine = true,
+                        shape = RoundedCornerShape(12.dp),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .testTag("emp_id_quick_search_input")
+                    )
+
+                    // Results if Matched
+                    if (matchedEmployee != null) {
+                        Spacer(modifier = Modifier.height(12.dp))
+                        Surface(
+                            color = Color.White,
+                            shape = RoundedCornerShape(12.dp),
+                            border = BorderStroke(1.dp, Color(0xFFE2E8F0)),
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Column(modifier = Modifier.padding(12.dp)) {
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.SpaceBetween,
+                                    verticalAlignment = Alignment.Top
+                                ) {
+                                    Column(modifier = Modifier.weight(1f)) {
+                                        Surface(
+                                            color = Color(0xFFE8F5E9),
+                                            shape = RoundedCornerShape(4.dp)
+                                        ) {
+                                            Text(
+                                                text = "✓ EMPLOYEE RECORD FOUND",
+                                                color = Color(0xFF1B5E20),
+                                                fontSize = 10.5.sp,
+                                                fontWeight = FontWeight.Black,
+                                                modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
+                                            )
+                                        }
+                                        Spacer(modifier = Modifier.height(4.dp))
+                                        Text(
+                                            text = matchedEmployee.fullName,
+                                            fontSize = 17.sp,
+                                            fontWeight = FontWeight.Black,
+                                            color = DtdcNavy
+                                        )
+                                        Text(
+                                            text = "EMP ID: ${matchedEmployee.employeeCode}",
+                                            fontSize = 12.5.sp,
+                                            fontWeight = FontWeight.Bold,
+                                            color = DtdcRed
+                                        )
+                                        Text(
+                                            text = "${matchedEmployee.designation} • ${matchedEmployee.department}",
+                                            fontSize = 12.sp,
+                                            color = Color(0xFF334155)
+                                        )
+                                        Text(
+                                            text = "Contact: ${matchedEmployee.phoneNumber} • Valid Till: ${matchedEmployee.validTill}",
+                                            fontSize = 11.5.sp,
+                                            color = Color(0xFF64748B)
+                                        )
+                                    }
+                                }
+
+                                Spacer(modifier = Modifier.height(10.dp))
+
+                                // Action Options for Found Employee: Regenerate, Delete if left, or Preview
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                                ) {
+                                    Button(
+                                        onClick = {
+                                            viewModel.loadCard(matchedEmployee)
+                                            empIdQuery = ""
+                                        },
+                                        colors = ButtonDefaults.buttonColors(containerColor = DtdcNavy),
+                                        modifier = Modifier
+                                            .weight(1.2f)
+                                            .testTag("quick_regenerate_badge_btn")
+                                    ) {
+                                        Icon(
+                                            imageVector = Icons.Default.Refresh,
+                                            contentDescription = "Regenerate",
+                                            modifier = Modifier.size(16.dp)
+                                        )
+                                        Spacer(modifier = Modifier.width(4.dp))
+                                        Text("Regenerate ID", fontSize = 12.5.sp, fontWeight = FontWeight.Bold)
+                                    }
+
+                                    OutlinedButton(
+                                        onClick = { employeePendingDelete = matchedEmployee },
+                                        colors = ButtonDefaults.outlinedButtonColors(contentColor = DtdcRed),
+                                        border = BorderStroke(1.dp, DtdcRed),
+                                        modifier = Modifier
+                                            .weight(1.1f)
+                                            .testTag("quick_delete_employee_btn")
+                                    ) {
+                                        Icon(
+                                            imageVector = Icons.Default.Delete,
+                                            contentDescription = "Delete",
+                                            tint = DtdcRed,
+                                            modifier = Modifier.size(16.dp)
+                                        )
+                                        Spacer(modifier = Modifier.width(4.dp))
+                                        Text("Delete (Left)", fontSize = 12.sp, fontWeight = FontWeight.Bold)
+                                    }
+                                }
+                            }
+                        }
+                    } else if (empIdQuery.isNotBlank()) {
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Surface(
+                            color = Color(0xFFFFFBEB),
+                            shape = RoundedCornerShape(8.dp),
+                            border = BorderStroke(1.dp, Color(0xFFFDE68A)),
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Column(modifier = Modifier.padding(10.dp)) {
+                                Text(
+                                    text = "No saved employee matches '$empIdQuery'",
+                                    color = Color(0xFF92400E),
+                                    fontSize = 12.5.sp,
+                                    fontWeight = FontWeight.SemiBold
+                                )
+                                Spacer(modifier = Modifier.height(4.dp))
+                                OutlinedButton(
+                                    onClick = {
+                                        viewModel.updateEmployeeCode(empIdQuery.trim())
+                                        empIdQuery = ""
+                                    },
+                                    modifier = Modifier.fillMaxWidth()
+                                ) {
+                                    Text("Create New Badge with this EMP ID", fontSize = 12.sp, fontWeight = FontWeight.Bold)
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
             Spacer(modifier = Modifier.height(14.dp))
 
             // Photo Upload & AI Badge Verification Section
@@ -537,7 +792,8 @@ fun CardGeneratorScreen(
                         onValueChange = { viewModel.updateBranchAddress(it) },
                         label = { Text("Branch Return Address", fontSize = 16.sp, fontWeight = FontWeight.Bold) },
                         textStyle = TextStyle(fontSize = 16.sp),
-                        singleLine = true,
+                        singleLine = false,
+                        maxLines = 4,
                         modifier = Modifier
                             .fillMaxWidth()
                             .testTag("input_branch_address")
@@ -559,5 +815,68 @@ fun CardGeneratorScreen(
                 }
             }
         }
+    }
+
+    // Delete Employee Confirmation Dialog (when an employee has left)
+    employeePendingDelete?.let { emp ->
+        AlertDialog(
+            onDismissRequest = { employeePendingDelete = null },
+            icon = {
+                Icon(
+                    imageVector = Icons.Default.Delete,
+                    contentDescription = "Delete Employee",
+                    tint = DtdcRed,
+                    modifier = Modifier.size(36.dp)
+                )
+            },
+            title = {
+                Text(
+                    text = "Delete Employee Record?",
+                    fontWeight = FontWeight.Black,
+                    fontSize = 18.sp,
+                    color = DtdcNavy
+                )
+            },
+            text = {
+                Column {
+                    Text(
+                        text = "Are you sure you want to delete ${emp.fullName}?",
+                        fontWeight = FontWeight.Bold,
+                        color = Color(0xFF1E293B)
+                    )
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Text(
+                        text = "EMP ID: ${emp.employeeCode}\nDesignation: ${emp.designation}\nBranch: ${emp.branchName}",
+                        fontSize = 13.sp,
+                        color = Color(0xFF475569)
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(
+                        text = "Use this when an employee has left Hariom Enterprises. Their saved badges and records will be completely removed.",
+                        fontSize = 12.sp,
+                        color = DtdcRed,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                }
+            },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        viewModel.deleteCard(emp.id)
+                        employeePendingDelete = null
+                        empIdQuery = ""
+                    },
+                    colors = ButtonDefaults.buttonColors(containerColor = DtdcRed),
+                    modifier = Modifier.testTag("confirm_delete_emp_btn")
+                ) {
+                    Text("Delete Employee", color = Color.White)
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { employeePendingDelete = null }) {
+                    Text("Cancel")
+                }
+            }
+        )
     }
 }

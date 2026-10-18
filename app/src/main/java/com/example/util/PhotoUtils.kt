@@ -48,24 +48,60 @@ object PhotoUtils {
             // FRONT SIDE: Pure White Background with Rounded Corners
             canvas.drawRoundRect(RectF(0f, 0f, width.toFloat(), height.toFloat()), 32f, 32f, bgPaint)
 
-            // Header Section: Pure White Box with Enlarged Official DTDC Logo
+            // Header Section: Pure White Box with Corporate Title & Enlarged Official DTDC Logo
             bgPaint.color = Color.WHITE
-            canvas.drawRect(0f, 0f, width.toFloat(), 335f, bgPaint)
+            canvas.drawRect(0f, 0f, width.toFloat(), 375f, bgPaint)
+
+            // Top Corporate Title above Logo: "DTDC Private Limited" (black) + "Cargo" (red)
+            val titleTextBlack = "DTDC Private Limited "
+            val titleTextRed = "Cargo"
+            val titleBlackPaint = Paint().apply {
+                isAntiAlias = true
+                typeface = brandTypeface
+                color = Color.parseColor("#0F172A") // Black
+                textSize = 40f
+                isFakeBoldText = true
+                textAlign = Paint.Align.LEFT
+            }
+            val titleRedPaint = Paint().apply {
+                isAntiAlias = true
+                typeface = brandTypeface
+                color = Color.parseColor("#D32F2F") // Red
+                textSize = 40f
+                isFakeBoldText = true
+                textAlign = Paint.Align.LEFT
+            }
+
+            val totalTitleWidth = titleBlackPaint.measureText(titleTextBlack) + titleRedPaint.measureText(titleTextRed)
+            val titleStartX = (width - totalTitleWidth) / 2f
+            canvas.drawText(titleTextBlack, titleStartX, 58f, titleBlackPaint)
+            canvas.drawText(titleTextRed, titleStartX + titleBlackPaint.measureText(titleTextBlack), 58f, titleRedPaint)
 
             val logoBmp = try {
-                BitmapFactory.decodeResource(context.resources, R.drawable.ic_dtdc_logo)
+                BitmapFactory.decodeResource(context.resources, R.drawable.ic_dtdc_new_brand_logo_1790999618202)
             } catch (e: Exception) {
                 null
             }
 
             if (logoBmp != null) {
-                val logoRect = RectF(20f, 15f, width - 20f, 265f)
+                val maxW = width - 40f
+                val maxH = 220f
+                val aspect = logoBmp.width.toFloat() / logoBmp.height.toFloat()
+                var drawW = maxH * aspect
+                var drawH = maxH
+                if (drawW > maxW) {
+                    drawW = maxW
+                    drawH = drawW / aspect
+                }
+                val left = (width - drawW) / 2f
+                val top = 76f + (224f - drawH) / 2f
+                val logoRect = RectF(left, top, left + drawW, top + drawH)
                 canvas.drawBitmap(logoBmp, null, logoRect, null)
             }
 
             // Franchisee Partner Ribbon (Solid Navy with Gold Text)
             bgPaint.color = Color.parseColor("#0A235C")
-            canvas.drawRect(0f, 270f, width.toFloat(), 330f, bgPaint)
+            canvas.drawRect(0f, 310f, width.toFloat(), 370f, bgPaint)
 
             val ribbonTextPaint = Paint().apply {
                 isAntiAlias = true
@@ -73,18 +109,18 @@ object PhotoUtils {
                 typeface = brandTypeface
                 textAlign = Paint.Align.CENTER
                 isFakeBoldText = true
-                textSize = 32f
+                textSize = 34f
             }
             canvas.drawText(
                 "AUTH. CHANNEL PARTNER: ${card.branchName.uppercase()} • BRANCH: ${card.branchId}",
                 width / 2f,
-                312f,
+                352f,
                 ribbonTextPaint
             )
 
             // Red Chevron Accent Stripe
             bgPaint.color = Color.parseColor("#D32F2F")
-            canvas.drawRect(0f, 330f, width.toFloat(), 340f, bgPaint)
+            canvas.drawRect(0f, 370f, width.toFloat(), 380f, bgPaint)
 
             // CENTERED LARGE PHOTO (Width: 460f, Height: 550f)
             val photoW = 460f
@@ -222,29 +258,88 @@ object PhotoUtils {
             canvas.drawText("VALID TILL:", leftColX, rowY, labelPaint)
             canvas.drawText(card.validTill, valColX, rowY, valuePaint)
 
+            // Prominent Bottom Brand matching user reference badge: "Hari Om enterprises" in bold red
+            val bottomBrandPaint = Paint().apply {
+                isAntiAlias = true
+                typeface = brandTypeface
+                color = Color.parseColor("#D32F2F")
+                textSize = 52f
+                isFakeBoldText = true
+                textAlign = Paint.Align.CENTER
+            }
+            canvas.drawText(card.branchName, width / 2f, height - 72f, bottomBrandPaint)
+
+            // Bottom Navy Accent Bar with rounded corners
+            val bottomBarPaint = Paint().apply {
+                isAntiAlias = true
+                color = Color.parseColor("#0A235C")
+            }
+            canvas.drawRoundRect(
+                RectF(60f, height - 42f, width - 60f, height - 26f),
+                8f,
+                8f,
+                bottomBarPaint
+            )
+
         } else {
             // BACK SIDE (Matching Pure White Corporate Theme)
             bgPaint.color = Color.WHITE
             canvas.drawRoundRect(RectF(0f, 0f, width.toFloat(), height.toFloat()), 32f, 32f, bgPaint)
 
-            // Top Header: Clean White Header with Enlarged Official DTDC Logo (Identical size as Front)
+            // Top Header: Clean White Header with Corporate Title & Enlarged Official DTDC Logo
             bgPaint.color = Color.WHITE
-            canvas.drawRect(0f, 0f, width.toFloat(), 335f, bgPaint)
+            canvas.drawRect(0f, 0f, width.toFloat(), 375f, bgPaint)
+
+            // Top Corporate Title above Logo: "DTDC Private Limited" (black) + "Cargo" (red)
+            val titleTextBlack = "DTDC Private Limited "
+            val titleTextRed = "Cargo"
+            val titleBlackPaint = Paint().apply {
+                isAntiAlias = true
+                typeface = brandTypeface
+                color = Color.parseColor("#0F172A") // Black
+                textSize = 40f
+                isFakeBoldText = true
+                textAlign = Paint.Align.LEFT
+            }
+            val titleRedPaint = Paint().apply {
+                isAntiAlias = true
+                typeface = brandTypeface
+                color = Color.parseColor("#D32F2F") // Red
+                textSize = 40f
+                isFakeBoldText = true
+                textAlign = Paint.Align.LEFT
+            }
+
+            val totalTitleWidth = titleBlackPaint.measureText(titleTextBlack) + titleRedPaint.measureText(titleTextRed)
+            val titleStartX = (width - totalTitleWidth) / 2f
+            canvas.drawText(titleTextBlack, titleStartX, 58f, titleBlackPaint)
+            canvas.drawText(titleTextRed, titleStartX + titleBlackPaint.measureText(titleTextBlack), 58f, titleRedPaint)
 
             val logoBmp = try {
-                BitmapFactory.decodeResource(context.resources, R.drawable.ic_dtdc_logo)
+                BitmapFactory.decodeResource(context.resources, R.drawable.ic_dtdc_new_brand_logo_1790999618202)
             } catch (e: Exception) {
                 null
             }
 
             if (logoBmp != null) {
-                val logoRect = RectF(20f, 15f, width - 20f, 265f)
+                val maxW = width - 40f
+                val maxH = 220f
+                val aspect = logoBmp.width.toFloat() / logoBmp.height.toFloat()
+                var drawW = maxH * aspect
+                var drawH = maxH
+                if (drawW > maxW) {
+                    drawW = maxW
+                    drawH = drawW / aspect
+                }
+                val left = (width - drawW) / 2f
+                val top = 76f + (224f - drawH) / 2f
+                val logoRect = RectF(left, top, left + drawW, top + drawH)
                 canvas.drawBitmap(logoBmp, null, logoRect, null)
             }
 
             // Franchisee Navy Ribbon
             bgPaint.color = Color.parseColor("#0A235C")
-            canvas.drawRect(0f, 270f, width.toFloat(), 330f, bgPaint)
+            canvas.drawRect(0f, 310f, width.toFloat(), 370f, bgPaint)
 
             val ribbonTextPaint = Paint().apply {
                 isAntiAlias = true
@@ -254,11 +349,11 @@ object PhotoUtils {
                 isFakeBoldText = true
                 textSize = 32f
             }
-            canvas.drawText("TERMS OF IDENTITY & CONSIGNMENT AUTHORITY", width / 2f, 312f, ribbonTextPaint)
+            canvas.drawText("TERMS OF IDENTITY & CONSIGNMENT AUTHORITY", width / 2f, 352f, ribbonTextPaint)
 
             // Red Chevron Accent Stripe
             bgPaint.color = Color.parseColor("#D32F2F")
-            canvas.drawRect(0f, 330f, width.toFloat(), 340f, bgPaint)
+            canvas.drawRect(0f, 370f, width.toFloat(), 380f, bgPaint)
 
             // Terms Content with Increased Fonts
             val bodyPaint = Paint().apply {
@@ -269,7 +364,7 @@ object PhotoUtils {
                 textAlign = Paint.Align.LEFT
             }
 
-            var textY = 415f
+            var textY = 430f
             val leftMargin = 60f
 
             val headerPaint = Paint().apply {
@@ -284,7 +379,7 @@ object PhotoUtils {
             textY += 55f
 
             val terms = listOf(
-                "1. The bearer is an authorized delivery representative of Hariom Enterprises (DTDC Channel Partner).",
+                "1. The bearer is an authorized delivery representative of HARIOM ENTERPRISES (DTDC Channel Partner).",
                 "2. This identity card is strictly non-transferable and must be presented on demand.",
                 "3. Authorized to handle courier, parcels, and express mail delivery.",
                 "4. If found, please return to the Hub Office address listed below or call helpline."
@@ -295,9 +390,8 @@ object PhotoUtils {
                 textY += 50f
             }
 
-            // Hub Address Box (Increased Size and Fonts)
+            // Hub Address Box (Dynamic Sizing and Multi-Line Address with Prominent HARIOM ENTERPRISES)
             textY += 30f
-            val hubBox = RectF(leftMargin, textY, width - leftMargin, textY + 310f)
             val hubBgPaint = Paint().apply {
                 isAntiAlias = true
                 color = Color.parseColor("#F8FAFC")
@@ -308,30 +402,70 @@ object PhotoUtils {
                 strokeWidth = 2.5f
                 color = Color.parseColor("#CBD5E1")
             }
-            canvas.drawRoundRect(hubBox, 20f, 20f, hubBgPaint)
-            canvas.drawRoundRect(hubBox, 20f, 20f, hubBorderPaint)
 
             val hubTitlePaint = Paint().apply {
                 isAntiAlias = true
                 typeface = brandTypeface
                 color = Color.parseColor("#0A235C")
-                textSize = 36f
+                textSize = 34f
                 isFakeBoldText = true
                 textAlign = Paint.Align.LEFT
             }
-            canvas.drawText("HUB OFFICE & RETURN ADDRESS (BRANCH ID: ${card.branchId}):", leftMargin + 25f, textY + 52f, hubTitlePaint)
+
+            val branchNamePaint = Paint().apply {
+                isAntiAlias = true
+                typeface = brandTypeface
+                color = Color.parseColor("#D32F2F")
+                textSize = 44f
+                isFakeBoldText = true
+                textAlign = Paint.Align.LEFT
+            }
 
             val hubAddrPaint = Paint().apply {
                 isAntiAlias = true
                 typeface = corporateTypeface
                 color = Color.parseColor("#0F172A")
-                textSize = 32f
+                textSize = 30f
                 textAlign = Paint.Align.LEFT
             }
-            canvas.drawText("${card.branchName} • ${card.branchAddress}", leftMargin + 25f, textY + 110f, hubAddrPaint)
 
-            // Contact Box inside Hub Box (Increased Fonts: Normal Contact + Emergency Helpline)
-            val contactBox = RectF(leftMargin + 25f, textY + 150f, width - leftMargin - 25f, textY + 285f)
+            // Wrap address text within card margins
+            val maxAddrWidth = width - (leftMargin * 2) - 50f
+            val rawAddrText = card.branchAddress
+            val words = rawAddrText.split(" ")
+            val addrLines = mutableListOf<String>()
+            var currentLine = StringBuilder()
+            for (word in words) {
+                val testLine = if (currentLine.isEmpty()) word else "$currentLine $word"
+                if (hubAddrPaint.measureText(testLine) <= maxAddrWidth) {
+                    currentLine = StringBuilder(testLine)
+                } else {
+                    if (currentLine.isNotEmpty()) addrLines.add(currentLine.toString())
+                    currentLine = StringBuilder(word)
+                }
+            }
+            if (currentLine.isNotEmpty()) addrLines.add(currentLine.toString())
+
+            val addrLineHeight = 38f
+            val totalAddrHeight = addrLines.size * addrLineHeight
+            val contactBoxTop = textY + 110f + totalAddrHeight + 15f
+            val contactBoxBottom = contactBoxTop + 130f
+            val hubBox = RectF(leftMargin, textY, width - leftMargin, contactBoxBottom + 20f)
+
+            canvas.drawRoundRect(hubBox, 20f, 20f, hubBgPaint)
+            canvas.drawRoundRect(hubBox, 20f, 20f, hubBorderPaint)
+
+            canvas.drawText("HUB OFFICE & RETURN ADDRESS (BRANCH ID: ${card.branchId}):", leftMargin + 25f, textY + 45f, hubTitlePaint)
+            canvas.drawText(card.branchName.uppercase(), leftMargin + 25f, textY + 95f, branchNamePaint)
+
+            var lineY = textY + 140f
+            for (line in addrLines) {
+                canvas.drawText(line, leftMargin + 25f, lineY, hubAddrPaint)
+                lineY += addrLineHeight
+            }
+
+            // Contact Box inside Hub Box (Normal Contact + Emergency Helpline)
+            val contactBox = RectF(leftMargin + 25f, contactBoxTop, width - leftMargin - 25f, contactBoxBottom)
             canvas.drawRoundRect(contactBox, 14f, 14f, Paint().apply { color = Color.WHITE })
             canvas.drawRoundRect(contactBox, 14f, 14f, hubBorderPaint)
 
@@ -351,8 +485,8 @@ object PhotoUtils {
                 isFakeBoldText = true
                 textAlign = Paint.Align.RIGHT
             }
-            canvas.drawText("CONTACT NO:", leftMargin + 45f, textY + 202f, contactLabelPaint)
-            canvas.drawText(card.phoneNumber, width - leftMargin - 45f, textY + 202f, contactValPaint)
+            canvas.drawText("CONTACT NO:", leftMargin + 45f, contactBoxTop + 48f, contactLabelPaint)
+            canvas.drawText(card.phoneNumber, width - leftMargin - 45f, contactBoxTop + 48f, contactValPaint)
 
             val emergLabelPaint = Paint().apply {
                 isAntiAlias = true
@@ -370,8 +504,8 @@ object PhotoUtils {
                 isFakeBoldText = true
                 textAlign = Paint.Align.RIGHT
             }
-            canvas.drawText("EMERGENCY HELPLINE:", leftMargin + 45f, textY + 256f, emergLabelPaint)
-            canvas.drawText(card.emergencyContact, width - leftMargin - 45f, textY + 256f, emergValPaint)
+            canvas.drawText("EMERGENCY HELPLINE:", leftMargin + 45f, contactBoxTop + 102f, emergLabelPaint)
+            canvas.drawText(card.emergencyContact, width - leftMargin - 45f, contactBoxTop + 102f, emergValPaint)
 
             // Barcode Graphic container at bottom of back (Enlarged and well-aligned)
             val barcodeBox = RectF(60f, 1260f, width - 60f, 1500f)
