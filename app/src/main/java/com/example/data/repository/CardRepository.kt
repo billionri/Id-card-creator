@@ -15,7 +15,9 @@ class CardRepository(private val dao: EmployeeCardDao) {
         }
     }
 
-    fun getCardById(id: Long): Flow<EmployeeIdCard?> = dao.getCardById(id)
+    fun getCardById(id: Long): Flow<EmployeeIdCard?> = dao.getCardByIdFlow(id)
+
+    suspend fun getCardByIdOnce(id: Long): EmployeeIdCard? = dao.getCardById(id)
 
     suspend fun saveCard(card: EmployeeIdCard): Long = dao.insertCard(card)
 

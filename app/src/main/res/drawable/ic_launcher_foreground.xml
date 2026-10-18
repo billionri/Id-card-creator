@@ -1,8 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-    <item
-        android:width="66dp"
-        android:height="66dp"
-        android:drawable="@drawable/ic_custom_logo"
-        android:gravity="center" />
-</layer-list>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M32,24h44c4.4,0 8,3.6 8,8v44c0,4.4 -3.6,8 -8,8H32c-4.4,0 -8,-3.6 -8,-8V32c0,-4.4 3.6,-8 8,-8z" />
+    <path
+        android:fillColor="#0A235C"
+        android:pathData="M40,32h28c2.2,0 4,1.8 4,4v20c0,2.2 -1.8,4 -4,4H40c-2.2,0 -4,-1.8 -4,-4V36c0,-2.2 1.8,-4 4,-4z" />
+    <path
+        android:fillColor="#D32F2F"
+        android:pathData="M34,66h40v4h-40z" />
+    <path
+        android:fillColor="#0A235C"
+        android:pathData="M34,74h26v3h-26z" />
+</vector>

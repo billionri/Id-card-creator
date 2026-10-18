@@ -18,6 +18,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Badge
 import androidx.compose.material.icons.filled.Business
 import androidx.compose.material.icons.filled.Call
 import androidx.compose.material.icons.filled.Email
@@ -76,7 +77,7 @@ fun HubInfoScreen(modifier: Modifier = Modifier) {
                         Text(
                             text = "DTDC FRANCHISEE",
                             color = Color.White,
-                            fontSize = 10.sp,
+                            fontSize = 11.5.sp,
                             fontWeight = FontWeight.Black,
                             modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
                         )
@@ -93,7 +94,7 @@ fun HubInfoScreen(modifier: Modifier = Modifier) {
                         Text(
                             text = "VERIFIED HUB",
                             color = DtdcGold,
-                            fontSize = 11.sp,
+                            fontSize = 12.5.sp,
                             fontWeight = FontWeight.Bold
                         )
                     }
@@ -123,19 +124,24 @@ fun HubInfoScreen(modifier: Modifier = Modifier) {
                 Text(
                     text = "HARIOM ENTERPRISES",
                     color = Color.White,
-                    fontSize = 20.sp,
+                    fontSize = 22.sp,
                     fontWeight = FontWeight.Black
                 )
 
                 Text(
                     text = "Authorized Channel Partner • DTDC Express Courier Ltd.",
                     color = Color(0xFFCBD5E1),
-                    fontSize = 12.sp,
+                    fontSize = 13.5.sp,
                     fontWeight = FontWeight.Medium
                 )
 
                 Spacer(modifier = Modifier.height(14.dp))
 
+                InfoRow(
+                    icon = Icons.Default.Badge,
+                    label = "DTDC Branch ID",
+                    value = "1057 (Hariom Enterprises)"
+                )
                 InfoRow(
                     icon = Icons.Default.Business,
                     label = "Franchisee Code",
@@ -263,8 +269,8 @@ private fun InfoRow(icon: ImageVector, label: String, value: String) {
         )
         Spacer(modifier = Modifier.width(8.dp))
         Column {
-            Text(text = label, color = Color(0xFF94A3B8), fontSize = 10.sp, fontWeight = FontWeight.Bold)
-            Text(text = value, color = Color.White, fontSize = 12.sp, fontWeight = FontWeight.Medium)
+            Text(text = label, color = Color(0xFF94A3B8), fontSize = 12.sp, fontWeight = FontWeight.Bold)
+            Text(text = value, color = Color.White, fontSize = 14.5.sp, fontWeight = FontWeight.Medium)
         }
     }
 }

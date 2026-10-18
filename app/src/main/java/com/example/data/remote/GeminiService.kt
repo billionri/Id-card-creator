@@ -59,7 +59,7 @@ class GeminiService {
                "name": "Professional Full Name",
                "designation": "Delivery Associate OR Field Operations Executive OR Hub Supervisor OR Courier Specialist",
                "department": "Operations & Dispatch OR Express Delivery OR Hub Logistics",
-               "employeeCode": "DTDC/HE/2024/XXXX",
+               "employeeCode": "DTDC/HE/2026/XXXX",
                "bloodGroup": "O+ OR B+ OR A+ OR AB+",
                "assessment": "Frontal alignment verified, neutral background, official DTDC badge ready",
                "score": 96
@@ -151,7 +151,7 @@ class GeminiService {
                 name = obj.optString("name", "Rahul Kumar"),
                 designation = obj.optString("designation", "Delivery Associate"),
                 department = obj.optString("department", "Operations & Dispatch"),
-                employeeCode = obj.optString("employeeCode", "DTDC/HE/2024/" + Random.nextInt(1000, 9999)),
+                employeeCode = obj.optString("employeeCode", "DTDC/HE/2026/" + Random.nextInt(1000, 9999)),
                 bloodGroup = obj.optString("bloodGroup", "B+"),
                 assessment = obj.optString("assessment", "AI Assessment: Verified passport photo quality"),
                 score = obj.optInt("score", 96)
@@ -196,7 +196,7 @@ class GeminiService {
         )
         val bloodGroups = listOf("O+", "B+", "A+", "AB+", "O-")
 
-        val randomCode = "DTDC/HE/2024/${Random.nextInt(1000, 9999)}"
+        val randomCode = "DTDC/HE/2026/${Random.nextInt(1000, 9999)}"
         val randomScore = Random.nextInt(94, 99)
 
         return AiGeneratedProfile(

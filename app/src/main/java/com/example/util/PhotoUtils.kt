@@ -6,326 +6,282 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Canvas
+import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Rect
 import android.graphics.RectF
+import android.graphics.Typeface
 import android.net.Uri
 import android.os.Build
 import android.os.Environment
 import android.provider.MediaStore
 import android.widget.Toast
 import androidx.core.content.FileProvider
+import com.example.R
 import com.example.data.model.EmployeeIdCard
 import java.io.File
 import java.io.FileOutputStream
-import java.io.InputStream
+import java.io.OutputStream
 
 object PhotoUtils {
 
-    fun savePassportPhoto(context: Context, sourceBitmap: Bitmap): String {
-        val photosDir = File(context.filesDir, "employee_photos")
-        if (!photosDir.exists()) photosDir.mkdirs()
-
-        // Crop to 3:4 passport aspect ratio from center
-        val targetWidth: Int
-        val targetHeight: Int
-        val currentAspect = sourceBitmap.width.toFloat() / sourceBitmap.height.toFloat()
-        val desiredAspect = 3f / 4f
-
-        val croppedBitmap = if (currentAspect > desiredAspect) {
-            // Image is too wide
-            targetHeight = sourceBitmap.height
-            targetWidth = (targetHeight * desiredAspect).toInt()
-            val xOffset = (sourceBitmap.width - targetWidth) / 2
-            Bitmap.createBitmap(sourceBitmap, xOffset, 0, targetWidth, targetHeight)
-        } else {
-            // Image is too tall
-            targetWidth = sourceBitmap.width
-            targetHeight = (targetWidth / desiredAspect).toInt()
-            val yOffset = (sourceBitmap.height - targetHeight) / 2
-            Bitmap.createBitmap(sourceBitmap, 0, yOffset, targetWidth, targetHeight)
-        }
-
-        // Scale to a clean 600x800 passport resolution
-        val finalBitmap = Bitmap.createScaledBitmap(croppedBitmap, 600, 800, true)
-
-        val file = File(photosDir, "emp_passport_${System.currentTimeMillis()}.jpg")
-        FileOutputStream(file).use { out ->
-            finalBitmap.compress(Bitmap.CompressFormat.JPEG, 92, out)
-        }
-        return file.absolutePath
-    }
-
-    fun uriToBitmap(context: Context, uri: Uri): Bitmap? {
-        return try {
-            val inputStream: InputStream? = context.contentResolver.openInputStream(uri)
-            BitmapFactory.decodeStream(inputStream)
-        } catch (e: Exception) {
-            e.printStackTrace()
-            null
-        }
-    }
-
-    fun loadBitmapFromPath(path: String?): Bitmap? {
-        if (path.isNullOrBlank()) return null
-        val file = File(path)
-        if (!file.exists()) return null
-        return try {
-            BitmapFactory.decodeFile(file.absolutePath)
-        } catch (e: Exception) {
-            null
-        }
-    }
-
-    /**
-     * Generates a high-resolution official ID card image (Front view)
-     */
-    fun renderCardBitmap(context: Context, card: EmployeeIdCard, isFront: Boolean = true): Bitmap {
+    fun createCardBitmap(context: Context, card: EmployeeIdCard, isFront: Boolean): Bitmap {
         val width = 1000
-        val height = 1550
+        val height = 1580
         val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
         val canvas = Canvas(bitmap)
 
-        val brandTypeface = try {
-            androidx.core.content.res.ResourcesCompat.getFont(context, com.example.R.font.rajdhani_bold)
-        } catch (e: Exception) {
-            android.graphics.Typeface.DEFAULT_BOLD
-        }
-        val corporateTypeface = try {
-            androidx.core.content.res.ResourcesCompat.getFont(context, com.example.R.font.montserrat_bold)
-        } catch (e: Exception) {
-            android.graphics.Typeface.DEFAULT_BOLD
+        val brandTypeface = Typeface.create(Typeface.SANS_SERIF, Typeface.BOLD)
+        val corporateTypeface = Typeface.create(Typeface.DEFAULT, Typeface.NORMAL)
+
+        val bgPaint = Paint().apply {
+            isAntiAlias = true
+            color = Color.WHITE
         }
 
-        val bgPaint = Paint().apply { isAntiAlias = true }
+        val textPaint = Paint().apply {
+            isAntiAlias = true
+            typeface = brandTypeface
+        }
 
         if (isFront) {
-            val textPaint = Paint().apply {
-                isAntiAlias = true
-                typeface = brandTypeface
-                textAlign = Paint.Align.CENTER
-            }
-
-            // Background
-            bgPaint.color = android.graphics.Color.WHITE
+            // FRONT SIDE: Pure White Background with Rounded Corners
             canvas.drawRoundRect(RectF(0f, 0f, width.toFloat(), height.toFloat()), 32f, 32f, bgPaint)
 
-            // Top Header: Clean White Header with Official DTDC Logo (Enlarged)
-            bgPaint.color = android.graphics.Color.WHITE
-            canvas.drawRect(0f, 0f, width.toFloat(), 300f, bgPaint)
+            // Header Section: Pure White Box with Enlarged Official DTDC Logo
+            bgPaint.color = Color.WHITE
+            canvas.drawRect(0f, 0f, width.toFloat(), 335f, bgPaint)
 
             val logoBmp = try {
-                BitmapFactory.decodeResource(context.resources, com.example.R.drawable.ic_dtdc_logo)
+                BitmapFactory.decodeResource(context.resources, R.drawable.ic_dtdc_logo)
             } catch (e: Exception) {
                 null
             }
 
             if (logoBmp != null) {
-                val logoRect = RectF(30f, 10f, width - 30f, 230f)
+                val logoRect = RectF(20f, 15f, width - 20f, 265f)
                 canvas.drawBitmap(logoBmp, null, logoRect, null)
-            } else {
-                textPaint.apply {
-                    color = android.graphics.Color.parseColor("#0A235C")
-                    textAlign = Paint.Align.CENTER
-                    typeface = brandTypeface
-                    isFakeBoldText = true
-                    textSize = 72f
-                }
-                canvas.drawText("DTDC COURIER", width / 2f, 120f, textPaint)
             }
 
-            // Franchisee Navy Ribbon
-            bgPaint.color = android.graphics.Color.parseColor("#0A235C")
-            canvas.drawRect(0f, 235f, width.toFloat(), 292f, bgPaint)
+            // Franchisee Partner Ribbon (Solid Navy with Gold Text)
+            bgPaint.color = Color.parseColor("#0A235C")
+            canvas.drawRect(0f, 270f, width.toFloat(), 330f, bgPaint)
 
             val ribbonTextPaint = Paint().apply {
                 isAntiAlias = true
-                color = android.graphics.Color.parseColor("#FFB300")
+                color = Color.parseColor("#FFB300")
                 typeface = brandTypeface
                 textAlign = Paint.Align.CENTER
                 isFakeBoldText = true
-                textSize = 30f
+                textSize = 32f
             }
-            canvas.drawText("AUTH. CHANNEL PARTNER: ${card.branchName.uppercase()}", width / 2f, 274f, ribbonTextPaint)
+            canvas.drawText(
+                "AUTH. CHANNEL PARTNER: ${card.branchName.uppercase()} • BRANCH: ${card.branchId}",
+                width / 2f,
+                312f,
+                ribbonTextPaint
+            )
 
             // Red Chevron Accent Stripe
-            bgPaint.color = android.graphics.Color.parseColor("#D32F2F")
-            canvas.drawRect(0f, 292f, width.toFloat(), 302f, bgPaint)
+            bgPaint.color = Color.parseColor("#D32F2F")
+            canvas.drawRect(0f, 330f, width.toFloat(), 340f, bgPaint)
 
-            // Employee Passport Photo
-            val photoBox = RectF(width / 2f - 180f, 325f, width / 2f + 180f, 795f)
+            // CENTERED LARGE PHOTO (Width: 460f, Height: 550f)
+            val photoW = 460f
+            val photoH = 550f
+            val photoLeft = (width - photoW) / 2f
+            val photoTop = 330f
+            val photoBox = RectF(photoLeft, photoTop, photoLeft + photoW, photoTop + photoH)
             val photoPaint = Paint().apply { isAntiAlias = true }
-            photoPaint.color = android.graphics.Color.parseColor("#F1F5F9")
-            canvas.drawRoundRect(photoBox, 16f, 16f, photoPaint)
+            photoPaint.color = Color.parseColor("#F1F5F9")
+            canvas.drawRoundRect(photoBox, 24f, 24f, photoPaint)
 
             val photoBitmap = loadBitmapFromPath(card.photoPath)
             if (photoBitmap != null) {
                 val srcRect = Rect(0, 0, photoBitmap.width, photoBitmap.height)
                 canvas.drawBitmap(photoBitmap, srcRect, photoBox, null)
             } else {
-                // Placeholder portrait icon
                 val placeholderPaint = Paint().apply {
-                    color = android.graphics.Color.parseColor("#94A3B8")
+                    color = Color.parseColor("#94A3B8")
                     textAlign = Paint.Align.CENTER
-                    textSize = 50f
+                    textSize = 46f
+                    typeface = brandTypeface
+                    isFakeBoldText = true
                 }
-                canvas.drawText("PHOTO", width / 2f, 570f, placeholderPaint)
+                canvas.drawText("PASSPORT PHOTO", photoBox.centerX(), photoBox.centerY() + 15f, placeholderPaint)
             }
 
-            // Photo Border (Gold/Navy)
+            // Photo Border (Navy)
             val borderPaint = Paint().apply {
                 style = Paint.Style.STROKE
-                strokeWidth = 6f
-                color = android.graphics.Color.parseColor("#0A235C")
+                strokeWidth = 7f
+                color = Color.parseColor("#0A235C")
                 isAntiAlias = true
             }
-            canvas.drawRoundRect(photoBox, 16f, 16f, borderPaint)
+            canvas.drawRoundRect(photoBox, 24f, 24f, borderPaint)
 
-            // Employee Full Name
-            textPaint.apply {
-                color = android.graphics.Color.parseColor("#0A235C")
-                textSize = 56f
-                isFakeBoldText = true
+            // Holographic Seal Overlay at top-right corner of photo
+            val holoBmp = try {
+                BitmapFactory.decodeResource(context.resources, R.drawable.ic_hologram_badge)
+            } catch (e: Exception) {
+                null
             }
-            canvas.drawText(card.fullName, width / 2f, 880f, textPaint)
+            if (holoBmp != null) {
+                val holoBox = RectF(photoBox.right - 80f, photoBox.top + 16f, photoBox.right - 12f, photoBox.top + 84f)
+                canvas.drawBitmap(holoBmp, null, holoBox, null)
+            }
 
-            // Designation Badge Pill
-            val desBox = RectF(width / 2f - 300f, 915f, width / 2f + 300f, 985f)
-            bgPaint.color = android.graphics.Color.parseColor("#D32F2F")
-            canvas.drawRoundRect(desBox, 24f, 24f, bgPaint)
-
+            // EMPLOYEE DETAILS BELOW PHOTO (Centered and Stacked)
             textPaint.apply {
-                color = android.graphics.Color.WHITE
+                color = Color.parseColor("#0A235C")
+                textSize = 64f
+                isFakeBoldText = true
+                textAlign = Paint.Align.CENTER
+            }
+            // Employee Full Name
+            val displayName = card.fullName.ifBlank { "Rashid Alam" }
+            canvas.drawText(displayName, width / 2f, 960f, textPaint)
+
+            // Designation Badge Pill Centered
+            val desText = card.designation.uppercase().ifBlank { "DELIVERY ASSOCIATE" }
+            val desPaint = Paint().apply {
+                isAntiAlias = true
+                typeface = brandTypeface
+                color = Color.WHITE
                 textSize = 36f
                 isFakeBoldText = true
+                textAlign = Paint.Align.CENTER
             }
-            canvas.drawText(card.designation.uppercase(), width / 2f, 965f, textPaint)
+            val desWidth = desPaint.measureText(desText) + 50f
+            val desBox = RectF((width - desWidth) / 2f, 995f, (width + desWidth) / 2f, 1060f)
+            bgPaint.color = Color.parseColor("#D32F2F")
+            canvas.drawRoundRect(desBox, 16f, 16f, bgPaint)
+            canvas.drawText(desText, width / 2f, 1042f, desPaint)
 
-            // Department
-            textPaint.apply {
-                color = android.graphics.Color.parseColor("#475569")
+            // Department Centered
+            val deptPaint = Paint().apply {
+                isAntiAlias = true
                 typeface = corporateTypeface
-                textSize = 34f
-                isFakeBoldText = false
+                color = Color.parseColor("#475569")
+                textSize = 33f
+                isFakeBoldText = true
+                textAlign = Paint.Align.CENTER
             }
-            canvas.drawText(card.department, width / 2f, 1035f, textPaint)
+            canvas.drawText(card.department.ifBlank { "Express Logistics & Dispatch" }, width / 2f, 1105f, deptPaint)
 
-            // Details Grid
+            // Thin Accent Separator Line
+            val sepPaint = Paint().apply {
+                color = Color.parseColor("#E2E8F0")
+                strokeWidth = 3f
+            }
+            canvas.drawLine(100f, 1135f, 900f, 1135f, sepPaint)
+
+            // Employee Key-Value Detail Table Below Separator
             val labelPaint = Paint().apply {
                 isAntiAlias = true
                 typeface = brandTypeface
-                color = android.graphics.Color.parseColor("#64748B")
-                textSize = 32f
+                color = Color.parseColor("#0A235C")
+                textSize = 42f
                 isFakeBoldText = true
                 textAlign = Paint.Align.LEFT
             }
             val valuePaint = Paint().apply {
                 isAntiAlias = true
                 typeface = brandTypeface
-                color = android.graphics.Color.parseColor("#0F172A")
-                textSize = 36f
+                color = Color.parseColor("#0F172A")
+                textSize = 42f
                 isFakeBoldText = true
                 textAlign = Paint.Align.LEFT
             }
+            val leftColX = 160f
+            val valColX = 480f
+            var rowY = 1205f
+            val rowSpacing = 72f
 
-            var startY = 1110f
-            val col1X = 100f
-            val col2X = 540f
+            // EMP ID
+            canvas.drawText("EMP ID:", leftColX, rowY, labelPaint)
+            canvas.drawText(card.employeeCode, valColX, rowY, valuePaint)
+            rowY += rowSpacing
 
-            // Emp Code & Blood Group
-            canvas.drawText("EMP ID:", col1X, startY, labelPaint)
-            canvas.drawText(card.employeeCode, col1X, startY + 45f, valuePaint)
+            // CONTACT
+            canvas.drawText("CONTACT:", leftColX, rowY, labelPaint)
+            canvas.drawText(card.phoneNumber, valColX, rowY, valuePaint)
+            rowY += rowSpacing
 
-            canvas.drawText("BLOOD GRP:", col2X, startY, labelPaint)
-            canvas.drawText(card.bloodGroup, col2X, startY + 45f, valuePaint)
+            // BLOOD GRP
+            canvas.drawText("BLOOD GRP:", leftColX, rowY, labelPaint)
+            canvas.drawText(card.bloodGroup, valColX, rowY, valuePaint)
+            rowY += rowSpacing
 
-            startY += 105f
-            // Phone & Joining
-            canvas.drawText("CONTACT:", col1X, startY, labelPaint)
-            canvas.drawText(card.phoneNumber, col1X, startY + 45f, valuePaint)
+            // BRANCH ID
+            canvas.drawText("BRANCH ID:", leftColX, rowY, labelPaint)
+            canvas.drawText(card.branchId, valColX, rowY, valuePaint)
+            rowY += rowSpacing
 
-            canvas.drawText("VALID TILL:", col2X, startY, labelPaint)
-            canvas.drawText(card.validTill, col2X, startY + 45f, valuePaint)
-
-            // Footer Section
-            bgPaint.color = android.graphics.Color.parseColor("#0A235C")
-            canvas.drawRect(0f, 1420f, width.toFloat(), height.toFloat(), bgPaint)
-
-            textPaint.apply {
-                color = android.graphics.Color.WHITE
-                textSize = 30f
-                isFakeBoldText = true
-                textAlign = Paint.Align.CENTER
-            }
-            canvas.drawText("AUTHORIZED IDENTITY BADGE • DTDC", width / 2f, 1480f, textPaint)
-
-            textPaint.apply {
-                color = android.graphics.Color.parseColor("#FFB300")
-                textSize = 24f
-                isFakeBoldText = false
-            }
-            canvas.drawText("Branch: ${card.branchCode} | Hariom Enterprises", width / 2f, 1515f, textPaint)
+            // VALID TILL
+            canvas.drawText("VALID TILL:", leftColX, rowY, labelPaint)
+            canvas.drawText(card.validTill, valColX, rowY, valuePaint)
 
         } else {
             // BACK SIDE (Matching Pure White Corporate Theme)
-            bgPaint.color = android.graphics.Color.WHITE
+            bgPaint.color = Color.WHITE
             canvas.drawRoundRect(RectF(0f, 0f, width.toFloat(), height.toFloat()), 32f, 32f, bgPaint)
 
-            // Top Header: Clean White Header with Official DTDC Logo
-            bgPaint.color = android.graphics.Color.WHITE
-            canvas.drawRect(0f, 0f, width.toFloat(), 260f, bgPaint)
+            // Top Header: Clean White Header with Enlarged Official DTDC Logo (Identical size as Front)
+            bgPaint.color = Color.WHITE
+            canvas.drawRect(0f, 0f, width.toFloat(), 335f, bgPaint)
 
             val logoBmp = try {
-                BitmapFactory.decodeResource(context.resources, com.example.R.drawable.ic_dtdc_logo)
+                BitmapFactory.decodeResource(context.resources, R.drawable.ic_dtdc_logo)
             } catch (e: Exception) {
                 null
             }
 
             if (logoBmp != null) {
-                val logoRect = RectF(60f, 15f, width - 60f, 190f)
+                val logoRect = RectF(20f, 15f, width - 20f, 265f)
                 canvas.drawBitmap(logoBmp, null, logoRect, null)
             }
 
             // Franchisee Navy Ribbon
-            bgPaint.color = android.graphics.Color.parseColor("#0A235C")
-            canvas.drawRect(0f, 200f, width.toFloat(), 255f, bgPaint)
+            bgPaint.color = Color.parseColor("#0A235C")
+            canvas.drawRect(0f, 270f, width.toFloat(), 330f, bgPaint)
 
             val ribbonTextPaint = Paint().apply {
                 isAntiAlias = true
-                color = android.graphics.Color.parseColor("#FFB300")
+                color = Color.parseColor("#FFB300")
                 typeface = brandTypeface
                 textAlign = Paint.Align.CENTER
                 isFakeBoldText = true
-                textSize = 26f
+                textSize = 32f
             }
-            canvas.drawText("TERMS OF IDENTITY & CONSIGNMENT AUTHORITY", width / 2f, 238f, ribbonTextPaint)
+            canvas.drawText("TERMS OF IDENTITY & CONSIGNMENT AUTHORITY", width / 2f, 312f, ribbonTextPaint)
 
             // Red Chevron Accent Stripe
-            bgPaint.color = android.graphics.Color.parseColor("#D32F2F")
-            canvas.drawRect(0f, 255f, width.toFloat(), 265f, bgPaint)
+            bgPaint.color = Color.parseColor("#D32F2F")
+            canvas.drawRect(0f, 330f, width.toFloat(), 340f, bgPaint)
 
-            // Terms Content
+            // Terms Content with Increased Fonts
             val bodyPaint = Paint().apply {
                 isAntiAlias = true
                 typeface = corporateTypeface
-                color = android.graphics.Color.parseColor("#334155")
-                textSize = 28f
+                color = Color.parseColor("#1E293B")
+                textSize = 35f
                 textAlign = Paint.Align.LEFT
             }
 
-            var textY = 320f
-            val leftMargin = 70f
+            var textY = 415f
+            val leftMargin = 60f
 
             val headerPaint = Paint().apply {
                 isAntiAlias = true
                 typeface = brandTypeface
-                color = android.graphics.Color.parseColor("#0A235C")
-                textSize = 34f
+                color = Color.parseColor("#0A235C")
+                textSize = 42f
                 isFakeBoldText = true
                 textAlign = Paint.Align.LEFT
             }
             canvas.drawText("AUTHORIZATION & POLICIES:", leftMargin, textY, headerPaint)
-            textY += 45f
+            textY += 55f
 
             val terms = listOf(
                 "1. The bearer is an authorized delivery representative of Hariom Enterprises (DTDC Channel Partner).",
@@ -333,226 +289,192 @@ object PhotoUtils {
                 "3. Authorized to handle courier, parcels, and express mail delivery.",
                 "4. If found, please return to the Hub Office address listed below or call helpline."
             )
-            for (line in terms) {
-                canvas.drawText(line, leftMargin, textY, bodyPaint)
-                textY += 46f
+
+            terms.forEach { term ->
+                canvas.drawText(term, leftMargin, textY, bodyPaint)
+                textY += 50f
             }
 
-            textY += 20f
-
-            // Address Card Box Container
-            val addressBox = RectF(leftMargin, textY, width - leftMargin, textY + 230f)
-            val boxBgPaint = Paint().apply {
+            // Hub Address Box (Increased Size and Fonts)
+            textY += 30f
+            val hubBox = RectF(leftMargin, textY, width - leftMargin, textY + 310f)
+            val hubBgPaint = Paint().apply {
                 isAntiAlias = true
-                color = android.graphics.Color.parseColor("#F8FAFC")
+                color = Color.parseColor("#F8FAFC")
             }
-            val boxBorderPaint = Paint().apply {
+            val hubBorderPaint = Paint().apply {
                 isAntiAlias = true
                 style = Paint.Style.STROKE
-                strokeWidth = 3f
-                color = android.graphics.Color.parseColor("#CBD5E1")
+                strokeWidth = 2.5f
+                color = Color.parseColor("#CBD5E1")
             }
-            canvas.drawRoundRect(addressBox, 16f, 16f, boxBgPaint)
-            canvas.drawRoundRect(addressBox, 16f, 16f, boxBorderPaint)
+            canvas.drawRoundRect(hubBox, 20f, 20f, hubBgPaint)
+            canvas.drawRoundRect(hubBox, 20f, 20f, hubBorderPaint)
 
-            canvas.drawText("HUB OFFICE & RETURN ADDRESS:", leftMargin + 25f, textY + 45f, headerPaint)
+            val hubTitlePaint = Paint().apply {
+                isAntiAlias = true
+                typeface = brandTypeface
+                color = Color.parseColor("#0A235C")
+                textSize = 36f
+                isFakeBoldText = true
+                textAlign = Paint.Align.LEFT
+            }
+            canvas.drawText("HUB OFFICE & RETURN ADDRESS (BRANCH ID: ${card.branchId}):", leftMargin + 25f, textY + 52f, hubTitlePaint)
 
-            val addrTextPaint = Paint().apply {
+            val hubAddrPaint = Paint().apply {
                 isAntiAlias = true
                 typeface = corporateTypeface
-                color = android.graphics.Color.parseColor("#0F172A")
-                textSize = 25f
-                isFakeBoldText = true
+                color = Color.parseColor("#0F172A")
+                textSize = 32f
                 textAlign = Paint.Align.LEFT
             }
+            canvas.drawText("${card.branchName} • ${card.branchAddress}", leftMargin + 25f, textY + 110f, hubAddrPaint)
 
-            val addressParts = card.branchAddress.split(", ")
-            val formattedAddressLines = mutableListOf<String>()
-            var currentLine = ""
-            for (part in addressParts) {
-                if (currentLine.isEmpty()) {
-                    currentLine = part
-                } else if ((currentLine + ", " + part).length < 42) {
-                    currentLine += ", $part"
-                } else {
-                    formattedAddressLines.add(currentLine + ",")
-                    currentLine = part
-                }
-            }
-            if (currentLine.isNotEmpty()) {
-                formattedAddressLines.add(currentLine)
-            }
+            // Contact Box inside Hub Box (Increased Fonts: Normal Contact + Emergency Helpline)
+            val contactBox = RectF(leftMargin + 25f, textY + 150f, width - leftMargin - 25f, textY + 285f)
+            canvas.drawRoundRect(contactBox, 14f, 14f, Paint().apply { color = Color.WHITE })
+            canvas.drawRoundRect(contactBox, 14f, 14f, hubBorderPaint)
 
-            var addrY = textY + 85f
-            for (line in formattedAddressLines) {
-                canvas.drawText(line, leftMargin + 25f, addrY, addrTextPaint)
-                addrY += 34f
-            }
-
-            val emergPaint = Paint().apply {
+            val contactLabelPaint = Paint().apply {
                 isAntiAlias = true
                 typeface = brandTypeface
-                color = android.graphics.Color.parseColor("#D32F2F")
-                textSize = 28f
+                color = Color.parseColor("#0A235C")
+                textSize = 34f
                 isFakeBoldText = true
                 textAlign = Paint.Align.LEFT
             }
-            canvas.drawText("EMERGENCY HELPLINE: ${card.emergencyContact}", leftMargin + 25f, textY + 205f, emergPaint)
-
-            textY += 270f
-
-            // Draw Barcode visualization
-            val barBg = RectF(100f, textY, width - 100f, textY + 160f)
-            val barBoxBgPaint = Paint().apply {
+            val contactValPaint = Paint().apply {
                 isAntiAlias = true
-                color = android.graphics.Color.parseColor("#F8FAFC")
+                typeface = corporateTypeface
+                color = Color.parseColor("#0F172A")
+                textSize = 34f
+                isFakeBoldText = true
+                textAlign = Paint.Align.RIGHT
             }
-            val barBoxBorderPaint = Paint().apply {
+            canvas.drawText("CONTACT NO:", leftMargin + 45f, textY + 202f, contactLabelPaint)
+            canvas.drawText(card.phoneNumber, width - leftMargin - 45f, textY + 202f, contactValPaint)
+
+            val emergLabelPaint = Paint().apply {
                 isAntiAlias = true
-                style = Paint.Style.STROKE
-                strokeWidth = 2f
-                color = android.graphics.Color.parseColor("#E2E8F0")
+                typeface = brandTypeface
+                color = Color.parseColor("#D32F2F")
+                textSize = 34f
+                isFakeBoldText = true
+                textAlign = Paint.Align.LEFT
             }
-            canvas.drawRoundRect(barBg, 12f, 12f, barBoxBgPaint)
-            canvas.drawRoundRect(barBg, 12f, 12f, barBoxBorderPaint)
+            val emergValPaint = Paint().apply {
+                isAntiAlias = true
+                typeface = brandTypeface
+                color = Color.parseColor("#D32F2F")
+                textSize = 34f
+                isFakeBoldText = true
+                textAlign = Paint.Align.RIGHT
+            }
+            canvas.drawText("EMERGENCY HELPLINE:", leftMargin + 45f, textY + 256f, emergLabelPaint)
+            canvas.drawText(card.emergencyContact, width - leftMargin - 45f, textY + 256f, emergValPaint)
+
+            // Barcode Graphic container at bottom of back (Enlarged and well-aligned)
+            val barcodeBox = RectF(60f, 1260f, width - 60f, 1500f)
+            canvas.drawRoundRect(barcodeBox, 20f, 20f, hubBgPaint)
+            canvas.drawRoundRect(barcodeBox, 20f, 20f, hubBorderPaint)
 
             val barPaint = Paint().apply {
-                color = android.graphics.Color.BLACK
                 isAntiAlias = true
+                color = Color.BLACK
             }
-            var barX = 140f
-            val barcodeSeed = (card.employeeCode + card.phoneNumber).hashCode()
-            var pseudoRand = kotlin.math.abs(barcodeSeed)
-
-            while (barX < width - 140f) {
-                val barW = ((pseudoRand % 4) + 1) * 2f
-                pseudoRand = (pseudoRand * 31 + 17) and 0x7fffffff
-                canvas.drawRect(barX, textY + 20f, barX + barW, textY + 120f, barPaint)
-                barX += barW + ((pseudoRand % 3) + 2) * 2f
-                pseudoRand = (pseudoRand * 31 + 17) and 0x7fffffff
+            val numBars = 55
+            val barW = (barcodeBox.width() - 60f) / numBars
+            val seed = card.employeeCode.hashCode()
+            var prng = kotlin.math.abs(seed)
+            for (i in 0 until numBars) {
+                prng = (prng * 31 + 17) and 0x7fffffff
+                if ((i % 2 == 0) || (prng % 3 != 0)) {
+                    val bLeft = barcodeBox.left + 30f + (i * barW)
+                    canvas.drawRect(bLeft, 1290f, bLeft + (barW * 0.85f), 1400f, barPaint)
+                }
             }
 
-            val codePaint = Paint().apply {
-                color = android.graphics.Color.BLACK
+            val barCodeTextPaint = Paint().apply {
+                isAntiAlias = true
                 typeface = brandTypeface
-                textSize = 28f
+                color = Color.BLACK
+                textSize = 36f
                 isFakeBoldText = true
                 textAlign = Paint.Align.CENTER
-                isAntiAlias = true
             }
-            canvas.drawText("* ${card.employeeCode} *", width / 2f, textY + 148f, codePaint)
-
-            // Authorized Signatory Row
-            val signLabelPaint = Paint().apply {
-                color = android.graphics.Color.parseColor("#64748B")
-                typeface = brandTypeface
-                textSize = 26f
-                textAlign = Paint.Align.RIGHT
-                isFakeBoldText = true
-                isAntiAlias = true
-            }
-            val signScriptPaint = Paint().apply {
-                color = android.graphics.Color.parseColor("#0A235C")
-                textSize = 34f
-                textAlign = Paint.Align.RIGHT
-                isFakeBoldText = true
-                isAntiAlias = true
-            }
-            canvas.drawText("Hariom Kr.", width - 80f, 1370f, signScriptPaint)
-            val linePaint = Paint().apply {
-                color = android.graphics.Color.parseColor("#0A235C")
-                strokeWidth = 3f
-            }
-            canvas.drawLine(width - 320f, 1390f, width - 80f, 1390f, linePaint)
-            canvas.drawText("AUTHORIZED SIGNATORY", width - 80f, 1425f, signLabelPaint)
-
-            // Bottom Navy Footer (Matching Front)
-            bgPaint.color = android.graphics.Color.parseColor("#0A235C")
-            canvas.drawRect(0f, 1470f, width.toFloat(), height.toFloat(), bgPaint)
-
-            val footerTextPaint = Paint().apply {
-                isAntiAlias = true
-                typeface = brandTypeface
-                color = android.graphics.Color.WHITE
-                textAlign = Paint.Align.CENTER
-                textSize = 26f
-                isFakeBoldText = true
-            }
-            canvas.drawText("BRANCH: ${card.branchCode} • OFFICIAL CARRIER BADGE", width / 2f, 1515f, footerTextPaint)
+            canvas.drawText("* ${card.employeeCode} • BRANCH: ${card.branchId} *", width / 2f, 1460f, barCodeTextPaint)
         }
 
         return bitmap
     }
 
-    /**
-     * Shares ID card bitmap to other apps (WhatsApp, Drive, Email, etc.)
-     */
-    fun shareCard(context: Context, card: EmployeeIdCard, isFront: Boolean = true) {
-        val bitmap = renderCardBitmap(context, card, isFront)
-        val cacheDir = File(context.cacheDir, "shared_cards")
-        if (!cacheDir.exists()) cacheDir.mkdirs()
+    fun saveCardToGallery(context: Context, card: EmployeeIdCard, isFront: Boolean): Boolean {
+        val bitmap = createCardBitmap(context, card, isFront)
+        val filename = "DTDC_ID_${card.fullName.replace(" ", "_")}_${if (isFront) "FRONT" else "BACK"}_${System.currentTimeMillis()}.png"
 
-        val side = if (isFront) "FRONT" else "BACK"
-        val file = File(cacheDir, "DTDC_ID_${card.employeeCode.replace('/', '_')}_$side.png")
-        FileOutputStream(file).use { out ->
-            bitmap.compress(Bitmap.CompressFormat.PNG, 100, out)
-        }
-
-        val uri = FileProvider.getUriForFile(
-            context,
-            "${context.packageName}.fileprovider",
-            file
-        )
-
-        val intent = Intent(Intent.ACTION_SEND).apply {
-            type = "image/png"
-            putExtra(Intent.EXTRA_STREAM, uri)
-            putExtra(Intent.EXTRA_SUBJECT, "DTDC Hariom Enterprises Employee ID Card - ${card.fullName}")
-            putExtra(
-                Intent.EXTRA_TEXT,
-                "Official Employee ID Card for ${card.fullName} (${card.employeeCode}) - DTDC Channel Partner: Hariom Enterprises"
-            )
-            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-        }
-        context.startActivity(Intent.createChooser(intent, "Share Employee ID Card"))
-    }
-
-    /**
-     * Saves ID card bitmap to device pictures / downloads gallery
-     */
-    fun saveCardToGallery(context: Context, card: EmployeeIdCard, isFront: Boolean = true): Boolean {
         return try {
-            val bitmap = renderCardBitmap(context, card, isFront)
-            val filename = "DTDC_ID_${card.employeeCode.replace('/', '_')}_${if (isFront) "FRONT" else "BACK"}.png"
-
+            val outputStream: OutputStream?
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 val contentValues = ContentValues().apply {
                     put(MediaStore.MediaColumns.DISPLAY_NAME, filename)
                     put(MediaStore.MediaColumns.MIME_TYPE, "image/png")
-                    put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_PICTURES + "/DTDC_Cards")
+                    put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_PICTURES + "/Hariom_DTDC_IDs")
                 }
-                val resolver = context.contentResolver
-                val uri = resolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues)
-                if (uri != null) {
-                    resolver.openOutputStream(uri).use { out ->
-                        if (out != null) bitmap.compress(Bitmap.CompressFormat.PNG, 100, out)
-                    }
-                    Toast.makeText(context, "ID Card saved to Pictures/DTDC_Cards!", Toast.LENGTH_SHORT).show()
-                    true
-                } else false
+                val uri = context.contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues)
+                outputStream = uri?.let { context.contentResolver.openOutputStream(it) }
             } else {
-                val dir = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "DTDC_Cards")
+                val imagesDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).toString()
+                val dir = File(imagesDir, "Hariom_DTDC_IDs")
                 if (!dir.exists()) dir.mkdirs()
-                val file = File(dir, filename)
-                FileOutputStream(file).use { out ->
-                    bitmap.compress(Bitmap.CompressFormat.PNG, 100, out)
-                }
-                Toast.makeText(context, "ID Card saved: ${file.name}", Toast.LENGTH_SHORT).show()
-                true
+                val image = File(dir, filename)
+                outputStream = FileOutputStream(image)
             }
+
+            outputStream?.use {
+                bitmap.compress(Bitmap.CompressFormat.PNG, 100, it)
+            }
+            Toast.makeText(context, "ID Card downloaded to Gallery!", Toast.LENGTH_SHORT).show()
+            true
         } catch (e: Exception) {
-            Toast.makeText(context, "Export error: ${e.message}", Toast.LENGTH_SHORT).show()
+            e.printStackTrace()
+            Toast.makeText(context, "Failed to download image", Toast.LENGTH_SHORT).show()
             false
+        }
+    }
+
+    fun shareCard(context: Context, card: EmployeeIdCard, isFront: Boolean) {
+        try {
+            val bitmap = createCardBitmap(context, card, isFront)
+            val cachePath = File(context.cacheDir, "shared_cards")
+            cachePath.mkdirs()
+            val file = File(cachePath, "DTDC_Badge_${if (isFront) "FRONT" else "BACK"}.png")
+            val fileOutputStream = FileOutputStream(file)
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, fileOutputStream)
+            fileOutputStream.close()
+
+            val authority = "${context.packageName}.fileprovider"
+            val uri: Uri = FileProvider.getUriForFile(context, authority, file)
+
+            val shareIntent = Intent(Intent.ACTION_SEND).apply {
+                type = "image/png"
+                putExtra(Intent.EXTRA_STREAM, uri)
+                putExtra(Intent.EXTRA_SUBJECT, "DTDC Employee Identity Credential: ${card.fullName}")
+                putExtra(Intent.EXTRA_TEXT, "Official DTDC Courier Associate Identity Badge: ${card.fullName} (${card.employeeCode})")
+                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            }
+            context.startActivity(Intent.createChooser(shareIntent, "Share DTDC Identity Card"))
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Toast.makeText(context, "Error sharing badge: ${e.message}", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    fun loadBitmapFromPath(path: String?): Bitmap? {
+        if (path.isNullOrBlank()) return null
+        return try {
+            BitmapFactory.decodeFile(path)
+        } catch (e: Exception) {
+            null
         }
     }
 }

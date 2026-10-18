@@ -1,61 +1,58 @@
 package com.example.ui.theme
 
-import android.os.Build
+import android.app.Activity
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
-import androidx.compose.material3.dynamicDarkColorScheme
-import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
-
-private val DarkColorScheme = darkColorScheme(
-    primary = DtdcNavyLight,
-    onPrimary = Color.White,
-    primaryContainer = DtdcNavy,
-    onPrimaryContainer = Color.White,
-    secondary = DtdcRedLight,
-    onSecondary = Color.White,
-    secondaryContainer = DtdcRedDark,
-    onSecondaryContainer = Color.White,
-    tertiary = DtdcGold,
-    background = Slate900,
-    surface = Slate800,
-    onBackground = Color.White,
-    onSurface = Color.White
-)
+import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.platform.LocalView
+import androidx.core.view.WindowCompat
 
 private val LightColorScheme = lightColorScheme(
     primary = DtdcNavy,
-    onPrimary = Color.White,
-    primaryContainer = Color(0xFFE2EAFC),
-    onPrimaryContainer = DtdcNavyDark,
     secondary = DtdcRed,
-    onSecondary = Color.White,
-    secondaryContainer = Color(0xFFFFEBEE),
-    onSecondaryContainer = DtdcRedDark,
     tertiary = DtdcGold,
-    background = Color(0xFFF1F5F9),
+    background = Color(0xFFF8FAFC),
     surface = Color.White,
+    onPrimary = Color.White,
+    onSecondary = Color.White,
+    onTertiary = Color.Black,
     onBackground = Slate900,
     onSurface = Slate900
 )
 
+private val DarkColorScheme = darkColorScheme(
+    primary = Color(0xFF38BDF8),
+    secondary = Color(0xFFF87171),
+    tertiary = DtdcGold,
+    background = Color(0xFF0F172A),
+    surface = Color(0xFF1E293B),
+    onPrimary = Color.Black,
+    onSecondary = Color.Black,
+    onTertiary = Color.Black,
+    onBackground = Color.White,
+    onSurface = Color.White
+)
+
 @Composable
-fun MyApplicationTheme(
+fun HariomIDCardTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    dynamicColor: Boolean = false, // Set false to prioritize authentic corporate DTDC brand identity
     content: @Composable () -> Unit
 ) {
-    val colorScheme = when {
-        dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
-            val context = LocalContext.current
-            if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
+    val colorScheme = if (darkTheme) DarkColorScheme else LightColorScheme
+    val view = LocalView.current
+    if (!view.isInEditMode) {
+        SideEffect {
+            val window = (view.context as? Activity)?.window
+            if (window != null) {
+                window.statusBarColor = Color.Transparent.toArgb()
+                WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = !darkTheme
+            }
         }
-        darkTheme -> DarkColorScheme
-        else -> LightColorScheme
     }
 
     MaterialTheme(
