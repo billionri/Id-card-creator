@@ -264,13 +264,12 @@ fun IdCardFront(
                             )
                         }
 
-                        // DTDC Logo: MUCH BIGGER, PROMINENT, SHARP and RIGHT-ALIGNED
+                        // DTDC Logo: MUCH BIGGER, PROMINENT, SHARP and CENTER-ALIGNED
                         Box(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .height((58 * minScale).dp)
-                                .padding(end = (4 * minScale).dp),
-                            contentAlignment = Alignment.CenterEnd
+                                .height((58 * minScale).dp),
+                            contentAlignment = Alignment.Center
                         ) {
                             Image(
                                 painter = painterResource(id = R.drawable.ic_dtdc_logo),
@@ -332,11 +331,11 @@ fun IdCardFront(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    // CENTERED PASSPORT PHOTO with Security Framing, Hologram, and AI Badge
+                    // CENTERED PASSPORT PHOTO - BIGGER & FILL with Security Framing, Hologram, and AI Badge
                     Box(
                         modifier = Modifier
-                            .width((92 * minScale).dp)
-                            .height((108 * minScale).dp)
+                            .width((120 * minScale).dp)
+                            .height((138 * minScale).dp)
                             .shadow(elevation = (3 * minScale).dp, shape = RoundedCornerShape((8 * minScale).dp))
                             .clip(RoundedCornerShape((8 * minScale).dp))
                             .background(Color(0xFFE2E8F0))
@@ -366,7 +365,7 @@ fun IdCardFront(
                                     imageVector = Icons.Default.Person,
                                     contentDescription = "No Photo",
                                     tint = Color(0xFF94A3B8),
-                                    modifier = Modifier.size((44 * minScale).dp)
+                                    modifier = Modifier.size((52 * minScale).dp)
                                 )
                                 Text(
                                     text = "PASSPORT PHOTO",
@@ -382,7 +381,7 @@ fun IdCardFront(
                             modifier = Modifier
                                 .align(Alignment.TopEnd)
                                 .offset(x = (2 * minScale).dp, y = ((-2) * minScale).dp)
-                                .size((30 * minScale).dp)
+                                .size((34 * minScale).dp)
                                 .clip(CircleShape)
                         ) {
                             Image(
@@ -636,13 +635,12 @@ fun IdCardBack(card: EmployeeIdCard) {
                             )
                         }
 
-                        // DTDC Logo: MUCH BIGGER and RIGHT-ALIGNED
+                        // DTDC Logo: MUCH BIGGER, PROMINENT, SHARP and CENTER-ALIGNED
                         Box(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .height((58 * minScale).dp)
-                                .padding(end = (4 * minScale).dp),
-                            contentAlignment = Alignment.CenterEnd
+                                .height((58 * minScale).dp),
+                            contentAlignment = Alignment.Center
                         ) {
                             Image(
                                 painter = painterResource(id = R.drawable.ic_dtdc_logo),

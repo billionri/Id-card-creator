@@ -94,9 +94,8 @@ object PhotoUtils {
                     drawW = maxW
                     drawH = drawW / aspect
                 }
-                // DTDC logo big and right-aligned
-                val rightMargin = 35f
-                val left = width - rightMargin - drawW
+                // DTDC logo big and center-aligned
+                val left = (width - drawW) / 2f
                 val top = 76f + (185f - drawH) / 2f
                 val logoRect = RectF(left, top, left + drawW, top + drawH)
                 canvas.drawBitmap(logoBmp, null, logoRect, null)
@@ -145,11 +144,11 @@ object PhotoUtils {
             bgPaint.color = Color.parseColor("#D32F2F")
             canvas.drawRect(0f, 332f, width.toFloat(), 340f, bgPaint)
 
-            // CENTERED PASSPORT PHOTO - positioned cleanly below enlarged header
-            val photoW = 370f
-            val photoH = 435f
+            // CENTERED PASSPORT PHOTO - BIGGER & FILL (aspect ratio center-crop)
+            val photoW = 470f
+            val photoH = 540f
             val photoLeft = (width - photoW) / 2f
-            val photoTop = 370f
+            val photoTop = 356f
             val photoBox = RectF(photoLeft, photoTop, photoLeft + photoW, photoTop + photoH)
             val photoPaint = Paint().apply { isAntiAlias = true }
             photoPaint.color = Color.parseColor("#F1F5F9")
@@ -157,13 +156,23 @@ object PhotoUtils {
 
             val photoBitmap = loadBitmapFromPath(card.photoPath)
             if (photoBitmap != null) {
-                val srcRect = Rect(0, 0, photoBitmap.width, photoBitmap.height)
-                canvas.drawBitmap(photoBitmap, srcRect, photoBox, null)
+                val bRatio = photoBitmap.width.toFloat() / photoBitmap.height.toFloat()
+                val targetRatio = photoBox.width() / photoBox.height()
+                val cropSrc = if (bRatio > targetRatio) {
+                    val newW = (photoBitmap.height * targetRatio).toInt()
+                    val startX = (photoBitmap.width - newW) / 2
+                    Rect(startX, 0, startX + newW, photoBitmap.height)
+                } else {
+                    val newH = (photoBitmap.width / targetRatio).toInt()
+                    val startY = (photoBitmap.height - newH) / 2
+                    Rect(0, startY, photoBitmap.width, startY + newH)
+                }
+                canvas.drawBitmap(photoBitmap, cropSrc, photoBox, null)
             } else {
                 val placeholderPaint = Paint().apply {
                     color = Color.parseColor("#94A3B8")
                     textAlign = Paint.Align.CENTER
-                    textSize = 38f
+                    textSize = 42f
                     typeface = brandTypeface
                     isFakeBoldText = true
                 }
@@ -186,13 +195,13 @@ object PhotoUtils {
                 null
             }
             if (holoBmp != null) {
-                val holoBox = RectF(photoBox.right - 68f, photoBox.top + 12f, photoBox.right - 12f, photoBox.top + 68f)
+                val holoBox = RectF(photoBox.right - 80f, photoBox.top + 14f, photoBox.right - 14f, photoBox.top + 80f)
                 canvas.drawBitmap(holoBmp, null, holoBox, null)
             }
 
             // AI Verified Badge in bottom-left corner of photo if verified
             if (card.aiVerified) {
-                val badgeBox = RectF(photoBox.left + 12f, photoBox.bottom - 42f, photoBox.left + 145f, photoBox.bottom - 10f)
+                val badgeBox = RectF(photoBox.left + 14f, photoBox.bottom - 46f, photoBox.left + 155f, photoBox.bottom - 12f)
                 val badgePaint = Paint().apply {
                     isAntiAlias = true
                     color = Color.parseColor("#16A34A")
@@ -202,7 +211,7 @@ object PhotoUtils {
                     isAntiAlias = true
                     color = Color.WHITE
                     typeface = brandTypeface
-                    textSize = 20f
+                    textSize = 21f
                     textAlign = Paint.Align.CENTER
                 }
                 canvas.drawText("✔ AI PASS", badgeBox.centerX(), badgeBox.centerY() + 7f, badgeTextPaint)
@@ -217,7 +226,7 @@ object PhotoUtils {
             }
             // Employee Full Name
             val displayName = card.fullName.ifBlank { "Rashid Alam" }
-            canvas.drawText(displayName, width / 2f, 860f, textPaint)
+            canvas.drawText(displayName, width / 2f, 938f, textPaint)
 
             // Designation Badge Pill Centered
             val desText = card.designation.uppercase().ifBlank { "DELIVERY ASSOCIATE" }
@@ -230,10 +239,10 @@ object PhotoUtils {
                 textAlign = Paint.Align.CENTER
             }
             val desWidth = desPaint.measureText(desText) + 44f
-            val desBox = RectF((width - desWidth) / 2f, 885f, (width + desWidth) / 2f, 938f)
+            val desBox = RectF((width - desWidth) / 2f, 960f, (width + desWidth) / 2f, 1010f)
             bgPaint.color = Color.parseColor("#D32F2F")
             canvas.drawRoundRect(desBox, 12f, 12f, bgPaint)
-            canvas.drawText(desText, width / 2f, 924f, desPaint)
+            canvas.drawText(desText, width / 2f, 996f, desPaint)
 
             // Department Centered
             val deptPaint = Paint().apply {
@@ -244,14 +253,14 @@ object PhotoUtils {
                 isFakeBoldText = true
                 textAlign = Paint.Align.CENTER
             }
-            canvas.drawText(card.department.ifBlank { "Express Logistics & Dispatch" }, width / 2f, 974f, deptPaint)
+            canvas.drawText(card.department.ifBlank { "Express Logistics & Dispatch" }, width / 2f, 1042f, deptPaint)
 
             // Thin Accent Separator Line
             val sepPaint = Paint().apply {
                 color = Color.parseColor("#E2E8F0")
                 strokeWidth = 2.5f
             }
-            canvas.drawLine(100f, 1004f, 900f, 1004f, sepPaint)
+            canvas.drawLine(100f, 1066f, 900f, 1066f, sepPaint)
 
             // Employee Key-Value Detail Table Below Separator
             val labelPaint = Paint().apply {
@@ -272,8 +281,8 @@ object PhotoUtils {
             }
             val leftColX = 140f
             val valColX = 450f
-            var rowY = 1052f
-            val rowSpacing = 46f
+            var rowY = 1106f
+            val rowSpacing = 40f
 
             // EMP ID
             canvas.drawText("EMP ID:", leftColX, rowY, labelPaint)
@@ -304,7 +313,7 @@ object PhotoUtils {
                 color = Color.parseColor("#E2E8F0")
                 strokeWidth = 2.5f
             }
-            canvas.drawLine(100f, 1280f, 900f, 1280f, footerDividerPaint)
+            canvas.drawLine(100f, 1308f, 900f, 1308f, footerDividerPaint)
 
             val footerSubPaint = Paint().apply {
                 isAntiAlias = true
@@ -314,7 +323,7 @@ object PhotoUtils {
                 isFakeBoldText = true
                 textAlign = Paint.Align.CENTER
             }
-            canvas.drawText("AUTHORIZED CHANNEL PARTNER & LOGISTICS HUB", width / 2f, 1324f, footerSubPaint)
+            canvas.drawText("AUTHORIZED CHANNEL PARTNER & LOGISTICS HUB", width / 2f, 1344f, footerSubPaint)
 
             // Prominent Bottom Brand matching user request: "Hariom Enterprises" in bold red
             val bottomBrandPaint = Paint().apply {
@@ -325,7 +334,7 @@ object PhotoUtils {
                 isFakeBoldText = true
                 textAlign = Paint.Align.CENTER
             }
-            canvas.drawText(card.branchName.ifBlank { "Hariom Enterprises" }, width / 2f, 1410f, bottomBrandPaint)
+            canvas.drawText(card.branchName.ifBlank { "Hariom Enterprises" }, width / 2f, 1420f, bottomBrandPaint)
 
             // Bottom Navy Accent Bar with rounded corners
             val bottomBarPaint = Paint().apply {
@@ -388,9 +397,8 @@ object PhotoUtils {
                     drawW = maxW
                     drawH = drawW / aspect
                 }
-                // DTDC logo big and right-aligned
-                val rightMargin = 35f
-                val left = width - rightMargin - drawW
+                // DTDC logo big and center-aligned
+                val left = (width - drawW) / 2f
                 val top = 76f + (185f - drawH) / 2f
                 val logoRect = RectF(left, top, left + drawW, top + drawH)
                 canvas.drawBitmap(logoBmp, null, logoRect, null)
