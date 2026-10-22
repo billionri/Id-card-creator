@@ -23,6 +23,7 @@ import androidx.compose.material.icons.filled.Badge
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Download
+import androidx.compose.material.icons.filled.Print
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Share
@@ -242,6 +243,7 @@ fun SavedCardsScreen(
                             },
                             onDelete = { cardPendingDelete = cardItem },
                             onDownload = { PhotoUtils.saveCardToGallery(context, cardItem, isFront = true) },
+                            onPrint = { PhotoUtils.printCard(context, cardItem, isFront = true) },
                             onShare = { PhotoUtils.shareCard(context, cardItem, isFront = true) }
                         )
                     }
@@ -319,6 +321,7 @@ private fun SavedCardRow(
     onRegenerate: () -> Unit,
     onDelete: () -> Unit,
     onDownload: () -> Unit,
+    onPrint: () -> Unit,
     onShare: () -> Unit
 ) {
     Card(
@@ -395,7 +398,7 @@ private fun SavedCardRow(
 
             Spacer(modifier = Modifier.height(12.dp))
 
-            // Action Buttons: Regenerate/Edit, Download, Share, Delete
+            // Action Buttons: Regenerate/Edit, Download, Print (Fit to Page), Share, Delete
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -411,10 +414,13 @@ private fun SavedCardRow(
                 }
 
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    IconButton(onClick = onDownload) {
+                    IconButton(onClick = onPrint, modifier = Modifier.testTag("print_saved_card_${card.id}")) {
+                        Icon(imageVector = Icons.Default.Print, contentDescription = "Print Card (Fit to Page)", tint = DtdcNavy)
+                    }
+                    IconButton(onClick = onDownload, modifier = Modifier.testTag("download_saved_card_${card.id}")) {
                         Icon(imageVector = Icons.Default.Download, contentDescription = "Download Card", tint = DtdcNavy)
                     }
-                    IconButton(onClick = onShare) {
+                    IconButton(onClick = onShare, modifier = Modifier.testTag("share_saved_card_${card.id}")) {
                         Icon(imageVector = Icons.Default.Share, contentDescription = "Share Card", tint = DtdcNavy)
                     }
                     OutlinedButton(

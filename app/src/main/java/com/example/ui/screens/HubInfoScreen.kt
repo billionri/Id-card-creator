@@ -12,11 +12,14 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Badge
 import androidx.compose.material.icons.filled.Business
@@ -247,6 +250,112 @@ fun HubInfoScreen(modifier: Modifier = Modifier) {
                         style = MaterialTheme.typography.bodySmall,
                         color = Color(0xFF166534)
                     )
+                }
+            }
+        }
+
+        Spacer(modifier = Modifier.height(18.dp))
+
+        // Official Android App Launcher Icon Preview
+        Text(
+            text = "Official App Icon (Active on Device)",
+            style = MaterialTheme.typography.titleMedium,
+            fontWeight = FontWeight.Bold,
+            color = DtdcNavy
+        )
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        Card(
+            shape = RoundedCornerShape(14.dp),
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+            elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Column(
+                modifier = Modifier.padding(16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceEvenly,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    // Adaptive Rounded Square Preview
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Box(
+                            modifier = Modifier
+                                .size(76.dp)
+                                .shadow(4.dp, RoundedCornerShape(18.dp))
+                                .background(Color.White, RoundedCornerShape(18.dp))
+                                .border(1.dp, Color(0xFFE2E8F0), RoundedCornerShape(18.dp))
+                                .padding(10.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Image(
+                                painter = painterResource(id = R.drawable.ic_dtdc_app_icon),
+                                contentDescription = "Adaptive App Icon",
+                                modifier = Modifier.fillMaxSize()
+                            )
+                        }
+                        Spacer(modifier = Modifier.height(6.dp))
+                        Text(
+                            text = "Adaptive Icon",
+                            fontSize = 11.5.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = DtdcNavy
+                        )
+                    }
+
+                    // Circular Launcher Icon Preview
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Box(
+                            modifier = Modifier
+                                .size(76.dp)
+                                .shadow(4.dp, CircleShape)
+                                .background(Color.White, CircleShape)
+                                .border(1.dp, Color(0xFFE2E8F0), CircleShape)
+                                .clip(CircleShape)
+                                .padding(10.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Image(
+                                painter = painterResource(id = R.drawable.ic_dtdc_app_icon),
+                                contentDescription = "Round App Icon",
+                                modifier = Modifier.fillMaxSize()
+                            )
+                        }
+                        Spacer(modifier = Modifier.height(6.dp))
+                        Text(
+                            text = "Round Icon",
+                            fontSize = 11.5.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = DtdcNavy
+                        )
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(14.dp))
+
+                Surface(
+                    color = Color(0xFFF1F5F9),
+                    shape = RoundedCornerShape(8.dp),
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Column(modifier = Modifier.padding(10.dp)) {
+                        Text(
+                            text = "Launcher Label: Hariom ID Card",
+                            fontSize = 12.5.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = Color(0xFF0F172A)
+                        )
+                        Spacer(modifier = Modifier.height(2.dp))
+                        Text(
+                            text = "This official DTDC brand emblem is active as the Android home screen launcher icon and application drawer tile on your device.",
+                            fontSize = 11.5.sp,
+                            color = Color(0xFF475569)
+                        )
+                    }
                 }
             }
         }

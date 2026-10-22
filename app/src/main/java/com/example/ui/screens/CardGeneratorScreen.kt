@@ -18,10 +18,15 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.painterResource
+import com.example.R
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddPhotoAlternate
 import androidx.compose.material.icons.filled.AutoAwesome
@@ -32,6 +37,7 @@ import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Download
 import androidx.compose.material.icons.filled.FolderShared
 import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.Print
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Save
 import androidx.compose.material.icons.filled.Search
@@ -134,11 +140,13 @@ fun CardGeneratorScreen(
             CenterAlignedTopAppBar(
                 title = {
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        Icon(
-                            imageVector = Icons.Default.Badge,
-                            contentDescription = "App Icon",
-                            tint = Color.White,
-                            modifier = Modifier.size(24.dp)
+                        Image(
+                            painter = painterResource(id = R.drawable.ic_dtdc_app_icon),
+                            contentDescription = "Official App Icon",
+                            modifier = Modifier
+                                .size(28.dp)
+                                .clip(CircleShape)
+                                .border(1.dp, Color.White.copy(alpha = 0.5f), CircleShape)
                         )
                         Spacer(modifier = Modifier.width(8.dp))
                         Text(
@@ -191,7 +199,153 @@ fun CardGeneratorScreen(
                 .verticalScroll(scrollState)
                 .padding(bottom = 32.dp)
         ) {
+            Spacer(modifier = Modifier.height(10.dp))
+
+            // ID Card Live Preview Section Header (Positioned at top to utilize full page immediately)
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 14.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Icon(
+                        imageVector = Icons.Default.Badge,
+                        contentDescription = null,
+                        tint = DtdcNavy,
+                        modifier = Modifier.size(22.dp)
+                    )
+                    Spacer(modifier = Modifier.width(6.dp))
+                    Text(
+                        text = "Official Badge Preview (Fit to Page)",
+                        style = MaterialTheme.typography.titleMedium,
+                        fontSize = 17.5.sp,
+                        fontWeight = FontWeight.Black,
+                        color = DtdcNavy
+                    )
+                }
+
+                // Lanyard Toggle
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text(
+                        text = "Lanyard",
+                        fontSize = 13.5.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                    Spacer(modifier = Modifier.width(4.dp))
+                    Switch(
+                        checked = uiState.showLanyard,
+                        onCheckedChange = { viewModel.toggleLanyard() },
+                        modifier = Modifier.testTag("lanyard_toggle_switch")
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            // Interactive 3D Card - Front & Back (occupies entire page width)
+            InteractiveIdCard(
+                card = card,
+                photoBitmap = uiState.activePhotoBitmap,
+                isFlipped = uiState.isFlipped,
+                showLanyard = uiState.showLanyard,
+                onFlipClick = { viewModel.toggleCardFlip() }
+            )
+
             Spacer(modifier = Modifier.height(14.dp))
+
+            // Export & Print Action Bar (Responsive Fit to Page & Save)
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 14.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                // Primary Action: Print (Fit to Page) & Download High-Res Badge
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    Button(
+                        onClick = {
+                            PhotoUtils.printCard(context, card, isFront = !uiState.isFlipped)
+                        },
+                        modifier = Modifier
+                            .weight(1.2f)
+                            .testTag("print_card_button"),
+                        colors = ButtonDefaults.buttonColors(containerColor = DtdcNavy)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Print,
+                            contentDescription = "Print Card",
+                            modifier = Modifier.size(18.dp)
+                        )
+                        Spacer(modifier = Modifier.width(6.dp))
+                        Text("Print (Fit to Page)", fontSize = 14.sp, fontWeight = FontWeight.Bold)
+                    }
+
+                    OutlinedButton(
+                        onClick = {
+                            PhotoUtils.saveCardToGallery(context, card, isFront = !uiState.isFlipped)
+                        },
+                        modifier = Modifier
+                            .weight(1f)
+                            .testTag("download_card_button")
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Download,
+                            contentDescription = "Download",
+                            modifier = Modifier.size(18.dp)
+                        )
+                        Spacer(modifier = Modifier.width(4.dp))
+                        Text("Download", fontSize = 13.5.sp, fontWeight = FontWeight.Bold)
+                    }
+                }
+
+                // Secondary Action: Save to Local Database & Share Badge
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    OutlinedButton(
+                        onClick = { viewModel.saveCurrentCard() },
+                        modifier = Modifier
+                            .weight(1f)
+                            .testTag("save_card_button")
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Save,
+                            contentDescription = "Save Employee",
+                            modifier = Modifier.size(18.dp),
+                            tint = DtdcNavy
+                        )
+                        Spacer(modifier = Modifier.width(4.dp))
+                        Text("Save Record", fontSize = 13.5.sp, fontWeight = FontWeight.Bold, color = DtdcNavy)
+                    }
+
+                    OutlinedButton(
+                        onClick = {
+                            PhotoUtils.shareCard(context, card, isFront = !uiState.isFlipped)
+                        },
+                        modifier = Modifier
+                            .weight(1f)
+                            .testTag("share_card_button")
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Share,
+                            contentDescription = "Share Badge",
+                            modifier = Modifier.size(18.dp),
+                            tint = DtdcNavy
+                        )
+                        Spacer(modifier = Modifier.width(4.dp))
+                        Text("Share Badge", fontSize = 13.5.sp, fontWeight = FontWeight.Bold, color = DtdcNavy)
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.height(18.dp))
 
             // Quick EMP ID Lookup & Manage Employee Card (Details, Regenerate, Delete)
             Card(
@@ -496,118 +650,11 @@ fun CardGeneratorScreen(
                                     fontWeight = FontWeight.SemiBold
                                 )
                             }
-                        }
                     }
                 }
             }
 
-            Spacer(modifier = Modifier.height(18.dp))
-
-            // ID Card Live Preview Section Header
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 18.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Text(
-                    text = "Live Official Badge Preview",
-                    style = MaterialTheme.typography.titleMedium,
-                    fontSize = 19.sp,
-                    fontWeight = FontWeight.Black,
-                    color = DtdcNavy
-                )
-
-                // Lanyard Toggle
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text(
-                        text = "Lanyard",
-                        fontSize = 14.sp,
-                        fontWeight = FontWeight.SemiBold,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                    Spacer(modifier = Modifier.width(4.dp))
-                    Switch(
-                        checked = uiState.showLanyard,
-                        onCheckedChange = { viewModel.toggleLanyard() },
-                        modifier = Modifier.testTag("lanyard_toggle_switch")
-                    )
-                }
-            }
-
-            Spacer(modifier = Modifier.height(10.dp))
-
-            // Interactive 3D Card
-            InteractiveIdCard(
-                card = card,
-                photoBitmap = uiState.activePhotoBitmap,
-                isFlipped = uiState.isFlipped,
-                showLanyard = uiState.showLanyard,
-                onFlipClick = { viewModel.toggleCardFlip() }
-            )
-
-            Spacer(modifier = Modifier.height(14.dp))
-
-            // Export & Save Action Bar
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 14.dp),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                Button(
-                    onClick = { viewModel.saveCurrentCard() },
-                    modifier = Modifier
-                        .weight(1f)
-                        .testTag("save_card_button"),
-                    colors = ButtonDefaults.buttonColors(containerColor = DtdcNavy)
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Save,
-                        contentDescription = "Save",
-                        modifier = Modifier.size(18.dp)
-                    )
-                    Spacer(modifier = Modifier.width(4.dp))
-                    Text("Save", fontSize = 15.sp, fontWeight = FontWeight.Bold)
-                }
-
-                OutlinedButton(
-                    onClick = {
-                        PhotoUtils.saveCardToGallery(context, card, isFront = !uiState.isFlipped)
-                    },
-                    modifier = Modifier
-                        .weight(1f)
-                        .testTag("download_card_button")
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Download,
-                        contentDescription = "Download",
-                        modifier = Modifier.size(18.dp)
-                    )
-                    Spacer(modifier = Modifier.width(4.dp))
-                    Text("Export", fontSize = 15.sp, fontWeight = FontWeight.Bold)
-                }
-
-                OutlinedButton(
-                    onClick = {
-                        PhotoUtils.shareCard(context, card, isFront = !uiState.isFlipped)
-                    },
-                    modifier = Modifier
-                        .weight(1f)
-                        .testTag("share_card_button")
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Share,
-                        contentDescription = "Share",
-                        modifier = Modifier.size(18.dp)
-                    )
-                    Spacer(modifier = Modifier.width(4.dp))
-                    Text("Share", fontSize = 15.sp, fontWeight = FontWeight.Bold)
-                }
-            }
-
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
             // Employee Details Customizer Form
             Card(
@@ -880,3 +927,5 @@ fun CardGeneratorScreen(
         )
     }
 }
+}
+
