@@ -331,15 +331,15 @@ fun IdCardFront(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    // CENTERED PASSPORT PHOTO - BIGGER & FILL with Security Framing, Hologram, and AI Badge
+                    // CENTERED PASSPORT PHOTO - EVEN BIGGER & FILL with Security Framing, Hologram, and AI Badge
                     Box(
                         modifier = Modifier
-                            .width((120 * minScale).dp)
-                            .height((138 * minScale).dp)
-                            .shadow(elevation = (3 * minScale).dp, shape = RoundedCornerShape((8 * minScale).dp))
-                            .clip(RoundedCornerShape((8 * minScale).dp))
+                            .width((142 * minScale).dp)
+                            .height((164 * minScale).dp)
+                            .shadow(elevation = (4 * minScale).dp, shape = RoundedCornerShape((9 * minScale).dp))
+                            .clip(RoundedCornerShape((9 * minScale).dp))
                             .background(Color(0xFFE2E8F0))
-                            .border((1.5 * minScale).dp, DtdcNavy, RoundedCornerShape((8 * minScale).dp)),
+                            .border((1.8 * minScale).dp, DtdcNavy, RoundedCornerShape((9 * minScale).dp)),
                         contentAlignment = Alignment.Center
                     ) {
                         if (photoBitmap != null) {
@@ -365,11 +365,11 @@ fun IdCardFront(
                                     imageVector = Icons.Default.Person,
                                     contentDescription = "No Photo",
                                     tint = Color(0xFF94A3B8),
-                                    modifier = Modifier.size((52 * minScale).dp)
+                                    modifier = Modifier.size((62 * minScale).dp)
                                 )
                                 Text(
                                     text = "PASSPORT PHOTO",
-                                    fontSize = (9 * minScale).sp,
+                                    fontSize = (9.5 * minScale).sp,
                                     color = Color(0xFF64748B),
                                     fontWeight = FontWeight.Bold
                                 )
@@ -381,7 +381,7 @@ fun IdCardFront(
                             modifier = Modifier
                                 .align(Alignment.TopEnd)
                                 .offset(x = (2 * minScale).dp, y = ((-2) * minScale).dp)
-                                .size((34 * minScale).dp)
+                                .size((38 * minScale).dp)
                                 .clip(CircleShape)
                         ) {
                             Image(
@@ -398,15 +398,15 @@ fun IdCardFront(
                                 verticalAlignment = Alignment.CenterVertically,
                                 modifier = Modifier
                                     .align(Alignment.BottomStart)
-                                    .padding((2.5 * minScale).dp)
-                                    .background(SecurityGreen, shape = RoundedCornerShape((3 * minScale).dp))
-                                    .padding(horizontal = (3.5 * minScale).dp, vertical = (1.5 * minScale).dp)
+                                    .padding((3 * minScale).dp)
+                                    .background(SecurityGreen, shape = RoundedCornerShape((3.5 * minScale).dp))
+                                    .padding(horizontal = (4 * minScale).dp, vertical = (1.6 * minScale).dp)
                             ) {
                                 Icon(
                                     imageVector = Icons.Default.CheckCircle,
                                     contentDescription = "Verified",
                                     tint = Color.White,
-                                    modifier = Modifier.size((8 * minScale).dp)
+                                    modifier = Modifier.size((8.5 * minScale).dp)
                                 )
                                 Spacer(modifier = Modifier.width((2 * minScale).dp))
                                 Text(
@@ -421,17 +421,17 @@ fun IdCardFront(
 
                     Spacer(modifier = Modifier.height((2 * minScale).dp))
 
-                    // Employee Full Name Centered
+                    // Employee Full Name Centered - refined, less bold
                     Text(
                         text = card.fullName.ifBlank { "Rashid Alam" },
                         color = DtdcNavy,
                         fontFamily = DtdcBrandFontFamily,
                         fontSize = (15.5 * minScale).sp,
-                        fontWeight = FontWeight.Black,
-                        letterSpacing = 0.3.sp
+                        fontWeight = FontWeight.Bold,
+                        letterSpacing = 0.2.sp
                     )
 
-                    // Centered Designation Pill
+                    // Centered Designation Pill - refined, less bold
                     Box(
                         modifier = Modifier
                             .padding(top = (1 * minScale).dp)
@@ -443,7 +443,7 @@ fun IdCardFront(
                             color = Color.White,
                             fontFamily = DtdcBrandFontFamily,
                             fontSize = (8.5 * minScale).sp,
-                            fontWeight = FontWeight.Black
+                            fontWeight = FontWeight.Bold
                         )
                     }
 
@@ -549,15 +549,15 @@ private fun DetailRow(
                 color = if (isEmergency) DtdcRed else DtdcNavy,
                 fontFamily = DtdcBrandFontFamily,
                 fontSize = (11.5 * scale).sp,
-                fontWeight = FontWeight.Black,
+                fontWeight = FontWeight.Bold,
                 modifier = Modifier.width((84 * scale).dp)
             )
             Text(
                 text = value,
-                color = if (isEmergency) DtdcRed else Color(0xFF0F172A),
-                fontFamily = DtdcBrandFontFamily,
+                color = if (isEmergency) DtdcRed else Color(0xFF1E293B),
+                fontFamily = DtdcCorporateFontFamily,
                 fontSize = (11.5 * scale).sp,
-                fontWeight = FontWeight.Black,
+                fontWeight = FontWeight.SemiBold,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
                 modifier = Modifier.weight(1f)
