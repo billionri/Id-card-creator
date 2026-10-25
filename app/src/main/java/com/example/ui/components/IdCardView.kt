@@ -218,128 +218,76 @@ fun IdCardFront(
             val minScale = minOf(scale, hScale)
 
             Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(bottom = (3 * minScale).dp),
+                modifier = Modifier.fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.SpaceBetween
             ) {
-                // Header: Prominent, visible header with MUCH BIGGER DTDC logo & rich corporate ribbon
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height((105 * minScale).dp)
-                        .background(Color.White)
+                // TOP HEADER: DTDC Official Logo + Dark Navy Partner Banner + Red Stripe
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Column(
+                    // White logo container
+                    Box(
                         modifier = Modifier
-                            .fillMaxSize()
-                            .padding(horizontal = (6 * minScale).dp, vertical = (2 * minScale).dp),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.SpaceBetween
+                            .fillMaxWidth()
+                            .height((56 * minScale).dp)
+                            .padding(horizontal = (12 * minScale).dp, vertical = (4 * minScale).dp),
+                        contentAlignment = Alignment.Center
                     ) {
-                        // Top Corporate Title: DTDC Private Limited (Black) Cargo (Red)
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.Center,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(top = (1 * minScale).dp)
-                        ) {
-                            Text(
-                                text = "DTDC Private Limited ",
-                                color = Color(0xFF0F172A),
-                                fontFamily = DtdcBrandFontFamily,
-                                fontSize = (14 * minScale).sp,
-                                fontWeight = FontWeight.Black,
-                                letterSpacing = (0.3 * minScale).sp
-                            )
-                            Text(
-                                text = "Cargo",
-                                color = DtdcRed,
-                                fontFamily = DtdcBrandFontFamily,
-                                fontSize = (14 * minScale).sp,
-                                fontWeight = FontWeight.Black,
-                                letterSpacing = (0.3 * minScale).sp
-                            )
-                        }
-
-                        // DTDC Logo: MUCH BIGGER, PROMINENT, SHARP and CENTER-ALIGNED
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height((58 * minScale).dp),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Image(
-                                painter = painterResource(id = R.drawable.ic_dtdc_logo),
-                                contentDescription = "DTDC Official Brand Logo",
-                                contentScale = ContentScale.Fit,
-                                modifier = Modifier
-                                    .fillMaxWidth(0.96f)
-                                    .height((58 * minScale).dp)
-                            )
-                        }
-
-                        // Header Ribbon: Matching header theme (Solid Navy with Gold & White typography)
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.Center,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .background(DtdcNavy, shape = RoundedCornerShape((3 * minScale).dp))
-                                .padding(horizontal = (5 * minScale).dp, vertical = (2 * minScale).dp)
-                        ) {
-                            Text(
-                                text = "AUTH. CHANNEL PARTNER: ",
-                                color = Color(0xFFE2E8F0),
-                                fontFamily = DtdcBrandFontFamily,
-                                fontSize = (9 * minScale).sp,
-                                fontWeight = FontWeight.Bold,
-                                letterSpacing = 0.2.sp
-                            )
-                            Text(
-                                text = card.branchName.uppercase(),
-                                color = DtdcGold,
-                                fontFamily = DtdcBrandFontFamily,
-                                fontSize = (12 * minScale).sp,
-                                fontWeight = FontWeight.Black,
-                                letterSpacing = (0.4 * minScale).sp
-                            )
-                            Text(
-                                text = " • ${card.branchId}",
-                                color = Color(0xFFE2E8F0),
-                                fontFamily = DtdcBrandFontFamily,
-                                fontSize = (9 * minScale).sp,
-                                fontWeight = FontWeight.Bold
-                            )
-                        }
+                        Image(
+                            painter = painterResource(id = R.drawable.ic_dtdc_logo),
+                            contentDescription = "DTDC Official Brand Logo",
+                            contentScale = ContentScale.Fit,
+                            modifier = Modifier.fillMaxSize()
+                        )
                     }
 
-                    // Bottom Red Chevron Line
+                    // Dark Navy Banner: AUTH. CHANNEL PARTNER: HARIOM ENTERPRISES
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(DtdcNavy)
+                            .padding(vertical = (4.5 * minScale).dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = "AUTH. CHANNEL PARTNER: ${card.branchName.uppercase()}",
+                            color = DtdcGold,
+                            fontFamily = DtdcBrandFontFamily,
+                            fontSize = (10 * minScale).sp,
+                            fontWeight = FontWeight.Black,
+                            letterSpacing = (0.5 * minScale).sp
+                        )
+                    }
+
+                    // Red Accent Stripe
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
                             .height((3 * minScale).dp)
                             .background(DtdcRed)
-                            .align(Alignment.BottomCenter)
                     )
                 }
 
-                // Center section: Photo, Name, Designation, Department, Table (Utilising entire available space)
+                // CENTER CONTENT: Photo, Name, Designation Capsule, Department, 2-Column Detail Grid
                 Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = (16 * minScale).dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    // CENTERED PASSPORT PHOTO - EVEN BIGGER & FILL with Security Framing, Hologram, and AI Badge
+                    Spacer(modifier = Modifier.height((5 * minScale).dp))
+
+                    // Centered Employee Photo with Dark Navy Rounded Border
                     Box(
                         modifier = Modifier
                             .width((142 * minScale).dp)
-                            .height((164 * minScale).dp)
-                            .shadow(elevation = (4 * minScale).dp, shape = RoundedCornerShape((9 * minScale).dp))
-                            .clip(RoundedCornerShape((9 * minScale).dp))
+                            .height((170 * minScale).dp)
+                            .shadow(elevation = (3 * minScale).dp, shape = RoundedCornerShape((10 * minScale).dp))
+                            .clip(RoundedCornerShape((10 * minScale).dp))
                             .background(Color(0xFFE2E8F0))
-                            .border((1.8 * minScale).dp, DtdcNavy, RoundedCornerShape((9 * minScale).dp)),
+                            .border((2.2 * minScale).dp, DtdcNavy, RoundedCornerShape((10 * minScale).dp)),
                         contentAlignment = Alignment.Center
                     ) {
                         if (photoBitmap != null) {
@@ -365,7 +313,7 @@ fun IdCardFront(
                                     imageVector = Icons.Default.Person,
                                     contentDescription = "No Photo",
                                     tint = Color(0xFF94A3B8),
-                                    modifier = Modifier.size((62 * minScale).dp)
+                                    modifier = Modifier.size((60 * minScale).dp)
                                 )
                                 Text(
                                     text = "PASSPORT PHOTO",
@@ -375,154 +323,168 @@ fun IdCardFront(
                                 )
                             }
                         }
-
-                        // Holographic Seal Overlay in top-right corner
-                        Box(
-                            modifier = Modifier
-                                .align(Alignment.TopEnd)
-                                .offset(x = (2 * minScale).dp, y = ((-2) * minScale).dp)
-                                .size((38 * minScale).dp)
-                                .clip(CircleShape)
-                        ) {
-                            Image(
-                                painter = painterResource(id = R.drawable.ic_hologram_badge),
-                                contentDescription = "Security Hologram",
-                                contentScale = ContentScale.Crop,
-                                modifier = Modifier.fillMaxSize()
-                            )
-                        }
-
-                        // AI Verified Badge in bottom-left
-                        if (card.aiVerified) {
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically,
-                                modifier = Modifier
-                                    .align(Alignment.BottomStart)
-                                    .padding((3 * minScale).dp)
-                                    .background(SecurityGreen, shape = RoundedCornerShape((3.5 * minScale).dp))
-                                    .padding(horizontal = (4 * minScale).dp, vertical = (1.6 * minScale).dp)
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Default.CheckCircle,
-                                    contentDescription = "Verified",
-                                    tint = Color.White,
-                                    modifier = Modifier.size((8.5 * minScale).dp)
-                                )
-                                Spacer(modifier = Modifier.width((2 * minScale).dp))
-                                Text(
-                                    text = "AI PASS",
-                                    color = Color.White,
-                                    fontSize = (7.5 * minScale).sp,
-                                    fontWeight = FontWeight.Bold
-                                )
-                            }
-                        }
                     }
 
-                    Spacer(modifier = Modifier.height((2 * minScale).dp))
+                    Spacer(modifier = Modifier.height((6 * minScale).dp))
 
-                    // Employee Full Name Centered - refined, less bold
+                    // Employee Full Name Centered in Dark Navy
                     Text(
                         text = card.fullName.ifBlank { "Rashid Alam" },
                         color = DtdcNavy,
                         fontFamily = DtdcBrandFontFamily,
-                        fontSize = (15.5 * minScale).sp,
-                        fontWeight = FontWeight.Bold,
-                        letterSpacing = 0.2.sp
+                        fontSize = (18 * minScale).sp,
+                        fontWeight = FontWeight.Black,
+                        letterSpacing = (0.2 * minScale).sp
                     )
 
-                    // Centered Designation Pill - refined, less bold
+                    Spacer(modifier = Modifier.height((4 * minScale).dp))
+
+                    // Red Designation Capsule Pill
                     Box(
                         modifier = Modifier
-                            .padding(top = (1 * minScale).dp)
-                            .background(DtdcRed, shape = RoundedCornerShape((6 * minScale).dp))
-                            .padding(horizontal = (7 * minScale).dp, vertical = (1.2 * minScale).dp)
+                            .background(DtdcRed, shape = RoundedCornerShape((14 * minScale).dp))
+                            .padding(horizontal = (18 * minScale).dp, vertical = (3.5 * minScale).dp)
                     ) {
                         Text(
                             text = card.designation.uppercase().ifBlank { "DELIVERY ASSOCIATE" },
                             color = Color.White,
                             fontFamily = DtdcBrandFontFamily,
-                            fontSize = (8.5 * minScale).sp,
-                            fontWeight = FontWeight.Bold
+                            fontSize = (9.5 * minScale).sp,
+                            fontWeight = FontWeight.Black,
+                            letterSpacing = (0.4 * minScale).sp
                         )
                     }
 
-                    // Department
+                    Spacer(modifier = Modifier.height((3 * minScale).dp))
+
+                    // Department Subtitle
                     Text(
-                        text = card.department.ifBlank { "Express Logistics & Dispatch" },
-                        color = Color(0xFF64748B),
-                        fontFamily = DtdcCorporateFontFamily,
-                        fontSize = (8 * minScale).sp,
-                        fontWeight = FontWeight.SemiBold,
-                        modifier = Modifier.padding(top = (0.5 * minScale).dp)
+                        text = card.department.ifBlank { "Hub Dispatch Operations" },
+                        color = Color(0xFF1E293B),
+                        fontFamily = DtdcBrandFontFamily,
+                        fontSize = (11 * minScale).sp,
+                        fontWeight = FontWeight.Bold
                     )
 
-                    Spacer(modifier = Modifier.height((2 * minScale).dp))
+                    Spacer(modifier = Modifier.height((8 * minScale).dp))
 
-                    // Accent Separator Line
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth(0.90f)
-                            .height((0.8 * minScale).dp)
-                            .background(Color(0xFFE2E8F0))
-                    )
-
-                    Spacer(modifier = Modifier.height((1.5 * minScale).dp))
-
-                    // EMPLOYEE DETAILS TABLE BELOW SEPARATOR
-                    Column(
+                    // 2-COLUMN KEY-VALUE GRID (Exact match to reference image!)
+                    Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(horizontal = (12 * minScale).dp)
+                            .padding(horizontal = (12 * minScale).dp),
+                        horizontalArrangement = Arrangement.SpaceBetween
                     ) {
-                        DetailRow(label = "EMP ID", value = card.employeeCode, scale = minScale)
-                        DetailRow(label = "CONTACT", value = card.phoneNumber, scale = minScale)
-                        DetailRow(label = "BLOOD GRP", value = card.bloodGroup, scale = minScale)
-                        DetailRow(label = "BRANCH ID", value = card.branchId, scale = minScale)
-                        DetailRow(label = "VALID TILL", value = card.validTill, showDivider = false, scale = minScale)
+                        // Left Column: EMP ID and CONTACT
+                        Column(
+                            horizontalAlignment = Alignment.Start,
+                            modifier = Modifier.weight(1f)
+                        ) {
+                            Text(
+                                text = "EMP ID:",
+                                color = Color(0xFF475569),
+                                fontFamily = DtdcBrandFontFamily,
+                                fontSize = (9.5 * minScale).sp,
+                                fontWeight = FontWeight.Bold
+                            )
+                            Text(
+                                text = card.employeeCode.ifBlank { "DTDC/HE/2024/1609" },
+                                color = Color(0xFF0F172A),
+                                fontFamily = DtdcBrandFontFamily,
+                                fontSize = (12.5 * minScale).sp,
+                                fontWeight = FontWeight.Black,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis
+                            )
+
+                            Spacer(modifier = Modifier.height((6 * minScale).dp))
+
+                            Text(
+                                text = "CONTACT:",
+                                color = Color(0xFF475569),
+                                fontFamily = DtdcBrandFontFamily,
+                                fontSize = (9.5 * minScale).sp,
+                                fontWeight = FontWeight.Bold
+                            )
+                            Text(
+                                text = card.phoneNumber.ifBlank { "8655707563" },
+                                color = Color(0xFF0F172A),
+                                fontFamily = DtdcBrandFontFamily,
+                                fontSize = (12.5 * minScale).sp,
+                                fontWeight = FontWeight.Black,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis
+                            )
+                        }
+
+                        Spacer(modifier = Modifier.width((8 * minScale).dp))
+
+                        // Right Column: BLOOD GRP and VALID TILL
+                        Column(
+                            horizontalAlignment = Alignment.Start,
+                            modifier = Modifier.weight(0.9f)
+                        ) {
+                            Text(
+                                text = "BLOOD GRP:",
+                                color = Color(0xFF475569),
+                                fontFamily = DtdcBrandFontFamily,
+                                fontSize = (9.5 * minScale).sp,
+                                fontWeight = FontWeight.Bold
+                            )
+                            Text(
+                                text = card.bloodGroup.ifBlank { "B+" },
+                                color = Color(0xFF0F172A),
+                                fontFamily = DtdcBrandFontFamily,
+                                fontSize = (12.5 * minScale).sp,
+                                fontWeight = FontWeight.Black
+                            )
+
+                            Spacer(modifier = Modifier.height((6 * minScale).dp))
+
+                            Text(
+                                text = "VALID TILL:",
+                                color = Color(0xFF475569),
+                                fontFamily = DtdcBrandFontFamily,
+                                fontSize = (9.5 * minScale).sp,
+                                fontWeight = FontWeight.Bold
+                            )
+                            Text(
+                                text = card.validTill.ifBlank { "31 Dec 2027" },
+                                color = Color(0xFF0F172A),
+                                fontFamily = DtdcBrandFontFamily,
+                                fontSize = (12.5 * minScale).sp,
+                                fontWeight = FontWeight.Black
+                            )
+                        }
                     }
                 }
 
-                // DEDICATED PROMINENT FOOTER FOR HARIOM ENTERPRISES
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier.fillMaxWidth()
+                // SOLID DARK NAVY FOOTER (Edge-to-edge as in reference image)
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(DtdcNavy)
+                        .padding(vertical = (6 * minScale).dp),
+                    contentAlignment = Alignment.Center
                 ) {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth(0.92f)
-                            .height((0.8 * minScale).dp)
-                            .background(Color(0xFFE2E8F0))
-                    )
-                    Spacer(modifier = Modifier.height((1.5 * minScale).dp))
-
-                    Text(
-                        text = "AUTHORIZED CHANNEL PARTNER & LOGISTICS HUB",
-                        color = DtdcNavy,
-                        fontFamily = DtdcBrandFontFamily,
-                        fontSize = (8 * minScale).sp,
-                        fontWeight = FontWeight.Bold,
-                        letterSpacing = 0.3.sp
-                    )
-
-                    // Prominent Bottom Brand Label in footer: "Hariom Enterprises" in bold red
-                    Text(
-                        text = card.branchName.ifBlank { "Hariom Enterprises" },
-                        color = DtdcRed,
-                        fontFamily = DtdcBrandFontFamily,
-                        fontSize = (18.5 * minScale).sp,
-                        fontWeight = FontWeight.Black,
-                        letterSpacing = 0.5.sp,
-                        modifier = Modifier.padding(vertical = (0.5 * minScale).dp)
-                    )
-
-                    // Bottom Navy Accent Bar with rounded corners matching the reference badge
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth(0.94f)
-                            .height((4 * minScale).dp)
-                            .background(DtdcNavy, shape = RoundedCornerShape((2 * minScale).dp))
-                    )
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Text(
+                            text = "AUTHORIZED IDENTITY BADGE • DTDC",
+                            color = Color.White,
+                            fontFamily = DtdcBrandFontFamily,
+                            fontSize = (10.5 * minScale).sp,
+                            fontWeight = FontWeight.Black,
+                            letterSpacing = (0.5 * minScale).sp
+                        )
+                        Spacer(modifier = Modifier.height((1 * minScale).dp))
+                        Text(
+                            text = "Branch: ${card.branchId.ifBlank { "DTDC-HE-4102" }} | ${card.branchName.ifBlank { "Hariom Enterprises" }}",
+                            color = DtdcGold,
+                            fontFamily = DtdcBrandFontFamily,
+                            fontSize = (9.5 * minScale).sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
                 }
             }
         }
@@ -595,96 +557,48 @@ fun IdCardBack(card: EmployeeIdCard) {
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.SpaceBetween
             ) {
-                // Header: Prominent header matching front side with MUCH BIGGER DTDC logo
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height((105 * minScale).dp)
-                        .background(Color.White)
+                // TOP HEADER: DTDC Official Logo + Dark Navy Banner + Red Stripe
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Column(
+                    Box(
                         modifier = Modifier
-                            .fillMaxSize()
-                            .padding(horizontal = (6 * minScale).dp, vertical = (2 * minScale).dp),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.SpaceBetween
+                            .fillMaxWidth()
+                            .height((56 * minScale).dp)
+                            .padding(horizontal = (12 * minScale).dp, vertical = (4 * minScale).dp),
+                        contentAlignment = Alignment.Center
                     ) {
-                        // Top Corporate Title: DTDC Private Limited (Black) Cargo (Red)
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.Center,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(top = (1 * minScale).dp)
-                        ) {
-                            Text(
-                                text = "DTDC Private Limited ",
-                                color = Color(0xFF0F172A),
-                                fontFamily = DtdcBrandFontFamily,
-                                fontSize = (14 * minScale).sp,
-                                fontWeight = FontWeight.Black,
-                                letterSpacing = (0.3 * minScale).sp
-                            )
-                            Text(
-                                text = "Cargo",
-                                color = DtdcRed,
-                                fontFamily = DtdcBrandFontFamily,
-                                fontSize = (14 * minScale).sp,
-                                fontWeight = FontWeight.Black,
-                                letterSpacing = (0.3 * minScale).sp
-                            )
-                        }
-
-                        // DTDC Logo: MUCH BIGGER, PROMINENT, SHARP and CENTER-ALIGNED
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height((58 * minScale).dp),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Image(
-                                painter = painterResource(id = R.drawable.ic_dtdc_logo),
-                                contentDescription = "DTDC Official Brand Logo",
-                                contentScale = ContentScale.Fit,
-                                modifier = Modifier
-                                    .fillMaxWidth(0.96f)
-                                    .height((58 * minScale).dp)
-                            )
-                        }
-
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.Center,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .background(DtdcNavy, shape = RoundedCornerShape((3 * minScale).dp))
-                                .padding(horizontal = (5 * minScale).dp, vertical = (2 * minScale).dp)
-                        ) {
-                            Text(
-                                text = "TERMS OF IDENTITY • ",
-                                color = Color(0xFFE2E8F0),
-                                fontFamily = DtdcBrandFontFamily,
-                                fontSize = (9 * minScale).sp,
-                                fontWeight = FontWeight.Bold
-                            )
-                            Text(
-                                text = card.branchName.uppercase(),
-                                color = DtdcGold,
-                                fontFamily = DtdcBrandFontFamily,
-                                fontSize = (12 * minScale).sp,
-                                fontWeight = FontWeight.Black,
-                                letterSpacing = (0.4 * minScale).sp
-                            )
-                        }
+                        Image(
+                            painter = painterResource(id = R.drawable.ic_dtdc_logo),
+                            contentDescription = "DTDC Official Brand Logo",
+                            contentScale = ContentScale.Fit,
+                            modifier = Modifier.fillMaxSize()
+                        )
                     }
 
-                    // Bottom Red Chevron Line
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(DtdcNavy)
+                            .padding(vertical = (4.5 * minScale).dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = "TERMS OF IDENTITY & CONSIGNMENT AUTHORITY",
+                            color = DtdcGold,
+                            fontFamily = DtdcBrandFontFamily,
+                            fontSize = (9 * minScale).sp,
+                            fontWeight = FontWeight.Black,
+                            letterSpacing = (0.4 * minScale).sp
+                        )
+                    }
+
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
                             .height((3 * minScale).dp)
                             .background(DtdcRed)
-                            .align(Alignment.BottomCenter)
                     )
                 }
 
@@ -838,6 +752,34 @@ fun IdCardBack(card: EmployeeIdCard) {
                             fontSize = (9.5 * minScale).sp,
                             fontWeight = FontWeight.Bold,
                             letterSpacing = (0.8 * minScale).sp
+                        )
+                    }
+                }
+
+                // SOLID DARK NAVY FOOTER (Edge-to-edge as in reference image)
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(DtdcNavy)
+                        .padding(vertical = (6 * minScale).dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Text(
+                            text = "AUTHORIZED IDENTITY BADGE • DTDC",
+                            color = Color.White,
+                            fontFamily = DtdcBrandFontFamily,
+                            fontSize = (10.5 * minScale).sp,
+                            fontWeight = FontWeight.Black,
+                            letterSpacing = (0.5 * minScale).sp
+                        )
+                        Spacer(modifier = Modifier.height((1 * minScale).dp))
+                        Text(
+                            text = "Branch: ${card.branchId.ifBlank { "DTDC-HE-4102" }} | ${card.branchName.ifBlank { "Hariom Enterprises" }}",
+                            color = DtdcGold,
+                            fontFamily = DtdcBrandFontFamily,
+                            fontSize = (9.5 * minScale).sp,
+                            fontWeight = FontWeight.Bold
                         )
                     }
                 }

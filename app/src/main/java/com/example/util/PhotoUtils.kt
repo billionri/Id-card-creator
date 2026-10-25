@@ -47,37 +47,11 @@ object PhotoUtils {
 
         if (isFront) {
             // FRONT SIDE: Pure White Background with Rounded Corners
+            // Pure White Card Background with Rounded Corners
+            bgPaint.color = Color.WHITE
             canvas.drawRoundRect(RectF(0f, 0f, width.toFloat(), height.toFloat()), 32f, 32f, bgPaint)
 
-            // Header Section: Prominent, fully visible header with enlarged DTDC logo
-            bgPaint.color = Color.WHITE
-            canvas.drawRect(0f, 0f, width.toFloat(), 340f, bgPaint)
-
-            // Top Corporate Title above Logo: "DTDC Private Limited" (black) + "Cargo" (red)
-            val titleTextBlack = "DTDC Private Limited "
-            val titleTextRed = "Cargo"
-            val titleBlackPaint = Paint().apply {
-                isAntiAlias = true
-                typeface = brandTypeface
-                color = Color.parseColor("#0F172A") // Black
-                textSize = 36f
-                isFakeBoldText = true
-                textAlign = Paint.Align.LEFT
-            }
-            val titleRedPaint = Paint().apply {
-                isAntiAlias = true
-                typeface = brandTypeface
-                color = Color.parseColor("#D32F2F") // Red
-                textSize = 36f
-                isFakeBoldText = true
-                textAlign = Paint.Align.LEFT
-            }
-
-            val totalTitleWidth = titleBlackPaint.measureText(titleTextBlack) + titleRedPaint.measureText(titleTextRed)
-            val titleStartX = (width - totalTitleWidth) / 2f
-            canvas.drawText(titleTextBlack, titleStartX, 64f, titleBlackPaint)
-            canvas.drawText(titleTextRed, titleStartX + titleBlackPaint.measureText(titleTextBlack), 64f, titleRedPaint)
-
+            // TOP HEADER: White section with DTDC Official Logo
             val logoBmp = try {
                 BitmapFactory.decodeResource(context.resources, R.drawable.ic_dtdc_logo)
             } catch (e: Exception) {
@@ -85,8 +59,8 @@ object PhotoUtils {
             }
 
             if (logoBmp != null) {
-                val maxW = width - 60f
-                val maxH = 185f
+                val maxW = width - 80f
+                val maxH = 175f
                 val aspect = logoBmp.width.toFloat() / logoBmp.height.toFloat()
                 var drawW = maxH * aspect
                 var drawH = maxH
@@ -94,65 +68,48 @@ object PhotoUtils {
                     drawW = maxW
                     drawH = drawW / aspect
                 }
-                // DTDC logo big and center-aligned
                 val left = (width - drawW) / 2f
-                val top = 76f + (185f - drawH) / 2f
+                val top = 36f + (175f - drawH) / 2f
                 val logoRect = RectF(left, top, left + drawW, top + drawH)
                 canvas.drawBitmap(logoBmp, null, logoRect, null)
             }
 
-            // Franchisee Partner Ribbon (Solid Navy with Gold & White Typography matching header)
-            bgPaint.color = Color.parseColor("#0A235C")
-            canvas.drawRect(0f, 268f, width.toFloat(), 332f, bgPaint)
-
-            val ribbonLabelPaint = Paint().apply {
+            // Dark Navy Horizontal Banner: AUTH. CHANNEL PARTNER: HARIOM ENTERPRISES
+            val navyPaint = Paint().apply {
                 isAntiAlias = true
-                color = Color.parseColor("#E2E8F0")
-                typeface = brandTypeface
-                textAlign = Paint.Align.LEFT
-                isFakeBoldText = true
-                textSize = 25f
+                color = Color.parseColor("#0A235C")
             }
-            val ribbonBranchPaint = Paint().apply {
+            canvas.drawRect(0f, 235f, width.toFloat(), 300f, navyPaint)
+
+            val partnerTextPaint = Paint().apply {
                 isAntiAlias = true
+                typeface = brandTypeface
                 color = Color.parseColor("#FFB300")
-                typeface = brandTypeface
-                textAlign = Paint.Align.LEFT
+                textSize = 33f
                 isFakeBoldText = true
-                textSize = 30f
+                textAlign = Paint.Align.CENTER
             }
-            val ribbonIdPaint = Paint().apply {
+            val partnerText = "AUTH. CHANNEL PARTNER: ${card.branchName.uppercase()}"
+            canvas.drawText(partnerText, width / 2f, 278f, partnerTextPaint)
+
+            // Red Accent Stripe
+            val redPaint = Paint().apply {
                 isAntiAlias = true
-                color = Color.parseColor("#E2E8F0")
-                typeface = brandTypeface
-                textAlign = Paint.Align.LEFT
-                isFakeBoldText = true
-                textSize = 25f
+                color = Color.parseColor("#D32F2F")
             }
-            val lblText = "AUTH. CHANNEL PARTNER: "
-            val branchText = card.branchName.uppercase()
-            val idText = " • BRANCH: ${card.branchId}"
-            val totalRibbonW = ribbonLabelPaint.measureText(lblText) + ribbonBranchPaint.measureText(branchText) + ribbonIdPaint.measureText(idText)
-            var curX = (width - totalRibbonW) / 2f
-            canvas.drawText(lblText, curX, 308f, ribbonLabelPaint)
-            curX += ribbonLabelPaint.measureText(lblText)
-            canvas.drawText(branchText, curX, 308f, ribbonBranchPaint)
-            curX += ribbonBranchPaint.measureText(branchText)
-            canvas.drawText(idText, curX, 308f, ribbonIdPaint)
+            canvas.drawRect(0f, 300f, width.toFloat(), 310f, redPaint)
 
-            // Red Chevron Accent Stripe
-            bgPaint.color = Color.parseColor("#D32F2F")
-            canvas.drawRect(0f, 332f, width.toFloat(), 340f, bgPaint)
-
-            // CENTERED PASSPORT PHOTO - EVEN BIGGER & FILL (aspect ratio center-crop)
+            // CENTERED PASSPORT PHOTO - Matching Reference Proportions & Dark Navy Border
             val photoW = 540f
-            val photoH = 620f
+            val photoH = 650f
             val photoLeft = (width - photoW) / 2f
-            val photoTop = 352f
+            val photoTop = 345f
             val photoBox = RectF(photoLeft, photoTop, photoLeft + photoW, photoTop + photoH)
-            val photoPaint = Paint().apply { isAntiAlias = true }
-            photoPaint.color = Color.parseColor("#F1F5F9")
-            canvas.drawRoundRect(photoBox, 20f, 20f, photoPaint)
+            val photoBgPaint = Paint().apply {
+                isAntiAlias = true
+                color = Color.parseColor("#F1F5F9")
+            }
+            canvas.drawRoundRect(photoBox, 28f, 28f, photoBgPaint)
 
             val photoBitmap = loadBitmapFromPath(card.photoPath)
             if (photoBitmap != null) {
@@ -179,209 +136,121 @@ object PhotoUtils {
                 canvas.drawText("PASSPORT PHOTO", photoBox.centerX(), photoBox.centerY() + 16f, placeholderPaint)
             }
 
-            // Photo Border (Navy)
+            // Dark Navy Border on Photo
             val borderPaint = Paint().apply {
                 style = Paint.Style.STROKE
-                strokeWidth = 6f
+                strokeWidth = 7f
                 color = Color.parseColor("#0A235C")
                 isAntiAlias = true
             }
-            canvas.drawRoundRect(photoBox, 20f, 20f, borderPaint)
+            canvas.drawRoundRect(photoBox, 28f, 28f, borderPaint)
 
-            // Holographic Seal Overlay at top-right corner of photo
-            val holoBmp = try {
-                BitmapFactory.decodeResource(context.resources, R.drawable.ic_hologram_badge)
-            } catch (e: Exception) {
-                null
-            }
-            if (holoBmp != null) {
-                val holoBox = RectF(photoBox.right - 92f, photoBox.top + 14f, photoBox.right - 14f, photoBox.top + 92f)
-                canvas.drawBitmap(holoBmp, null, holoBox, null)
-            }
-
-            // AI Verified Badge in bottom-left corner of photo if verified
-            if (card.aiVerified) {
-                val badgeBox = RectF(photoBox.left + 14f, photoBox.bottom - 48f, photoBox.left + 165f, photoBox.bottom - 12f)
-                val badgePaint = Paint().apply {
-                    isAntiAlias = true
-                    color = Color.parseColor("#16A34A")
-                }
-                canvas.drawRoundRect(badgeBox, 8f, 8f, badgePaint)
-                val badgeTextPaint = Paint().apply {
-                    isAntiAlias = true
-                    color = Color.WHITE
-                    typeface = brandTypeface
-                    textSize = 21f
-                    textAlign = Paint.Align.CENTER
-                }
-                canvas.drawText("✔ AI PASS", badgeBox.centerX(), badgeBox.centerY() + 7f, badgeTextPaint)
-            }
-
-            // EMPLOYEE DETAILS BELOW PHOTO (Cleanly centered, less bold typography)
-            textPaint.apply {
-                color = Color.parseColor("#0A235C")
+            // EMPLOYEE FULL NAME - Deep Dark Navy, Centered
+            val namePaint = Paint().apply {
+                isAntiAlias = true
                 typeface = brandTypeface
-                textSize = 46f
-                isFakeBoldText = false
+                color = Color.parseColor("#0A235C")
+                textSize = 54f
+                isFakeBoldText = true
                 textAlign = Paint.Align.CENTER
             }
-            // Employee Full Name
             val displayName = card.fullName.ifBlank { "Rashid Alam" }
-            canvas.drawText(displayName, width / 2f, 1016f, textPaint)
+            canvas.drawText(displayName, width / 2f, 1048f, namePaint)
 
-            // Designation Badge Pill Centered - refined weight
+            // RED DESIGNATION CAPSULE PILL - Centered
             val desText = card.designation.uppercase().ifBlank { "DELIVERY ASSOCIATE" }
             val desPaint = Paint().apply {
                 isAntiAlias = true
                 typeface = brandTypeface
                 color = Color.WHITE
-                textSize = 26f
-                isFakeBoldText = false
+                textSize = 29f
+                isFakeBoldText = true
                 textAlign = Paint.Align.CENTER
             }
-            val desWidth = desPaint.measureText(desText) + 44f
-            val desBox = RectF((width - desWidth) / 2f, 1038f, (width + desWidth) / 2f, 1088f)
-            bgPaint.color = Color.parseColor("#D32F2F")
-            canvas.drawRoundRect(desBox, 12f, 12f, bgPaint)
-            canvas.drawText(desText, width / 2f, 1074f, desPaint)
+            val desWidth = desPaint.measureText(desText) + 80f
+            val desBox = RectF((width - desWidth) / 2f, 1076f, (width + desWidth) / 2f, 1140f)
+            canvas.drawRoundRect(desBox, 32f, 32f, redPaint)
+            canvas.drawText(desText, width / 2f, 1118f, desPaint)
 
-            // Department Centered
+            // DEPARTMENT SUBTITLE - Slate Navy, Centered
             val deptPaint = Paint().apply {
                 isAntiAlias = true
-                typeface = corporateTypeface
-                color = Color.parseColor("#475569")
-                textSize = 23f
-                isFakeBoldText = false
+                typeface = brandTypeface
+                color = Color.parseColor("#1E293B")
+                textSize = 31f
+                isFakeBoldText = true
                 textAlign = Paint.Align.CENTER
             }
-            canvas.drawText(card.department.ifBlank { "Express Logistics & Dispatch" }, width / 2f, 1118f, deptPaint)
+            canvas.drawText(card.department.ifBlank { "Hub Dispatch Operations" }, width / 2f, 1184f, deptPaint)
 
-            // Thin Accent Separator Line
-            val sepPaint = Paint().apply {
-                color = Color.parseColor("#E2E8F0")
-                strokeWidth = 2.5f
-            }
-            canvas.drawLine(100f, 1140f, 900f, 1140f, sepPaint)
-
-            // Employee Key-Value Detail Table Below Separator - less bold, refined
+            // 2-COLUMN EMPLOYEE DETAILS (Exact match to reference image!)
             val labelPaint = Paint().apply {
                 isAntiAlias = true
                 typeface = brandTypeface
-                color = Color.parseColor("#0A235C")
-                textSize = 33f
-                isFakeBoldText = false
+                color = Color.parseColor("#475569")
+                textSize = 28f
+                isFakeBoldText = true
                 textAlign = Paint.Align.LEFT
             }
-            val valuePaint = Paint().apply {
-                isAntiAlias = true
-                typeface = corporateTypeface
-                color = Color.parseColor("#1E293B")
-                textSize = 33f
-                isFakeBoldText = false
-                textAlign = Paint.Align.LEFT
-            }
-            val leftColX = 140f
-            val valColX = 450f
-            var rowY = 1176f
-            val rowSpacing = 37f
-
-            // EMP ID
-            canvas.drawText("EMP ID:", leftColX, rowY, labelPaint)
-            canvas.drawText(card.employeeCode, valColX, rowY, valuePaint)
-            rowY += rowSpacing
-
-            // CONTACT
-            canvas.drawText("CONTACT:", leftColX, rowY, labelPaint)
-            canvas.drawText(card.phoneNumber, valColX, rowY, valuePaint)
-            rowY += rowSpacing
-
-            // BLOOD GRP
-            canvas.drawText("BLOOD GRP:", leftColX, rowY, labelPaint)
-            canvas.drawText(card.bloodGroup, valColX, rowY, valuePaint)
-            rowY += rowSpacing
-
-            // BRANCH ID
-            canvas.drawText("BRANCH ID:", leftColX, rowY, labelPaint)
-            canvas.drawText(card.branchId, valColX, rowY, valuePaint)
-            rowY += rowSpacing
-
-            // VALID TILL
-            canvas.drawText("VALID TILL:", leftColX, rowY, labelPaint)
-            canvas.drawText(card.validTill, valColX, rowY, valuePaint)
-
-            // DEDICATED SPACIOUS FOOTER SECTION FOR HARIOM ENTERPRISES
-            val footerDividerPaint = Paint().apply {
-                color = Color.parseColor("#E2E8F0")
-                strokeWidth = 2.5f
-            }
-            canvas.drawLine(100f, 1362f, 900f, 1362f, footerDividerPaint)
-
-            val footerSubPaint = Paint().apply {
+            val valPaint = Paint().apply {
                 isAntiAlias = true
                 typeface = brandTypeface
-                color = Color.parseColor("#0A235C")
-                textSize = 23f
+                color = Color.parseColor("#0F172A")
+                textSize = 38f
+                isFakeBoldText = true
+                textAlign = Paint.Align.LEFT
+            }
+
+            val col1X = 110f
+            val col2X = 540f
+            val gridRow1Y = 1242f
+            val gridRow2Y = 1338f
+
+            // ROW 1: EMP ID and BLOOD GRP
+            canvas.drawText("EMP ID:", col1X, gridRow1Y, labelPaint)
+            canvas.drawText(card.employeeCode.ifBlank { "DTDC/HE/2024/1609" }, col1X, gridRow1Y + 42f, valPaint)
+
+            canvas.drawText("BLOOD GRP:", col2X, gridRow1Y, labelPaint)
+            canvas.drawText(card.bloodGroup.ifBlank { "B+" }, col2X, gridRow1Y + 42f, valPaint)
+
+            // ROW 2: CONTACT and VALID TILL
+            canvas.drawText("CONTACT:", col1X, gridRow2Y, labelPaint)
+            canvas.drawText(card.phoneNumber.ifBlank { "8655707563" }, col1X, gridRow2Y + 42f, valPaint)
+
+            canvas.drawText("VALID TILL:", col2X, gridRow2Y, labelPaint)
+            canvas.drawText(card.validTill.ifBlank { "31 Dec 2027" }, col2X, gridRow2Y + 42f, valPaint)
+
+            // SOLID DARK NAVY FOOTER (Edge-to-edge as in reference image)
+            val footerTop = 1435f
+            canvas.save()
+            canvas.clipRect(0f, footerTop, width.toFloat(), height.toFloat())
+            canvas.drawRoundRect(RectF(0f, 0f, width.toFloat(), height.toFloat()), 32f, 32f, navyPaint)
+            canvas.restore()
+
+            val footerWhitePaint = Paint().apply {
+                isAntiAlias = true
+                typeface = brandTypeface
+                color = Color.WHITE
+                textSize = 32f
                 isFakeBoldText = true
                 textAlign = Paint.Align.CENTER
             }
-            canvas.drawText("AUTHORIZED CHANNEL PARTNER & LOGISTICS HUB", width / 2f, 1394f, footerSubPaint)
-
-            // Prominent Bottom Brand matching user request: "Hariom Enterprises" in bold red
-            val bottomBrandPaint = Paint().apply {
+            val footerGoldPaint = Paint().apply {
                 isAntiAlias = true
                 typeface = brandTypeface
-                color = Color.parseColor("#D32F2F")
-                textSize = 66f
+                color = Color.parseColor("#FFB300")
+                textSize = 27f
                 isFakeBoldText = true
                 textAlign = Paint.Align.CENTER
             }
-            canvas.drawText(card.branchName.ifBlank { "Hariom Enterprises" }, width / 2f, 1460f, bottomBrandPaint)
-
-            // Bottom Navy Accent Bar with rounded corners
-            val bottomBarPaint = Paint().apply {
-                isAntiAlias = true
-                color = Color.parseColor("#0A235C")
-            }
-            canvas.drawRoundRect(
-                RectF(70f, 1490f, width - 70f, 1515f),
-                9f,
-                9f,
-                bottomBarPaint
-            )
+            canvas.drawText("AUTHORIZED IDENTITY BADGE • DTDC", width / 2f, 1495f, footerWhitePaint)
+            canvas.drawText("Branch: ${card.branchId.ifBlank { "DTDC-HE-4102" }} | ${card.branchName.ifBlank { "Hariom Enterprises" }}", width / 2f, 1540f, footerGoldPaint)
 
         } else {
             // BACK SIDE (Matching Pure White Corporate Theme)
             canvas.drawRoundRect(RectF(0f, 0f, width.toFloat(), height.toFloat()), 32f, 32f, bgPaint)
 
-            // Top Header: Clean White Header with Corporate Title & Enlarged Official DTDC Logo
-            bgPaint.color = Color.WHITE
-            canvas.drawRect(0f, 0f, width.toFloat(), 340f, bgPaint)
-
-            // Top Corporate Title above Logo: "DTDC Private Limited" (black) + "Cargo" (red)
-            val titleTextBlack = "DTDC Private Limited "
-            val titleTextRed = "Cargo"
-            val titleBlackPaint = Paint().apply {
-                isAntiAlias = true
-                typeface = brandTypeface
-                color = Color.parseColor("#0F172A") // Black
-                textSize = 36f
-                isFakeBoldText = true
-                textAlign = Paint.Align.LEFT
-            }
-            val titleRedPaint = Paint().apply {
-                isAntiAlias = true
-                typeface = brandTypeface
-                color = Color.parseColor("#D32F2F") // Red
-                textSize = 36f
-                isFakeBoldText = true
-                textAlign = Paint.Align.LEFT
-            }
-
-            val totalTitleWidth = titleBlackPaint.measureText(titleTextBlack) + titleRedPaint.measureText(titleTextRed)
-            val titleStartX = (width - totalTitleWidth) / 2f
-            canvas.drawText(titleTextBlack, titleStartX, 64f, titleBlackPaint)
-            canvas.drawText(titleTextRed, titleStartX + titleBlackPaint.measureText(titleTextBlack), 64f, titleRedPaint)
-
+            // Top Header: Clean White Header with Official DTDC Logo (matching front side)
             val logoBmp = try {
                 BitmapFactory.decodeResource(context.resources, R.drawable.ic_dtdc_logo)
             } catch (e: Exception) {
@@ -389,8 +258,8 @@ object PhotoUtils {
             }
 
             if (logoBmp != null) {
-                val maxW = width - 60f
-                val maxH = 185f
+                val maxW = width - 80f
+                val maxH = 175f
                 val aspect = logoBmp.width.toFloat() / logoBmp.height.toFloat()
                 var drawW = maxH * aspect
                 var drawH = maxH
@@ -398,16 +267,18 @@ object PhotoUtils {
                     drawW = maxW
                     drawH = drawW / aspect
                 }
-                // DTDC logo big and center-aligned
                 val left = (width - drawW) / 2f
-                val top = 76f + (185f - drawH) / 2f
+                val top = 36f + (175f - drawH) / 2f
                 val logoRect = RectF(left, top, left + drawW, top + drawH)
                 canvas.drawBitmap(logoBmp, null, logoRect, null)
             }
 
-            // Franchisee Navy Ribbon
-            bgPaint.color = Color.parseColor("#0A235C")
-            canvas.drawRect(0f, 268f, width.toFloat(), 332f, bgPaint)
+            // Dark Navy Ribbon
+            val backNavyPaint = Paint().apply {
+                isAntiAlias = true
+                color = Color.parseColor("#0A235C")
+            }
+            canvas.drawRect(0f, 235f, width.toFloat(), 300f, backNavyPaint)
 
             val ribbonTextPaint = Paint().apply {
                 isAntiAlias = true
@@ -415,13 +286,16 @@ object PhotoUtils {
                 typeface = brandTypeface
                 textAlign = Paint.Align.CENTER
                 isFakeBoldText = true
-                textSize = 28f
+                textSize = 30f
             }
-            canvas.drawText("TERMS OF IDENTITY & CONSIGNMENT AUTHORITY", width / 2f, 308f, ribbonTextPaint)
+            canvas.drawText("TERMS OF IDENTITY & CONSIGNMENT AUTHORITY", width / 2f, 278f, ribbonTextPaint)
 
-            // Red Chevron Accent Stripe
-            bgPaint.color = Color.parseColor("#D32F2F")
-            canvas.drawRect(0f, 332f, width.toFloat(), 340f, bgPaint)
+            // Red Stripe
+            val backRedPaint = Paint().apply {
+                isAntiAlias = true
+                color = Color.parseColor("#D32F2F")
+            }
+            canvas.drawRect(0f, 300f, width.toFloat(), 310f, backRedPaint)
 
             // Terms Content with Proportional Fonts & Word-Wrapping within Symmetrical Margins
             val leftMargin = 55f
@@ -435,7 +309,7 @@ object PhotoUtils {
                 textAlign = Paint.Align.LEFT
             }
 
-            var textY = 376f
+            var textY = 352f
 
             val headerPaint = Paint().apply {
                 isAntiAlias = true
@@ -598,7 +472,7 @@ object PhotoUtils {
 
             // Barcode Graphic container at bottom of back (Enlarged and well-aligned with equal margins)
             val barcodeTop = hubBox.bottom + 22f
-            val barcodeBottom = (barcodeTop + 220f).coerceAtMost(1460f)
+            val barcodeBottom = (barcodeTop + 200f).coerceAtMost(1415f)
             val barcodeBox = RectF(leftMargin, barcodeTop, width - leftMargin, barcodeBottom)
             canvas.drawRoundRect(barcodeBox, 20f, 20f, hubBgPaint)
             canvas.drawRoundRect(barcodeBox, 20f, 20f, hubBorderPaint)
@@ -615,7 +489,7 @@ object PhotoUtils {
                 prng = (prng * 31 + 17) and 0x7fffffff
                 if ((i % 2 == 0) || (prng % 3 != 0)) {
                     val bLeft = barcodeBox.left + 30f + (i * barW)
-                    canvas.drawRect(bLeft, barcodeTop + 25f, bLeft + (barW * 0.85f), barcodeTop + 135f, barPaint)
+                    canvas.drawRect(bLeft, barcodeTop + 25f, bLeft + (barW * 0.85f), barcodeTop + 130f, barPaint)
                 }
             }
 
@@ -623,23 +497,37 @@ object PhotoUtils {
                 isAntiAlias = true
                 typeface = brandTypeface
                 color = Color.BLACK
-                textSize = 34f
+                textSize = 33f
                 isFakeBoldText = true
                 textAlign = Paint.Align.CENTER
             }
-            canvas.drawText("* ${card.employeeCode} • BRANCH: ${card.branchId} *", width / 2f, barcodeTop + 185f, barCodeTextPaint)
+            canvas.drawText("* ${card.employeeCode} • BRANCH: ${card.branchId} *", width / 2f, barcodeTop + 175f, barCodeTextPaint)
 
-            // Bottom Navy Accent Bar with rounded corners matching front side
-            val bottomBarPaint = Paint().apply {
+            // Solid Dark Navy Edge-to-Edge Footer (Exact match to reference image & front side!)
+            val footerBgPaint = Paint().apply {
                 isAntiAlias = true
                 color = Color.parseColor("#0A235C")
             }
-            canvas.drawRoundRect(
-                RectF(70f, 1490f, width - 70f, 1515f),
-                9f,
-                9f,
-                bottomBarPaint
-            )
+            canvas.drawRect(0f, 1435f, width.toFloat(), 1580f, footerBgPaint)
+
+            val footerWhitePaint = Paint().apply {
+                isAntiAlias = true
+                typeface = brandTypeface
+                color = Color.WHITE
+                textSize = 31f
+                isFakeBoldText = true
+                textAlign = Paint.Align.CENTER
+            }
+            val footerGoldPaint = Paint().apply {
+                isAntiAlias = true
+                typeface = brandTypeface
+                color = Color.parseColor("#FFB300")
+                textSize = 27f
+                isFakeBoldText = true
+                textAlign = Paint.Align.CENTER
+            }
+            canvas.drawText("AUTHORIZED IDENTITY BADGE • DTDC", width / 2f, 1495f, footerWhitePaint)
+            canvas.drawText("Branch: ${card.branchId.ifBlank { "DTDC-HE-4102" }} | ${card.branchName.ifBlank { "Hariom Enterprises" }}", width / 2f, 1540f, footerGoldPaint)
         }
 
         return bitmap
