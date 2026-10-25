@@ -385,15 +385,15 @@ fun IdCardFront(
                                 text = "EMP ID:",
                                 color = Color(0xFF475569),
                                 fontFamily = DtdcBrandFontFamily,
-                                fontSize = (9.5 * minScale).sp,
-                                fontWeight = FontWeight.Bold
+                                fontSize = (8.5 * minScale).sp,
+                                fontWeight = FontWeight.SemiBold
                             )
                             Text(
                                 text = card.employeeCode.ifBlank { "DTDC/HE/2024/1609" },
                                 color = Color(0xFF0F172A),
                                 fontFamily = DtdcBrandFontFamily,
-                                fontSize = (12.5 * minScale).sp,
-                                fontWeight = FontWeight.Black,
+                                fontSize = (11 * minScale).sp,
+                                fontWeight = FontWeight.Bold,
                                 maxLines = 1,
                                 overflow = TextOverflow.Ellipsis
                             )
@@ -404,15 +404,15 @@ fun IdCardFront(
                                 text = "CONTACT:",
                                 color = Color(0xFF475569),
                                 fontFamily = DtdcBrandFontFamily,
-                                fontSize = (9.5 * minScale).sp,
-                                fontWeight = FontWeight.Bold
+                                fontSize = (8.5 * minScale).sp,
+                                fontWeight = FontWeight.SemiBold
                             )
                             Text(
                                 text = card.phoneNumber.ifBlank { "8655707563" },
                                 color = Color(0xFF0F172A),
                                 fontFamily = DtdcBrandFontFamily,
-                                fontSize = (12.5 * minScale).sp,
-                                fontWeight = FontWeight.Black,
+                                fontSize = (11 * minScale).sp,
+                                fontWeight = FontWeight.Bold,
                                 maxLines = 1,
                                 overflow = TextOverflow.Ellipsis
                             )
@@ -423,15 +423,15 @@ fun IdCardFront(
                                 text = "BRANCH ID:",
                                 color = Color(0xFF475569),
                                 fontFamily = DtdcBrandFontFamily,
-                                fontSize = (9.5 * minScale).sp,
-                                fontWeight = FontWeight.Bold
+                                fontSize = (8.5 * minScale).sp,
+                                fontWeight = FontWeight.SemiBold
                             )
                             Text(
                                 text = card.branchId.ifBlank { "1057" },
                                 color = Color(0xFF0F172A),
                                 fontFamily = DtdcBrandFontFamily,
-                                fontSize = (12.5 * minScale).sp,
-                                fontWeight = FontWeight.Black,
+                                fontSize = (11 * minScale).sp,
+                                fontWeight = FontWeight.Bold,
                                 maxLines = 1,
                                 overflow = TextOverflow.Ellipsis
                             )
@@ -448,32 +448,32 @@ fun IdCardFront(
                                 text = "BLOOD GRP:",
                                 color = Color(0xFF475569),
                                 fontFamily = DtdcBrandFontFamily,
-                                fontSize = (9.5 * minScale).sp,
-                                fontWeight = FontWeight.Bold
+                                fontSize = (8.5 * minScale).sp,
+                                fontWeight = FontWeight.SemiBold
                             )
                             Text(
                                 text = card.bloodGroup.ifBlank { "B+" },
                                 color = Color(0xFF0F172A),
                                 fontFamily = DtdcBrandFontFamily,
-                                fontSize = (12.5 * minScale).sp,
-                                fontWeight = FontWeight.Black
+                                fontSize = (11 * minScale).sp,
+                                fontWeight = FontWeight.Bold
                             )
 
-                            Spacer(modifier = Modifier.height((6 * minScale).dp))
+                            Spacer(modifier = Modifier.height((5 * minScale).dp))
 
                             Text(
                                 text = "VALID TILL:",
                                 color = Color(0xFF475569),
                                 fontFamily = DtdcBrandFontFamily,
-                                fontSize = (9.5 * minScale).sp,
-                                fontWeight = FontWeight.Bold
+                                fontSize = (8.5 * minScale).sp,
+                                fontWeight = FontWeight.SemiBold
                             )
                             Text(
                                 text = card.validTill.ifBlank { "31 Dec 2027" },
                                 color = Color(0xFF0F172A),
                                 fontFamily = DtdcBrandFontFamily,
-                                fontSize = (12.5 * minScale).sp,
-                                fontWeight = FontWeight.Black
+                                fontSize = (11 * minScale).sp,
+                                fontWeight = FontWeight.Bold
                             )
                         }
                     }

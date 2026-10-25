@@ -184,21 +184,21 @@ object PhotoUtils {
             }
             canvas.drawText(card.department.ifBlank { "Hub Dispatch Operations" }, width / 2f, 1178f, deptPaint)
 
-            // 2-COLUMN EMPLOYEE DETAILS (Exact match to reference image!)
+            // 2-COLUMN EMPLOYEE DETAILS (Refined font size and weight)
             val labelPaint = Paint().apply {
                 isAntiAlias = true
                 typeface = brandTypeface
                 color = Color.parseColor("#475569")
-                textSize = 28f
-                isFakeBoldText = true
+                textSize = 24f
+                isFakeBoldText = false
                 textAlign = Paint.Align.LEFT
             }
             val valPaint = Paint().apply {
                 isAntiAlias = true
                 typeface = brandTypeface
                 color = Color.parseColor("#0F172A")
-                textSize = 38f
-                isFakeBoldText = true
+                textSize = 33f
+                isFakeBoldText = false
                 textAlign = Paint.Align.LEFT
             }
 
