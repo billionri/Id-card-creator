@@ -59,8 +59,8 @@ object PhotoUtils {
             }
 
             if (logoBmp != null) {
-                val maxW = width - 80f
-                val maxH = 175f
+                val maxW = width - 40f
+                val maxH = 205f
                 val aspect = logoBmp.width.toFloat() / logoBmp.height.toFloat()
                 var drawW = maxH * aspect
                 var drawH = maxH
@@ -69,7 +69,7 @@ object PhotoUtils {
                     drawH = drawW / aspect
                 }
                 val left = (width - drawW) / 2f
-                val top = 36f + (175f - drawH) / 2f
+                val top = 18f + (205f - drawH) / 2f
                 val logoRect = RectF(left, top, left + drawW, top + drawH)
                 canvas.drawBitmap(logoBmp, null, logoRect, null)
             }
@@ -204,22 +204,27 @@ object PhotoUtils {
 
             val col1X = 110f
             val col2X = 540f
-            val gridRow1Y = 1242f
-            val gridRow2Y = 1338f
+            val gridRow1Y = 1222f
+            val gridRow2Y = 1296f
+            val gridRow3Y = 1370f
 
             // ROW 1: EMP ID and BLOOD GRP
             canvas.drawText("EMP ID:", col1X, gridRow1Y, labelPaint)
-            canvas.drawText(card.employeeCode.ifBlank { "DTDC/HE/2024/1609" }, col1X, gridRow1Y + 42f, valPaint)
+            canvas.drawText(card.employeeCode.ifBlank { "DTDC/HE/2024/1609" }, col1X, gridRow1Y + 38f, valPaint)
 
             canvas.drawText("BLOOD GRP:", col2X, gridRow1Y, labelPaint)
-            canvas.drawText(card.bloodGroup.ifBlank { "B+" }, col2X, gridRow1Y + 42f, valPaint)
+            canvas.drawText(card.bloodGroup.ifBlank { "B+" }, col2X, gridRow1Y + 38f, valPaint)
 
             // ROW 2: CONTACT and VALID TILL
             canvas.drawText("CONTACT:", col1X, gridRow2Y, labelPaint)
-            canvas.drawText(card.phoneNumber.ifBlank { "8655707563" }, col1X, gridRow2Y + 42f, valPaint)
+            canvas.drawText(card.phoneNumber.ifBlank { "8655707563" }, col1X, gridRow2Y + 38f, valPaint)
 
             canvas.drawText("VALID TILL:", col2X, gridRow2Y, labelPaint)
-            canvas.drawText(card.validTill.ifBlank { "31 Dec 2027" }, col2X, gridRow2Y + 42f, valPaint)
+            canvas.drawText(card.validTill.ifBlank { "31 Dec 2027" }, col2X, gridRow2Y + 38f, valPaint)
+
+            // ROW 3: BRANCH ID (After Contact Number at first page!)
+            canvas.drawText("BRANCH ID:", col1X, gridRow3Y, labelPaint)
+            canvas.drawText(card.branchId.ifBlank { "1057" }, col1X, gridRow3Y + 38f, valPaint)
 
             // SOLID DARK NAVY FOOTER (Edge-to-edge as in reference image)
             val footerTop = 1435f
@@ -245,7 +250,7 @@ object PhotoUtils {
                 textAlign = Paint.Align.CENTER
             }
             canvas.drawText("AUTHORIZED IDENTITY BADGE • DTDC", width / 2f, 1495f, footerWhitePaint)
-            canvas.drawText("Branch: ${card.branchId.ifBlank { "DTDC-HE-4102" }} | ${card.branchName.ifBlank { "Hariom Enterprises" }}", width / 2f, 1540f, footerGoldPaint)
+            canvas.drawText("Branch: ${card.branchId.ifBlank { "1057" }} | ${card.branchName.ifBlank { "Hariom Enterprises" }}", width / 2f, 1540f, footerGoldPaint)
 
         } else {
             // BACK SIDE (Matching Pure White Corporate Theme)
@@ -259,8 +264,8 @@ object PhotoUtils {
             }
 
             if (logoBmp != null) {
-                val maxW = width - 80f
-                val maxH = 175f
+                val maxW = width - 40f
+                val maxH = 205f
                 val aspect = logoBmp.width.toFloat() / logoBmp.height.toFloat()
                 var drawW = maxH * aspect
                 var drawH = maxH
@@ -269,7 +274,7 @@ object PhotoUtils {
                     drawH = drawW / aspect
                 }
                 val left = (width - drawW) / 2f
-                val top = 36f + (175f - drawH) / 2f
+                val top = 18f + (205f - drawH) / 2f
                 val logoRect = RectF(left, top, left + drawW, top + drawH)
                 canvas.drawBitmap(logoBmp, null, logoRect, null)
             }
@@ -419,7 +424,7 @@ object PhotoUtils {
             canvas.drawRoundRect(hubBox, 20f, 20f, hubBgPaint)
             canvas.drawRoundRect(hubBox, 20f, 20f, hubBorderPaint)
 
-            canvas.drawText("HUB OFFICE & RETURN ADDRESS (BRANCH ID: ${card.branchId}):", leftMargin + innerPad, textY + 42f, hubTitlePaint)
+            canvas.drawText("HUB OFFICE & RETURN ADDRESS (BRANCH ID: ${card.branchId.ifBlank { "1057" }}):", leftMargin + innerPad, textY + 42f, hubTitlePaint)
             canvas.drawText(card.branchName.uppercase(), leftMargin + innerPad, textY + 90f, branchNamePaint)
 
             var lineY = textY + 132f
@@ -502,7 +507,7 @@ object PhotoUtils {
                 isFakeBoldText = true
                 textAlign = Paint.Align.CENTER
             }
-            canvas.drawText("* ${card.employeeCode} • BRANCH: ${card.branchId} *", width / 2f, barcodeTop + 175f, barCodeTextPaint)
+            canvas.drawText("* ${card.employeeCode} • BRANCH: ${card.branchId.ifBlank { "1057" }} *", width / 2f, barcodeTop + 175f, barCodeTextPaint)
 
             // Solid Dark Navy Edge-to-Edge Footer (Exact match to reference image & front side!)
             val footerBgPaint = Paint().apply {
@@ -528,7 +533,7 @@ object PhotoUtils {
                 textAlign = Paint.Align.CENTER
             }
             canvas.drawText("AUTHORIZED IDENTITY BADGE • DTDC", width / 2f, 1495f, footerWhitePaint)
-            canvas.drawText("Branch: ${card.branchId.ifBlank { "DTDC-HE-4102" }} | ${card.branchName.ifBlank { "Hariom Enterprises" }}", width / 2f, 1540f, footerGoldPaint)
+            canvas.drawText("Branch: ${card.branchId.ifBlank { "1057" }} | ${card.branchName.ifBlank { "Hariom Enterprises" }}", width / 2f, 1540f, footerGoldPaint)
         }
 
         return bitmap

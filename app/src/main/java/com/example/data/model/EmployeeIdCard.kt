@@ -11,7 +11,7 @@ data class EmployeeIdCard(
     val employeeCode: String = "DTDC/HE/2024/1609",
     val designation: String = "Delivery Associate",
     val department: String = "Hub Dispatch Operations",
-    val branchId: String = "DTDC-HE-4102",
+    val branchId: String = "1057",
     val branchName: String = "Hariom Enterprises",
     val branchAddress: String = "Shop No 2, 317-A, Shinde Niwas, Kasturba Cross Road No 6, Opposite Platform No 10, Borivali East, Mumbai — 400066, Maharashtra",
     val phoneNumber: String = "8655707563",

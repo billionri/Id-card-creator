@@ -227,12 +227,12 @@ fun IdCardFront(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    // White logo container
+                    // White logo container (Enlarged DTDC logo)
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height((56 * minScale).dp)
-                            .padding(horizontal = (12 * minScale).dp, vertical = (4 * minScale).dp),
+                            .height((72 * minScale).dp)
+                            .padding(horizontal = (6 * minScale).dp, vertical = (2 * minScale).dp),
                         contentAlignment = Alignment.Center
                     ) {
                         Image(
@@ -398,7 +398,7 @@ fun IdCardFront(
                                 overflow = TextOverflow.Ellipsis
                             )
 
-                            Spacer(modifier = Modifier.height((6 * minScale).dp))
+                            Spacer(modifier = Modifier.height((5 * minScale).dp))
 
                             Text(
                                 text = "CONTACT:",
@@ -409,6 +409,25 @@ fun IdCardFront(
                             )
                             Text(
                                 text = card.phoneNumber.ifBlank { "8655707563" },
+                                color = Color(0xFF0F172A),
+                                fontFamily = DtdcBrandFontFamily,
+                                fontSize = (12.5 * minScale).sp,
+                                fontWeight = FontWeight.Black,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis
+                            )
+
+                            Spacer(modifier = Modifier.height((5 * minScale).dp))
+
+                            Text(
+                                text = "BRANCH ID:",
+                                color = Color(0xFF475569),
+                                fontFamily = DtdcBrandFontFamily,
+                                fontSize = (9.5 * minScale).sp,
+                                fontWeight = FontWeight.Bold
+                            )
+                            Text(
+                                text = card.branchId.ifBlank { "1057" },
                                 color = Color(0xFF0F172A),
                                 fontFamily = DtdcBrandFontFamily,
                                 fontSize = (12.5 * minScale).sp,
@@ -479,7 +498,7 @@ fun IdCardFront(
                         )
                         Spacer(modifier = Modifier.height((1 * minScale).dp))
                         Text(
-                            text = "Branch: ${card.branchId.ifBlank { "DTDC-HE-4102" }} | ${card.branchName.ifBlank { "Hariom Enterprises" }}",
+                            text = "Branch: ${card.branchId.ifBlank { "1057" }} | ${card.branchName.ifBlank { "Hariom Enterprises" }}",
                             color = DtdcGold,
                             fontFamily = DtdcBrandFontFamily,
                             fontSize = (9.5 * minScale).sp,
@@ -563,11 +582,12 @@ fun IdCardBack(card: EmployeeIdCard) {
                     modifier = Modifier.fillMaxWidth(),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
+                    // White logo container (Enlarged DTDC logo)
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height((56 * minScale).dp)
-                            .padding(horizontal = (12 * minScale).dp, vertical = (4 * minScale).dp),
+                            .height((72 * minScale).dp)
+                            .padding(horizontal = (6 * minScale).dp, vertical = (2 * minScale).dp),
                         contentAlignment = Alignment.Center
                     ) {
                         Image(
@@ -776,7 +796,7 @@ fun IdCardBack(card: EmployeeIdCard) {
                         )
                         Spacer(modifier = Modifier.height((1 * minScale).dp))
                         Text(
-                            text = "Branch: ${card.branchId.ifBlank { "DTDC-HE-4102" }} | ${card.branchName.ifBlank { "Hariom Enterprises" }}",
+                            text = "Branch: ${card.branchId.ifBlank { "1057" }} | ${card.branchName.ifBlank { "Hariom Enterprises" }}",
                             color = DtdcGold,
                             fontFamily = DtdcBrandFontFamily,
                             fontSize = (9.5 * minScale).sp,

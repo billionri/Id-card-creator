@@ -777,6 +777,20 @@ fun CardGeneratorScreen(
 
                     Spacer(modifier = Modifier.height(12.dp))
 
+                    // Branch ID (Default 1057) - Placed directly after Contact Number as requested
+                    OutlinedTextField(
+                        value = card.branchId,
+                        onValueChange = { viewModel.updateBranchId(it) },
+                        label = { Text("DTDC Branch ID (Default: 1057)", fontSize = 16.sp, fontWeight = FontWeight.Bold) },
+                        textStyle = TextStyle(fontSize = 16.sp),
+                        singleLine = true,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .testTag("input_branch_id")
+                    )
+
+                    Spacer(modifier = Modifier.height(12.dp))
+
                     // Emergency Contact
                     OutlinedTextField(
                         value = card.emergencyContact,
@@ -801,20 +815,6 @@ fun CardGeneratorScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .testTag("input_blood_group")
-                    )
-
-                    Spacer(modifier = Modifier.height(12.dp))
-
-                    // Branch ID
-                    OutlinedTextField(
-                        value = card.branchId,
-                        onValueChange = { viewModel.updateBranchId(it) },
-                        label = { Text("DTDC Branch ID", fontSize = 16.sp, fontWeight = FontWeight.Bold) },
-                        textStyle = TextStyle(fontSize = 16.sp),
-                        singleLine = true,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .testTag("input_branch_id")
                     )
 
                     Spacer(modifier = Modifier.height(12.dp))
