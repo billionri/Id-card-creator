@@ -277,13 +277,13 @@ fun IdCardFront(
                         .padding(horizontal = (16 * minScale).dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Spacer(modifier = Modifier.height((5 * minScale).dp))
+                    Spacer(modifier = Modifier.height((4 * minScale).dp))
 
                     // Centered Employee Photo with Dark Navy Rounded Border
                     Box(
                         modifier = Modifier
-                            .width((142 * minScale).dp)
-                            .height((170 * minScale).dp)
+                            .width((138 * minScale).dp)
+                            .height((164 * minScale).dp)
                             .shadow(elevation = (3 * minScale).dp, shape = RoundedCornerShape((10 * minScale).dp))
                             .clip(RoundedCornerShape((10 * minScale).dp))
                             .background(Color(0xFFE2E8F0))
@@ -325,7 +325,8 @@ fun IdCardFront(
                         }
                     }
 
-                    Spacer(modifier = Modifier.height((6 * minScale).dp))
+                    // Generous spacing below photo and above name
+                    Spacer(modifier = Modifier.height((13 * minScale).dp))
 
                     // Employee Full Name Centered in Dark Navy
                     Text(

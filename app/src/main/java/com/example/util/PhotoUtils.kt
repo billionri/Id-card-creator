@@ -100,10 +100,10 @@ object PhotoUtils {
             canvas.drawRect(0f, 300f, width.toFloat(), 310f, redPaint)
 
             // CENTERED PASSPORT PHOTO - Matching Reference Proportions & Dark Navy Border
-            val photoW = 540f
-            val photoH = 650f
+            val photoW = 530f
+            val photoH = 630f
             val photoLeft = (width - photoW) / 2f
-            val photoTop = 345f
+            val photoTop = 335f
             val photoBox = RectF(photoLeft, photoTop, photoLeft + photoW, photoTop + photoH)
             val photoBgPaint = Paint().apply {
                 isAntiAlias = true
@@ -145,6 +145,7 @@ object PhotoUtils {
             }
             canvas.drawRoundRect(photoBox, 28f, 28f, borderPaint)
 
+            // SPACE BELOW PHOTO AND ABOVE NAME (photo ends at 965f, name baseline at 1045f, leaving ~40px of clear space)
             // EMPLOYEE FULL NAME - Deep Dark Navy, Centered
             val namePaint = Paint().apply {
                 isAntiAlias = true
@@ -155,7 +156,7 @@ object PhotoUtils {
                 textAlign = Paint.Align.CENTER
             }
             val displayName = card.fullName.ifBlank { "Rashid Alam" }
-            canvas.drawText(displayName, width / 2f, 1048f, namePaint)
+            canvas.drawText(displayName, width / 2f, 1045f, namePaint)
 
             // RED DESIGNATION CAPSULE PILL - Centered
             val desText = card.designation.uppercase().ifBlank { "DELIVERY ASSOCIATE" }
@@ -168,9 +169,9 @@ object PhotoUtils {
                 textAlign = Paint.Align.CENTER
             }
             val desWidth = desPaint.measureText(desText) + 80f
-            val desBox = RectF((width - desWidth) / 2f, 1076f, (width + desWidth) / 2f, 1140f)
-            canvas.drawRoundRect(desBox, 32f, 32f, redPaint)
-            canvas.drawText(desText, width / 2f, 1118f, desPaint)
+            val desBox = RectF((width - desWidth) / 2f, 1074f, (width + desWidth) / 2f, 1136f)
+            canvas.drawRoundRect(desBox, 31f, 31f, redPaint)
+            canvas.drawText(desText, width / 2f, 1115f, desPaint)
 
             // DEPARTMENT SUBTITLE - Slate Navy, Centered
             val deptPaint = Paint().apply {
@@ -181,7 +182,7 @@ object PhotoUtils {
                 isFakeBoldText = true
                 textAlign = Paint.Align.CENTER
             }
-            canvas.drawText(card.department.ifBlank { "Hub Dispatch Operations" }, width / 2f, 1184f, deptPaint)
+            canvas.drawText(card.department.ifBlank { "Hub Dispatch Operations" }, width / 2f, 1178f, deptPaint)
 
             // 2-COLUMN EMPLOYEE DETAILS (Exact match to reference image!)
             val labelPaint = Paint().apply {
