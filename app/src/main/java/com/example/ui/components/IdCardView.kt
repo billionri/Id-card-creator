@@ -59,7 +59,6 @@ import coil.compose.AsyncImage
 import com.example.R
 import com.example.data.model.EmployeeIdCard
 import com.example.ui.theme.DtdcBrandFontFamily
-import com.example.ui.theme.DtdcCorporateFontFamily
 import com.example.ui.theme.DtdcGold
 import com.example.ui.theme.DtdcNavy
 import com.example.ui.theme.DtdcRed
@@ -248,14 +247,14 @@ fun IdCardFront(
                         modifier = Modifier
                             .fillMaxWidth()
                             .background(DtdcNavy)
-                            .padding(vertical = (4.5 * minScale).dp),
+                            .padding(vertical = (5 * minScale).dp),
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
                             text = "AUTH. CHANNEL PARTNER: ${card.branchName.uppercase()}",
                             color = DtdcGold,
                             fontFamily = DtdcBrandFontFamily,
-                            fontSize = (10 * minScale).sp,
+                            fontSize = (11.5 * minScale).sp,
                             fontWeight = FontWeight.Black,
                             letterSpacing = (0.5 * minScale).sp
                         )
@@ -270,20 +269,18 @@ fun IdCardFront(
                     )
                 }
 
-                // CENTER CONTENT: Photo, Name, Designation Capsule, Department, 2-Column Detail Grid
+                // CENTER CONTENT: Photo, Name, Full-Width Delivery Associate, Full-Width Department, 2-Column Detail Grid, Hariom Enterprises
                 Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = (16 * minScale).dp),
+                    modifier = Modifier.fillMaxWidth(),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Spacer(modifier = Modifier.height((4 * minScale).dp))
+                    Spacer(modifier = Modifier.height((2 * minScale).dp))
 
                     // Centered Employee Photo with Dark Navy Rounded Border
                     Box(
                         modifier = Modifier
-                            .width((138 * minScale).dp)
-                            .height((164 * minScale).dp)
+                            .width((134 * minScale).dp)
+                            .height((158 * minScale).dp)
                             .shadow(elevation = (3 * minScale).dp, shape = RoundedCornerShape((10 * minScale).dp))
                             .clip(RoundedCornerShape((10 * minScale).dp))
                             .background(Color(0xFFE2E8F0))
@@ -326,157 +323,187 @@ fun IdCardFront(
                     }
 
                     // Generous spacing below photo and above name
-                    Spacer(modifier = Modifier.height((13 * minScale).dp))
+                    Spacer(modifier = Modifier.height((7 * minScale).dp))
 
-                    // Employee Full Name Centered in Dark Navy
+                    // Employee Full Name Centered in Dark Navy (Big Font)
                     Text(
                         text = card.fullName.ifBlank { "Rashid Alam" },
                         color = DtdcNavy,
                         fontFamily = DtdcBrandFontFamily,
-                        fontSize = (18 * minScale).sp,
+                        fontSize = (23 * minScale).sp,
                         fontWeight = FontWeight.Black,
                         letterSpacing = (0.2 * minScale).sp
                     )
 
                     Spacer(modifier = Modifier.height((4 * minScale).dp))
 
-                    // Red Designation Capsule Pill
+                    // RED DELIVERY ASSOCIATE CIRCULAR CAPSULE (Circular corners & compact/less width)
                     Box(
                         modifier = Modifier
-                            .background(DtdcRed, shape = RoundedCornerShape((14 * minScale).dp))
-                            .padding(horizontal = (18 * minScale).dp, vertical = (3.5 * minScale).dp)
+                            .background(DtdcRed, shape = RoundedCornerShape(percent = 50))
+                            .padding(horizontal = (20 * minScale).dp, vertical = (4 * minScale).dp),
+                        contentAlignment = Alignment.Center
                     ) {
                         Text(
                             text = card.designation.uppercase().ifBlank { "DELIVERY ASSOCIATE" },
                             color = Color.White,
                             fontFamily = DtdcBrandFontFamily,
-                            fontSize = (9.5 * minScale).sp,
+                            fontSize = (12.5 * minScale).sp,
                             fontWeight = FontWeight.Black,
-                            letterSpacing = (0.4 * minScale).sp
+                            letterSpacing = (0.5 * minScale).sp
                         )
                     }
 
-                    Spacer(modifier = Modifier.height((3 * minScale).dp))
+                    Spacer(modifier = Modifier.height((4 * minScale).dp))
 
-                    // Department Subtitle
-                    Text(
-                        text = card.department.ifBlank { "Hub Dispatch Operations" },
-                        color = Color(0xFF1E293B),
-                        fontFamily = DtdcBrandFontFamily,
-                        fontSize = (11 * minScale).sp,
-                        fontWeight = FontWeight.Bold
-                    )
+                    // FULL WIDTH HUB DELIVERY OPTIONS / DEPARTMENT DIV
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(Color(0xFFF1F5F9))
+                            .border(BorderStroke((0.8 * minScale).dp, Color(0xFFE2E8F0)))
+                            .padding(vertical = (3.5 * minScale).dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = card.department.ifBlank { "Hub Dispatch Operations" },
+                            color = Color(0xFF0F172A),
+                            fontFamily = DtdcBrandFontFamily,
+                            fontSize = (12.5 * minScale).sp,
+                            fontWeight = FontWeight.Bold,
+                            letterSpacing = (0.2 * minScale).sp
+                        )
+                    }
 
-                    Spacer(modifier = Modifier.height((8 * minScale).dp))
+                    Spacer(modifier = Modifier.height((5 * minScale).dp))
 
-                    // 2-COLUMN KEY-VALUE GRID (Exact match to reference image!)
+                    // 2-COLUMN KEY-VALUE GRID (Big Font on First Page!)
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(horizontal = (12 * minScale).dp),
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
-                        // Left Column: EMP ID and CONTACT
+                        // Left Column: EMP ID, CONTACT, and BRANCH ID (Expanded width so EMP ID is fully visible)
                         Column(
                             horizontalAlignment = Alignment.Start,
-                            modifier = Modifier.weight(1f)
+                            modifier = Modifier.weight(1.5f)
                         ) {
                             Text(
                                 text = "EMP ID:",
                                 color = Color(0xFF475569),
                                 fontFamily = DtdcBrandFontFamily,
-                                fontSize = (8.5 * minScale).sp,
-                                fontWeight = FontWeight.SemiBold
+                                fontSize = (11.5 * minScale).sp,
+                                fontWeight = FontWeight.Bold
                             )
                             Text(
                                 text = card.employeeCode.ifBlank { "DTDC/HE/2024/1609" },
                                 color = Color(0xFF0F172A),
                                 fontFamily = DtdcBrandFontFamily,
-                                fontSize = (11 * minScale).sp,
-                                fontWeight = FontWeight.Bold,
+                                fontSize = (14.5 * minScale).sp,
+                                fontWeight = FontWeight.Black,
                                 maxLines = 1,
-                                overflow = TextOverflow.Ellipsis
+                                softWrap = false
                             )
 
-                            Spacer(modifier = Modifier.height((5 * minScale).dp))
+                            Spacer(modifier = Modifier.height((4 * minScale).dp))
 
                             Text(
                                 text = "CONTACT:",
                                 color = Color(0xFF475569),
                                 fontFamily = DtdcBrandFontFamily,
-                                fontSize = (8.5 * minScale).sp,
-                                fontWeight = FontWeight.SemiBold
+                                fontSize = (11.5 * minScale).sp,
+                                fontWeight = FontWeight.Bold
                             )
                             Text(
                                 text = card.phoneNumber.ifBlank { "8655707563" },
                                 color = Color(0xFF0F172A),
                                 fontFamily = DtdcBrandFontFamily,
-                                fontSize = (11 * minScale).sp,
-                                fontWeight = FontWeight.Bold,
+                                fontSize = (15 * minScale).sp,
+                                fontWeight = FontWeight.Black,
                                 maxLines = 1,
-                                overflow = TextOverflow.Ellipsis
+                                softWrap = false
                             )
 
-                            Spacer(modifier = Modifier.height((5 * minScale).dp))
+                            Spacer(modifier = Modifier.height((4 * minScale).dp))
 
                             Text(
                                 text = "BRANCH ID:",
                                 color = Color(0xFF475569),
                                 fontFamily = DtdcBrandFontFamily,
-                                fontSize = (8.5 * minScale).sp,
-                                fontWeight = FontWeight.SemiBold
+                                fontSize = (11.5 * minScale).sp,
+                                fontWeight = FontWeight.Bold
                             )
                             Text(
                                 text = card.branchId.ifBlank { "1057" },
                                 color = Color(0xFF0F172A),
                                 fontFamily = DtdcBrandFontFamily,
-                                fontSize = (11 * minScale).sp,
-                                fontWeight = FontWeight.Bold,
+                                fontSize = (15 * minScale).sp,
+                                fontWeight = FontWeight.Black,
                                 maxLines = 1,
-                                overflow = TextOverflow.Ellipsis
+                                softWrap = false
                             )
                         }
 
-                        Spacer(modifier = Modifier.width((8 * minScale).dp))
+                        Spacer(modifier = Modifier.width((6 * minScale).dp))
 
-                        // Right Column: BLOOD GRP and VALID TILL
+                        // Right Column: BLOOD GRP and VALID TILL (Shifted to the right)
                         Column(
                             horizontalAlignment = Alignment.Start,
-                            modifier = Modifier.weight(0.9f)
+                            modifier = Modifier.weight(0.75f)
                         ) {
                             Text(
                                 text = "BLOOD GRP:",
                                 color = Color(0xFF475569),
                                 fontFamily = DtdcBrandFontFamily,
-                                fontSize = (8.5 * minScale).sp,
-                                fontWeight = FontWeight.SemiBold
+                                fontSize = (11.5 * minScale).sp,
+                                fontWeight = FontWeight.Bold
                             )
                             Text(
                                 text = card.bloodGroup.ifBlank { "B+" },
                                 color = Color(0xFF0F172A),
                                 fontFamily = DtdcBrandFontFamily,
-                                fontSize = (11 * minScale).sp,
-                                fontWeight = FontWeight.Bold
+                                fontSize = (15 * minScale).sp,
+                                fontWeight = FontWeight.Black
                             )
 
-                            Spacer(modifier = Modifier.height((5 * minScale).dp))
+                            Spacer(modifier = Modifier.height((4 * minScale).dp))
 
                             Text(
                                 text = "VALID TILL:",
                                 color = Color(0xFF475569),
                                 fontFamily = DtdcBrandFontFamily,
-                                fontSize = (8.5 * minScale).sp,
-                                fontWeight = FontWeight.SemiBold
+                                fontSize = (11.5 * minScale).sp,
+                                fontWeight = FontWeight.Bold
                             )
                             Text(
                                 text = card.validTill.ifBlank { "31 Dec 2027" },
                                 color = Color(0xFF0F172A),
                                 fontFamily = DtdcBrandFontFamily,
-                                fontSize = (11 * minScale).sp,
-                                fontWeight = FontWeight.Bold
+                                fontSize = (14.5 * minScale).sp,
+                                fontWeight = FontWeight.Black,
+                                maxLines = 1,
+                                softWrap = false
                             )
                         }
                     }
+
+                    Spacer(modifier = Modifier.height((4 * minScale).dp))
+
+                    // HARIOM ENTERPRISES ABOVE FOOTER: Big Font, DTDC Red, Camel Case
+                    Text(
+                        text = card.branchName.ifBlank { "Hariom Enterprises" }
+                            .split(" ")
+                            .filter { it.isNotBlank() }
+                            .joinToString(" ") { word -> word.lowercase().replaceFirstChar { it.uppercase() } },
+                        color = DtdcRed,
+                        fontFamily = DtdcBrandFontFamily,
+                        fontSize = (18 * minScale).sp,
+                        fontWeight = FontWeight.Black,
+                        letterSpacing = (0.3 * minScale).sp
+                    )
+
+                    Spacer(modifier = Modifier.height((3 * minScale).dp))
                 }
 
                 // SOLID DARK NAVY FOOTER (Edge-to-edge as in reference image)
@@ -492,7 +519,7 @@ fun IdCardFront(
                             text = "AUTHORIZED IDENTITY BADGE • DTDC",
                             color = Color.White,
                             fontFamily = DtdcBrandFontFamily,
-                            fontSize = (10.5 * minScale).sp,
+                            fontSize = (12 * minScale).sp,
                             fontWeight = FontWeight.Black,
                             letterSpacing = (0.5 * minScale).sp
                         )
@@ -501,7 +528,7 @@ fun IdCardFront(
                             text = "Branch: ${card.branchId.ifBlank { "1057" }} | ${card.branchName.ifBlank { "Hariom Enterprises" }}",
                             color = DtdcGold,
                             fontFamily = DtdcBrandFontFamily,
-                            fontSize = (9.5 * minScale).sp,
+                            fontSize = (11 * minScale).sp,
                             fontWeight = FontWeight.Bold
                         )
                     }
@@ -537,7 +564,7 @@ private fun DetailRow(
             Text(
                 text = value,
                 color = if (isEmergency) DtdcRed else Color(0xFF1E293B),
-                fontFamily = DtdcCorporateFontFamily,
+                fontFamily = DtdcBrandFontFamily,
                 fontSize = (11.5 * scale).sp,
                 fontWeight = FontWeight.SemiBold,
                 maxLines = 1,
@@ -602,14 +629,14 @@ fun IdCardBack(card: EmployeeIdCard) {
                         modifier = Modifier
                             .fillMaxWidth()
                             .background(DtdcNavy)
-                            .padding(vertical = (4.5 * minScale).dp),
+                            .padding(vertical = (5 * minScale).dp),
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
                             text = "TERMS OF IDENTITY & CONSIGNMENT AUTHORITY",
                             color = DtdcGold,
                             fontFamily = DtdcBrandFontFamily,
-                            fontSize = (9 * minScale).sp,
+                            fontSize = (11.5 * minScale).sp,
                             fontWeight = FontWeight.Black,
                             letterSpacing = (0.4 * minScale).sp
                         )
@@ -633,12 +660,12 @@ fun IdCardBack(card: EmployeeIdCard) {
                         text = "AUTHORIZATION NOTICE:",
                         color = DtdcNavy,
                         fontFamily = DtdcBrandFontFamily,
-                        fontSize = (11 * minScale).sp,
+                        fontSize = (13 * minScale).sp,
                         fontWeight = FontWeight.Black,
                         letterSpacing = (0.4 * minScale).sp
                     )
 
-                    Spacer(modifier = Modifier.height((1.5 * minScale).dp))
+                    Spacer(modifier = Modifier.height((2 * minScale).dp))
 
                     val policies = listOf(
                         "1. Authorized delivery representative of HARIOM ENTERPRISES (DTDC Partner).",
@@ -651,10 +678,10 @@ fun IdCardBack(card: EmployeeIdCard) {
                         Text(
                             text = policy,
                             color = Color(0xFF1E293B),
-                            fontFamily = DtdcCorporateFontFamily,
-                            fontSize = (8.5 * minScale).sp,
-                            fontWeight = FontWeight.SemiBold,
-                            lineHeight = (11.5 * minScale).sp,
+                            fontFamily = DtdcBrandFontFamily,
+                            fontSize = (11 * minScale).sp,
+                            fontWeight = FontWeight.Bold,
+                            lineHeight = (15 * minScale).sp,
                             modifier = Modifier.padding(vertical = (0.5 * minScale).dp)
                         )
                     }
@@ -674,27 +701,27 @@ fun IdCardBack(card: EmployeeIdCard) {
                                 text = "HUB OFFICE & RETURN ADDRESS (BRANCH ID: ${card.branchId}):",
                                 color = DtdcNavy,
                                 fontFamily = DtdcBrandFontFamily,
-                                fontSize = (9 * minScale).sp,
+                                fontSize = (11 * minScale).sp,
                                 fontWeight = FontWeight.Black,
                                 letterSpacing = (0.3 * minScale).sp
                             )
-                            Spacer(modifier = Modifier.height((0.5 * minScale).dp))
+                            Spacer(modifier = Modifier.height((1 * minScale).dp))
                             Text(
                                 text = card.branchName.uppercase(),
                                 color = DtdcRed,
                                 fontFamily = DtdcBrandFontFamily,
-                                fontSize = (13.5 * minScale).sp,
+                                fontSize = (15.5 * minScale).sp,
                                 fontWeight = FontWeight.Black,
                                 letterSpacing = (0.5 * minScale).sp
                             )
-                            Spacer(modifier = Modifier.height((0.5 * minScale).dp))
+                            Spacer(modifier = Modifier.height((1 * minScale).dp))
                             Text(
                                 text = card.branchAddress,
                                 color = Color(0xFF0F172A),
-                                fontFamily = DtdcCorporateFontFamily,
-                                fontSize = (8.5 * minScale).sp,
-                                fontWeight = FontWeight.SemiBold,
-                                lineHeight = (11.5 * minScale).sp
+                                fontFamily = DtdcBrandFontFamily,
+                                fontSize = (11 * minScale).sp,
+                                fontWeight = FontWeight.Bold,
+                                lineHeight = (14.5 * minScale).sp
                             )
                             Spacer(modifier = Modifier.height((3 * minScale).dp))
 
@@ -705,7 +732,7 @@ fun IdCardBack(card: EmployeeIdCard) {
                                 border = BorderStroke((0.8 * minScale).dp, Color(0xFFE2E8F0)),
                                 modifier = Modifier.fillMaxWidth()
                             ) {
-                                Column(modifier = Modifier.padding(horizontal = (6 * minScale).dp, vertical = (3.5 * minScale).dp)) {
+                                Column(modifier = Modifier.padding(horizontal = (6 * minScale).dp, vertical = (4 * minScale).dp)) {
                                     Row(
                                         modifier = Modifier.fillMaxWidth(),
                                         horizontalArrangement = Arrangement.SpaceBetween,
@@ -715,18 +742,18 @@ fun IdCardBack(card: EmployeeIdCard) {
                                             text = "CONTACT NO:",
                                             color = DtdcNavy,
                                             fontFamily = DtdcBrandFontFamily,
-                                            fontSize = (9.5 * minScale).sp,
+                                            fontSize = (11.5 * minScale).sp,
                                             fontWeight = FontWeight.Black
                                         )
                                         Text(
                                             text = card.phoneNumber,
                                             color = Color(0xFF0F172A),
-                                            fontFamily = DtdcCorporateFontFamily,
-                                            fontSize = (9.5 * minScale).sp,
-                                            fontWeight = FontWeight.Bold
+                                            fontFamily = DtdcBrandFontFamily,
+                                            fontSize = (12 * minScale).sp,
+                                            fontWeight = FontWeight.Black
                                         )
                                     }
-                                    Spacer(modifier = Modifier.height((1.5 * minScale).dp))
+                                    Spacer(modifier = Modifier.height((2 * minScale).dp))
                                     Row(
                                         modifier = Modifier.fillMaxWidth(),
                                         horizontalArrangement = Arrangement.SpaceBetween,
@@ -736,14 +763,14 @@ fun IdCardBack(card: EmployeeIdCard) {
                                             text = "EMERGENCY HELPLINE:",
                                             color = DtdcRed,
                                             fontFamily = DtdcBrandFontFamily,
-                                            fontSize = (9.5 * minScale).sp,
+                                            fontSize = (11.5 * minScale).sp,
                                             fontWeight = FontWeight.Black
                                         )
                                         Text(
                                             text = card.emergencyContact,
                                             color = DtdcRed,
                                             fontFamily = DtdcBrandFontFamily,
-                                            fontSize = (9.5 * minScale).sp,
+                                            fontSize = (12 * minScale).sp,
                                             fontWeight = FontWeight.Black
                                         )
                                     }
@@ -770,7 +797,7 @@ fun IdCardBack(card: EmployeeIdCard) {
                             text = "* ${card.employeeCode} • BRANCH: ${card.branchId} *",
                             color = Color.Black,
                             fontFamily = DtdcBrandFontFamily,
-                            fontSize = (9.5 * minScale).sp,
+                            fontSize = (11.5 * minScale).sp,
                             fontWeight = FontWeight.Bold,
                             letterSpacing = (0.8 * minScale).sp
                         )
@@ -790,7 +817,7 @@ fun IdCardBack(card: EmployeeIdCard) {
                             text = "AUTHORIZED IDENTITY BADGE • DTDC",
                             color = Color.White,
                             fontFamily = DtdcBrandFontFamily,
-                            fontSize = (10.5 * minScale).sp,
+                            fontSize = (12 * minScale).sp,
                             fontWeight = FontWeight.Black,
                             letterSpacing = (0.5 * minScale).sp
                         )
@@ -799,7 +826,7 @@ fun IdCardBack(card: EmployeeIdCard) {
                             text = "Branch: ${card.branchId.ifBlank { "1057" }} | ${card.branchName.ifBlank { "Hariom Enterprises" }}",
                             color = DtdcGold,
                             fontFamily = DtdcBrandFontFamily,
-                            fontSize = (9.5 * minScale).sp,
+                            fontSize = (11 * minScale).sp,
                             fontWeight = FontWeight.Bold
                         )
                     }
