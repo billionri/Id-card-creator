@@ -8,6 +8,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -43,13 +44,20 @@ import androidx.compose.material.icons.filled.Save
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.Business
+import androidx.compose.material.icons.filled.CorporateFare
+import androidx.compose.material.icons.filled.ElectricBolt
+import androidx.compose.material.icons.filled.Upload
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilterChip
+import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -61,6 +69,8 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.ui.layout.ContentScale
+import coil.compose.AsyncImage
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -134,6 +144,30 @@ fun CardGeneratorScreen(
             }
         }
     }
+
+    val companyLogoPickerLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.PickVisualMedia()
+    ) { uri: Uri? ->
+        if (uri != null) {
+            try {
+                val inputStream: InputStream? = context.contentResolver.openInputStream(uri)
+                val bitmap = BitmapFactory.decodeStream(inputStream)
+                inputStream?.close()
+
+                val file = File(context.filesDir, "company_logo_${System.currentTimeMillis()}.png")
+                val fos = FileOutputStream(file)
+                bitmap.compress(android.graphics.Bitmap.CompressFormat.PNG, 100, fos)
+                fos.close()
+
+                viewModel.updateCompanyLogo(file.absolutePath)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
+
+    var aiTargetCompany by remember { mutableStateOf(card.companyName.ifBlank { "DTDC" }) }
+    var aiInstructionPrompt by remember { mutableStateOf("") }
 
     Scaffold(
         topBar = {
@@ -557,6 +591,355 @@ fun CardGeneratorScreen(
 
             Spacer(modifier = Modifier.height(14.dp))
 
+            // DYNAMIC COMPANY CREATION & AI DIRECT ID GENERATOR
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 14.dp),
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+                shape = RoundedCornerShape(16.dp),
+                border = BorderStroke(1.5.dp, Color(0xFF6366F1).copy(alpha = 0.4f)),
+                elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+            ) {
+                Column(modifier = Modifier.padding(16.dp)) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Surface(
+                                shape = CircleShape,
+                                color = Color(0xFFEEF2FF),
+                                modifier = Modifier.size(36.dp)
+                            ) {
+                                Box(contentAlignment = Alignment.Center) {
+                                    Icon(
+                                        imageVector = Icons.Default.ElectricBolt,
+                                        contentDescription = "AI Direct ID",
+                                        tint = Color(0xFF4F46E5),
+                                        modifier = Modifier.size(20.dp)
+                                    )
+                                }
+                            }
+                            Spacer(modifier = Modifier.width(10.dp))
+                            Column {
+                                Text(
+                                    text = "AI Direct ID Creator",
+                                    fontSize = 18.sp,
+                                    fontWeight = FontWeight.Black,
+                                    color = DtdcNavy
+                                )
+                                Text(
+                                    text = "Generate ID directly for any company",
+                                    fontSize = 12.sp,
+                                    color = Color(0xFF64748B)
+                                )
+                            }
+                        }
+
+                        Surface(
+                            color = Color(0xFF4F46E5).copy(alpha = 0.1f),
+                            shape = RoundedCornerShape(8.dp)
+                        ) {
+                            Text(
+                                text = "✨ Dynamic AI",
+                                color = Color(0xFF4F46E5),
+                                fontSize = 11.sp,
+                                fontWeight = FontWeight.Bold,
+                                modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
+                            )
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(12.dp))
+
+                    Text(
+                        text = "Quick Company Presets:",
+                        fontSize = 12.5.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = DtdcNavy
+                    )
+                    Spacer(modifier = Modifier.height(4.dp))
+
+                    // Preset Chips
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(6.dp)
+                    ) {
+                        listOf("DTDC", "Hariom Ent.", "Amazon", "FedEx", "Blue Dart").forEach { comp ->
+                            val isSelected = card.companyName.equals(comp, ignoreCase = true) || aiTargetCompany.equals(comp, ignoreCase = true)
+                            FilterChip(
+                                selected = isSelected,
+                                onClick = {
+                                    aiTargetCompany = comp
+                                    viewModel.updateCompanyName(comp)
+                                },
+                                label = { Text(comp, fontSize = 11.5.sp, fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal) },
+                                colors = FilterChipDefaults.filterChipColors(
+                                    selectedContainerColor = DtdcNavy,
+                                    selectedLabelColor = Color.White
+                                )
+                            )
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(10.dp))
+
+                    // Company Name input
+                    OutlinedTextField(
+                        value = card.companyName,
+                        onValueChange = {
+                            aiTargetCompany = it
+                            viewModel.updateCompanyName(it)
+                        },
+                        label = { Text("Company Name (e.g. DTDC, Amazon, FedEx)", fontSize = 14.sp, fontWeight = FontWeight.Bold) },
+                        leadingIcon = {
+                            Icon(imageVector = Icons.Default.Business, contentDescription = null, tint = DtdcNavy)
+                        },
+                        singleLine = true,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .testTag("input_company_name_ai")
+                    )
+
+                    Spacer(modifier = Modifier.height(10.dp))
+
+                    // Optional AI instruction prompt
+                    OutlinedTextField(
+                        value = aiInstructionPrompt,
+                        onValueChange = { aiInstructionPrompt = it },
+                        label = { Text("Prompt / Role Instructions (Optional)", fontSize = 14.sp) },
+                        placeholder = { Text("e.g. Senior Delivery Partner, Blood O+, Delhi South Hub", fontSize = 13.sp) },
+                        leadingIcon = {
+                            Icon(imageVector = Icons.Default.AutoAwesome, contentDescription = null, tint = Color(0xFF4F46E5))
+                        },
+                        singleLine = true,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .testTag("ai_company_prompt_input")
+                    )
+
+                    Spacer(modifier = Modifier.height(12.dp))
+
+                    // AI Direct ID Action Button
+                    Button(
+                        onClick = {
+                            viewModel.generateCompanyIdWithAi(
+                                company = if (card.companyName.isNotBlank()) card.companyName else aiTargetCompany,
+                                prompt = aiInstructionPrompt
+                            )
+                        },
+                        enabled = !uiState.isAiAnalyzing,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(48.dp)
+                            .testTag("ai_direct_id_button"),
+                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4F46E5)),
+                        shape = RoundedCornerShape(12.dp)
+                    ) {
+                        if (uiState.isAiAnalyzing) {
+                            CircularProgressIndicator(
+                                modifier = Modifier.size(20.dp),
+                                color = Color.White,
+                                strokeWidth = 2.dp
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text("AI is Generating ID Directly...", fontSize = 14.sp, fontWeight = FontWeight.Bold)
+                        } else {
+                            Icon(
+                                imageVector = Icons.Default.ElectricBolt,
+                                contentDescription = null,
+                                modifier = Modifier.size(18.dp)
+                            )
+                            Spacer(modifier = Modifier.width(6.dp))
+                            Text(
+                                text = "⚡ AI Will ID Directly (${card.companyName.ifBlank { "Company" }})",
+                                fontSize = 14.sp,
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.height(14.dp))
+
+            // DYNAMIC COMPANY LOGO & BRANDING SECTION
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 14.dp),
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+                shape = RoundedCornerShape(16.dp),
+                elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+            ) {
+                Column(modifier = Modifier.padding(16.dp)) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Icon(
+                                imageVector = Icons.Default.CorporateFare,
+                                contentDescription = "Company Branding",
+                                tint = DtdcNavy,
+                                modifier = Modifier.size(22.dp)
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text(
+                                text = "Company Logo & Branding",
+                                fontSize = 18.sp,
+                                fontWeight = FontWeight.Black,
+                                color = DtdcNavy
+                            )
+                        }
+
+                        if (card.companyLogoPath != null) {
+                            Surface(
+                                color = Color(0xFFE8F5E9),
+                                shape = RoundedCornerShape(6.dp)
+                            ) {
+                                Text(
+                                    text = "Custom Logo",
+                                    color = Color(0xFF1B5E20),
+                                    fontSize = 11.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
+                                )
+                            }
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(10.dp))
+
+                    // Current Logo Preview + Upload Action
+                    Surface(
+                        color = Color(0xFFF8FAFC),
+                        shape = RoundedCornerShape(12.dp),
+                        border = BorderStroke(1.dp, Color(0xFFE2E8F0)),
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(12.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Surface(
+                                    color = Color.White,
+                                    shape = RoundedCornerShape(8.dp),
+                                    border = BorderStroke(1.dp, Color(0xFFCBD5E1)),
+                                    modifier = Modifier
+                                        .size(70.dp, 44.dp)
+                                        .clip(RoundedCornerShape(8.dp))
+                                ) {
+                                    Box(contentAlignment = Alignment.Center) {
+                                        if (card.companyLogoPath != null) {
+                                            AsyncImage(
+                                                model = File(card.companyLogoPath),
+                                                contentDescription = "Uploaded Company Logo",
+                                                contentScale = ContentScale.Fit,
+                                                modifier = Modifier.fillMaxSize()
+                                            )
+                                        } else {
+                                            Image(
+                                                painter = painterResource(id = R.drawable.ic_dtdc_logo),
+                                                contentDescription = "Default DTDC Logo",
+                                                modifier = Modifier.fillMaxSize()
+                                            )
+                                        }
+                                    }
+                                }
+
+                                Spacer(modifier = Modifier.width(12.dp))
+
+                                Column {
+                                    Text(
+                                        text = if (card.companyLogoPath != null) "Custom Logo Uploaded" else "Default DTDC Logo",
+                                        fontWeight = FontWeight.Bold,
+                                        fontSize = 13.5.sp,
+                                        color = DtdcNavy
+                                    )
+                                    Text(
+                                        text = "Visible on Front & Back header",
+                                        fontSize = 11.5.sp,
+                                        color = Color(0xFF64748B)
+                                    )
+                                }
+                            }
+
+                            Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                                Button(
+                                    onClick = {
+                                        companyLogoPickerLauncher.launch(
+                                            PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+                                        )
+                                    },
+                                    colors = ButtonDefaults.buttonColors(containerColor = DtdcNavy),
+                                    shape = RoundedCornerShape(8.dp),
+                                    modifier = Modifier.testTag("upload_company_logo_btn")
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Default.Upload,
+                                        contentDescription = "Upload Logo",
+                                        modifier = Modifier.size(16.dp)
+                                    )
+                                    Spacer(modifier = Modifier.width(4.dp))
+                                    Text("Upload Logo", fontSize = 12.sp, fontWeight = FontWeight.Bold)
+                                }
+
+                                if (card.companyLogoPath != null) {
+                                    IconButton(
+                                        onClick = { viewModel.updateCompanyLogo(null) }
+                                    ) {
+                                        Icon(
+                                            imageVector = Icons.Default.Refresh,
+                                            contentDescription = "Reset Logo",
+                                            tint = DtdcRed
+                                        )
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(10.dp))
+
+                    // Company Tagline / Partner designation
+                    OutlinedTextField(
+                        value = card.companyTagline,
+                        onValueChange = { viewModel.updateCompanyTagline(it) },
+                        label = { Text("Header Tagline (Under Logo)", fontSize = 14.sp, fontWeight = FontWeight.Bold) },
+                        placeholder = { Text("AUTH. CHANNEL PARTNER", fontSize = 13.sp) },
+                        singleLine = true,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .testTag("input_company_tagline")
+                    )
+
+                    Spacer(modifier = Modifier.height(6.dp))
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(6.dp)
+                    ) {
+                        listOf("AUTH. CHANNEL PARTNER", "OFFICIAL IDENTITY BADGE", "DELIVERY PARTNER").forEach { tag ->
+                            val isSelected = card.companyTagline.equals(tag, ignoreCase = true)
+                            FilterChip(
+                                selected = isSelected,
+                                onClick = { viewModel.updateCompanyTagline(tag) },
+                                label = { Text(tag, fontSize = 10.5.sp) }
+                            )
+                        }
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.height(14.dp))
+
             // Photo Upload & AI Badge Verification Section
             Card(
                 modifier = Modifier
@@ -691,6 +1074,23 @@ fun CardGeneratorScreen(
                     }
 
                     Spacer(modifier = Modifier.height(14.dp))
+
+                    // Company Name
+                    OutlinedTextField(
+                        value = card.companyName,
+                        onValueChange = { viewModel.updateCompanyName(it) },
+                        label = { Text("Company Name", fontSize = 16.sp, fontWeight = FontWeight.Bold) },
+                        textStyle = TextStyle(fontSize = 17.5.sp, fontWeight = FontWeight.SemiBold),
+                        leadingIcon = {
+                            Icon(imageVector = Icons.Default.Business, contentDescription = null, tint = DtdcNavy)
+                        },
+                        singleLine = true,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .testTag("input_company_name")
+                    )
+
+                    Spacer(modifier = Modifier.height(12.dp))
 
                     // Full Name (default Rashid Alam)
                     OutlinedTextField(

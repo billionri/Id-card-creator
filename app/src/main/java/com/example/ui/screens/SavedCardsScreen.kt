@@ -86,6 +86,7 @@ fun SavedCardsScreen(
         } else {
             val q = searchQuery.trim().lowercase()
             savedCards.filter { card ->
+                card.companyName.lowercase().contains(q) ||
                 card.employeeCode.lowercase().contains(q) ||
                 card.fullName.lowercase().contains(q) ||
                 card.phoneNumber.lowercase().contains(q) ||
@@ -346,20 +347,35 @@ private fun SavedCardRow(
                         color = DtdcNavy
                     )
 
-                    Spacer(modifier = Modifier.height(2.dp))
+                    Spacer(modifier = Modifier.height(3.dp))
 
-                    // EMP ID Pill Badge
-                    Surface(
-                        color = DtdcNavy.copy(alpha = 0.08f),
-                        shape = RoundedCornerShape(6.dp)
-                    ) {
-                        Text(
-                            text = "EMP ID: ${card.employeeCode}",
-                            color = DtdcNavy,
-                            fontSize = 12.sp,
-                            fontWeight = FontWeight.Black,
-                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.5.dp)
-                        )
+                    // EMP ID & Company Badge Row
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Surface(
+                            color = DtdcNavy.copy(alpha = 0.08f),
+                            shape = RoundedCornerShape(6.dp)
+                        ) {
+                            Text(
+                                text = "EMP ID: ${card.employeeCode}",
+                                color = DtdcNavy,
+                                fontSize = 12.sp,
+                                fontWeight = FontWeight.Black,
+                                modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.5.dp)
+                            )
+                        }
+                        Spacer(modifier = Modifier.width(6.dp))
+                        Surface(
+                            color = Color(0xFF4F46E5).copy(alpha = 0.12f),
+                            shape = RoundedCornerShape(6.dp)
+                        ) {
+                            Text(
+                                text = card.companyName.ifBlank { "DTDC" }.uppercase(),
+                                color = Color(0xFF4338CA),
+                                fontSize = 11.sp,
+                                fontWeight = FontWeight.Black,
+                                modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.5.dp)
+                            )
+                        }
                     }
 
                     Spacer(modifier = Modifier.height(4.dp))

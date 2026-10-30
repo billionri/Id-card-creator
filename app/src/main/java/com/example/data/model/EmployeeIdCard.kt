@@ -7,6 +7,9 @@ import androidx.room.PrimaryKey
 data class EmployeeIdCard(
     @PrimaryKey(autoGenerate = true)
     val id: Long = 0,
+    val companyName: String = "DTDC",
+    val companyLogoPath: String? = null,
+    val companyTagline: String = "AUTH. CHANNEL PARTNER",
     val fullName: String = "Rashid Alam",
     val employeeCode: String = "DTDC/HE/2024/1609",
     val designation: String = "Delivery Associate",

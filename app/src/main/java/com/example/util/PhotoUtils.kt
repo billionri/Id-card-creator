@@ -50,8 +50,9 @@ object PhotoUtils {
             bgPaint.color = Color.WHITE
             canvas.drawRoundRect(RectF(0f, 0f, width.toFloat(), height.toFloat()), 32f, 32f, bgPaint)
 
-            // TOP HEADER: White section with DTDC Official Logo
-            val logoBmp = try {
+            // TOP HEADER: White section with Company Logo (Custom uploaded or DTDC default)
+            val customLogoBmp = loadBitmapFromPath(card.companyLogoPath)
+            val logoBmp = customLogoBmp ?: try {
                 BitmapFactory.decodeResource(context.resources, R.drawable.ic_dtdc_logo)
             } catch (e: Exception) {
                 null
@@ -73,7 +74,7 @@ object PhotoUtils {
                 canvas.drawBitmap(logoBmp, null, logoRect, null)
             }
 
-            // Dark Navy Horizontal Banner: AUTH. CHANNEL PARTNER: HARIOM ENTERPRISES
+            // Dark Navy Horizontal Banner: Dynamic Tagline & Branch
             val navyPaint = Paint().apply {
                 isAntiAlias = true
                 color = Color.parseColor("#0A235C")
@@ -88,7 +89,7 @@ object PhotoUtils {
                 isFakeBoldText = true
                 textAlign = Paint.Align.CENTER
             }
-            val partnerText = "AUTH. CHANNEL PARTNER: ${card.branchName.uppercase()}"
+            val partnerText = "${card.companyTagline.uppercase()}: ${card.branchName.uppercase()}"
             canvas.drawText(partnerText, width / 2f, 278f, partnerTextPaint)
 
             // Red Accent Stripe
@@ -281,15 +282,17 @@ object PhotoUtils {
                 isFakeBoldText = true
                 textAlign = Paint.Align.CENTER
             }
-            canvas.drawText("AUTHORIZED IDENTITY BADGE • DTDC", width / 2f, 1500f, footerWhitePaint)
+            val badgeCompany = card.companyName.ifBlank { "DTDC" }.uppercase()
+            canvas.drawText("AUTHORIZED IDENTITY BADGE • $badgeCompany", width / 2f, 1500f, footerWhitePaint)
             canvas.drawText("Branch: ${card.branchId.ifBlank { "1057" }} | ${card.branchName.ifBlank { "Hariom Enterprises" }}", width / 2f, 1545f, footerGoldPaint)
 
         } else {
             // BACK SIDE (Matching Pure White Corporate Theme)
             canvas.drawRoundRect(RectF(0f, 0f, width.toFloat(), height.toFloat()), 32f, 32f, bgPaint)
 
-            // Top Header: Clean White Header with Official DTDC Logo (matching front side)
-            val logoBmp = try {
+            // Top Header: Clean White Header with Company Logo (Custom or DTDC default)
+            val backCustomLogoBmp = loadBitmapFromPath(card.companyLogoPath)
+            val logoBmp = backCustomLogoBmp ?: try {
                 BitmapFactory.decodeResource(context.resources, R.drawable.ic_dtdc_logo)
             } catch (e: Exception) {
                 null
@@ -362,7 +365,7 @@ object PhotoUtils {
             textY += 46f
 
             val terms = listOf(
-                "1. Authorized delivery representative of HARIOM ENTERPRISES (DTDC Partner).",
+                "1. Authorized delivery representative of ${card.branchName.uppercase()} (${card.companyName.uppercase()} Partner).",
                 "2. Identity card is strictly non-transferable and must be presented on demand.",
                 "3. Authorized to handle courier, parcels, and express mail delivery.",
                 "4. If found, please return to the Hub Office address listed below or call helpline."
@@ -566,7 +569,8 @@ object PhotoUtils {
                 isFakeBoldText = true
                 textAlign = Paint.Align.CENTER
             }
-            canvas.drawText("AUTHORIZED IDENTITY BADGE • DTDC", width / 2f, 1495f, footerWhitePaint)
+            val badgeCompany = card.companyName.ifBlank { "DTDC" }.uppercase()
+            canvas.drawText("AUTHORIZED IDENTITY BADGE • $badgeCompany", width / 2f, 1495f, footerWhitePaint)
             canvas.drawText("Branch: ${card.branchId.ifBlank { "1057" }} | ${card.branchName.ifBlank { "Hariom Enterprises" }}", width / 2f, 1540f, footerGoldPaint)
         }
 
@@ -575,7 +579,8 @@ object PhotoUtils {
 
     fun saveCardToGallery(context: Context, card: EmployeeIdCard, isFront: Boolean): Boolean {
         val bitmap = createCardBitmap(context, card, isFront)
-        val filename = "DTDC_ID_${card.fullName.replace(" ", "_")}_${if (isFront) "FRONT" else "BACK"}_${System.currentTimeMillis()}.png"
+        val safeCompanyName = card.companyName.ifBlank { "Company" }.replace(" ", "_")
+        val filename = "${safeCompanyName}_ID_${card.fullName.replace(" ", "_")}_${if (isFront) "FRONT" else "BACK"}_${System.currentTimeMillis()}.png"
 
         return try {
             val outputStream: OutputStream?
@@ -583,13 +588,13 @@ object PhotoUtils {
                 val contentValues = ContentValues().apply {
                     put(MediaStore.MediaColumns.DISPLAY_NAME, filename)
                     put(MediaStore.MediaColumns.MIME_TYPE, "image/png")
-                    put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_PICTURES + "/Hariom_DTDC_IDs")
+                    put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_PICTURES + "/ID_Cards")
                 }
                 val uri = context.contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues)
                 outputStream = uri?.let { context.contentResolver.openOutputStream(it) }
             } else {
                 val imagesDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).toString()
-                val dir = File(imagesDir, "Hariom_DTDC_IDs")
+                val dir = File(imagesDir, "ID_Cards")
                 if (!dir.exists()) dir.mkdirs()
                 val image = File(dir, filename)
                 outputStream = FileOutputStream(image)
@@ -612,7 +617,8 @@ object PhotoUtils {
             val bitmap = createCardBitmap(context, card, isFront)
             val cachePath = File(context.cacheDir, "shared_cards")
             cachePath.mkdirs()
-            val file = File(cachePath, "DTDC_Badge_${if (isFront) "FRONT" else "BACK"}.png")
+            val safeCompanyName = card.companyName.ifBlank { "Badge" }.replace(" ", "_")
+            val file = File(cachePath, "${safeCompanyName}_Badge_${if (isFront) "FRONT" else "BACK"}.png")
             val fileOutputStream = FileOutputStream(file)
             bitmap.compress(Bitmap.CompressFormat.PNG, 100, fileOutputStream)
             fileOutputStream.close()

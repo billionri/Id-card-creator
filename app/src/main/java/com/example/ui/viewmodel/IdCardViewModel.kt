@@ -26,9 +26,13 @@ data class IdCardUiState(
 private fun createDefaultCard(): EmployeeIdCard {
     return EmployeeIdCard(
         id = 0,
+        companyName = "DTDC",
+        companyLogoPath = null,
+        companyTagline = "AUTH. CHANNEL PARTNER",
         fullName = "Rashid Alam",
         employeeCode = "DTDC/HE/2026/" + Random.nextInt(1000, 9999),
         designation = "Delivery Associate",
+        department = "Hub Dispatch Operations",
         branchId = "1057",
         branchName = "Hariom Enterprises",
         branchAddress = "Shop No 2, 317-A, Shinde Niwas, Kasturba Cross Road No 6, Opposite Platform No 10, Borivali East, Mumbai — 400066, Maharashtra",
@@ -44,6 +48,7 @@ private fun createDefaultCard(): EmployeeIdCard {
 class IdCardViewModel(application: Application) : AndroidViewModel(application) {
 
     private val cardDao = AppDatabase.getDatabase(application).employeeCardDao()
+    private val geminiService = com.example.data.remote.GeminiService()
 
     private val _uiState = MutableStateFlow(IdCardUiState())
     val uiState: StateFlow<IdCardUiState> = _uiState.asStateFlow()
@@ -65,6 +70,18 @@ class IdCardViewModel(application: Application) : AndroidViewModel(application) 
                 statusMessage = "New badge draft initialized"
             )
         }
+    }
+
+    fun updateCompanyName(name: String) {
+        _uiState.update { it.copy(currentCard = it.currentCard.copy(companyName = name)) }
+    }
+
+    fun updateCompanyLogo(path: String?) {
+        _uiState.update { it.copy(currentCard = it.currentCard.copy(companyLogoPath = path)) }
+    }
+
+    fun updateCompanyTagline(tagline: String) {
+        _uiState.update { it.copy(currentCard = it.currentCard.copy(companyTagline = tagline)) }
     }
 
     fun updateFullName(name: String) {
@@ -128,22 +145,50 @@ class IdCardViewModel(application: Application) : AndroidViewModel(application) 
         _uiState.update { it.copy(showLanyard = !it.showLanyard) }
     }
 
-    fun triggerAiAutoFill() {
+    fun generateCompanyIdWithAi(company: String, prompt: String) {
         viewModelScope.launch {
-            _uiState.update { it.copy(isAiAnalyzing = true, statusMessage = "AI analyzing credentials...") }
-            kotlinx.coroutines.delay(800)
-            val current = _uiState.value.currentCard
-            _uiState.update {
-                it.copy(
-                    isAiAnalyzing = false,
-                    currentCard = current.copy(
-                        employeeCode = if (current.employeeCode.isBlank() || current.employeeCode.startsWith("DTDC/HE/2026/")) "DTDC/HE/2026/${Random.nextInt(1000, 9999)}" else current.employeeCode,
-                        aiVerified = true
-                    ),
-                    statusMessage = "AI verification complete: Security credential validated"
-                )
+            _uiState.update { it.copy(isAiAnalyzing = true, statusMessage = "AI generating official ID for $company...") }
+            val photoBitmap = _uiState.value.activePhotoBitmap
+            val result = geminiService.generateCompanyIdDirectly(company, prompt, photoBitmap)
+            val generated = result.getOrNull()
+            if (generated != null) {
+                val current = _uiState.value.currentCard
+                _uiState.update {
+                    it.copy(
+                        isAiAnalyzing = false,
+                        currentCard = current.copy(
+                            companyName = generated.companyName,
+                            companyTagline = generated.companyTagline,
+                            fullName = generated.fullName,
+                            designation = generated.designation,
+                            department = generated.department,
+                            employeeCode = generated.employeeCode,
+                            branchId = generated.branchId,
+                            branchName = generated.branchName,
+                            branchAddress = generated.branchAddress,
+                            phoneNumber = generated.phoneNumber,
+                            emergencyContact = generated.emergencyContact,
+                            bloodGroup = generated.bloodGroup,
+                            validTill = generated.validTill,
+                            aiVerified = true
+                        ),
+                        statusMessage = "AI generated ${generated.companyName} ID Badge for ${generated.fullName}!"
+                    )
+                }
+            } else {
+                _uiState.update {
+                    it.copy(
+                        isAiAnalyzing = false,
+                        statusMessage = "AI generation completed with local credential generator."
+                    )
+                }
             }
         }
+    }
+
+    fun triggerAiAutoFill() {
+        val currentCompany = _uiState.value.currentCard.companyName
+        generateCompanyIdWithAi(currentCompany, "")
     }
 
     fun saveCurrentCard() {

@@ -227,6 +227,7 @@ fun IdCardFront(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     // White logo container (Enlarged DTDC logo)
+                    // Dynamic Company Logo (Uploaded logo or DTDC default)
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -234,15 +235,24 @@ fun IdCardFront(
                             .padding(horizontal = (6 * minScale).dp, vertical = (2 * minScale).dp),
                         contentAlignment = Alignment.Center
                     ) {
-                        Image(
-                            painter = painterResource(id = R.drawable.ic_dtdc_logo),
-                            contentDescription = "DTDC Official Brand Logo",
-                            contentScale = ContentScale.Fit,
-                            modifier = Modifier.fillMaxSize()
-                        )
+                        if (!card.companyLogoPath.isNullOrBlank()) {
+                            AsyncImage(
+                                model = card.companyLogoPath,
+                                contentDescription = "${card.companyName} Brand Logo",
+                                contentScale = ContentScale.Fit,
+                                modifier = Modifier.fillMaxSize()
+                            )
+                        } else {
+                            Image(
+                                painter = painterResource(id = R.drawable.ic_dtdc_logo),
+                                contentDescription = "DTDC Official Brand Logo",
+                                contentScale = ContentScale.Fit,
+                                modifier = Modifier.fillMaxSize()
+                            )
+                        }
                     }
 
-                    // Dark Navy Banner: AUTH. CHANNEL PARTNER: HARIOM ENTERPRISES
+                    // Dark Navy Banner: Dynamic Tagline and Branch Name
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -251,7 +261,7 @@ fun IdCardFront(
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
-                            text = "AUTH. CHANNEL PARTNER: ${card.branchName.uppercase()}",
+                            text = "${card.companyTagline.uppercase()}: ${card.branchName.uppercase()}",
                             color = DtdcGold,
                             fontFamily = DtdcBrandFontFamily,
                             fontSize = (11.5 * minScale).sp,
@@ -516,7 +526,7 @@ fun IdCardFront(
                 ) {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         Text(
-                            text = "AUTHORIZED IDENTITY BADGE • DTDC",
+                            text = "AUTHORIZED IDENTITY BADGE • ${card.companyName.uppercase().ifBlank { "DTDC" }}",
                             color = Color.White,
                             fontFamily = DtdcBrandFontFamily,
                             fontSize = (12 * minScale).sp,
@@ -609,7 +619,7 @@ fun IdCardBack(card: EmployeeIdCard) {
                     modifier = Modifier.fillMaxWidth(),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    // White logo container (Enlarged DTDC logo)
+                    // Dynamic Company Logo (Uploaded logo or DTDC default)
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -617,12 +627,21 @@ fun IdCardBack(card: EmployeeIdCard) {
                             .padding(horizontal = (6 * minScale).dp, vertical = (2 * minScale).dp),
                         contentAlignment = Alignment.Center
                     ) {
-                        Image(
-                            painter = painterResource(id = R.drawable.ic_dtdc_logo),
-                            contentDescription = "DTDC Official Brand Logo",
-                            contentScale = ContentScale.Fit,
-                            modifier = Modifier.fillMaxSize()
-                        )
+                        if (!card.companyLogoPath.isNullOrBlank()) {
+                            AsyncImage(
+                                model = card.companyLogoPath,
+                                contentDescription = "${card.companyName} Brand Logo",
+                                contentScale = ContentScale.Fit,
+                                modifier = Modifier.fillMaxSize()
+                            )
+                        } else {
+                            Image(
+                                painter = painterResource(id = R.drawable.ic_dtdc_logo),
+                                contentDescription = "DTDC Official Brand Logo",
+                                contentScale = ContentScale.Fit,
+                                modifier = Modifier.fillMaxSize()
+                            )
+                        }
                     }
 
                     Box(
@@ -668,7 +687,7 @@ fun IdCardBack(card: EmployeeIdCard) {
                     Spacer(modifier = Modifier.height((2 * minScale).dp))
 
                     val policies = listOf(
-                        "1. Authorized delivery representative of HARIOM ENTERPRISES (DTDC Partner).",
+                        "1. Authorized representative of ${card.branchName.uppercase()} (${card.companyName.uppercase()} Partner).",
                         "2. Identity card is non-transferable and must be presented on demand.",
                         "3. Authorized to handle courier, parcels, and express mail delivery.",
                         "4. If found, return to Hub Office address below or call helpline."
@@ -814,7 +833,7 @@ fun IdCardBack(card: EmployeeIdCard) {
                 ) {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         Text(
-                            text = "AUTHORIZED IDENTITY BADGE • DTDC",
+                            text = "AUTHORIZED IDENTITY BADGE • ${card.companyName.uppercase().ifBlank { "DTDC" }}",
                             color = Color.White,
                             fontFamily = DtdcBrandFontFamily,
                             fontSize = (12 * minScale).sp,
