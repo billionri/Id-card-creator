@@ -150,23 +150,23 @@ object PhotoUtils {
             val displayName = card.fullName.ifBlank { "Rashid Alam" }
             canvas.drawText(displayName, width / 2f, 856f, namePaint)
 
-            // RED DELIVERY ASSOCIATE CIRCULAR CAPSULE
+            // RED DELIVERY ASSOCIATE CIRCULAR CAPSULE (Bigger Height Div)
             val desText = card.designation.uppercase().ifBlank { "DELIVERY ASSOCIATE" }
             val desPaint = Paint().apply {
                 isAntiAlias = true
                 typeface = brandBoldTypeface
                 color = Color.WHITE
-                textSize = 31f
+                textSize = 34f
                 letterSpacing = 0.04f
                 textAlign = Paint.Align.CENTER
             }
-            val desWidth = desPaint.measureText(desText) + 80f
-            val desHeight = 52f
-            val desTop = 880f
+            val desWidth = desPaint.measureText(desText) + 90f
+            val desHeight = 74f
+            val desTop = 872f
             val desBottom = desTop + desHeight
             val desBox = RectF((width - desWidth) / 2f, desTop, (width + desWidth) / 2f, desBottom)
             canvas.drawRoundRect(desBox, desHeight / 2f, desHeight / 2f, redPaint)
-            canvas.drawText(desText, width / 2f, desTop + 37f, desPaint)
+            canvas.drawText(desText, width / 2f, desTop + 49f, desPaint)
 
             // FULL-WIDTH HUB DELIVERY OPTIONS / DEPARTMENT DIV
             val deptBgPaint = Paint().apply {
@@ -177,8 +177,8 @@ object PhotoUtils {
                 strokeWidth = 1.5f
                 color = Color.parseColor("#CBD5E1")
             }
-            val deptTop = 948f
-            val deptBottom = 1000f
+            val deptTop = 956f
+            val deptBottom = 1008f
             canvas.drawRect(0f, deptTop, width.toFloat(), deptBottom, deptBgPaint)
             canvas.drawLine(0f, deptTop, width.toFloat(), deptTop, deptBorderPaint)
             canvas.drawLine(0f, deptBottom, width.toFloat(), deptBottom, deptBorderPaint)
@@ -191,7 +191,7 @@ object PhotoUtils {
                 letterSpacing = 0.02f
                 textAlign = Paint.Align.CENTER
             }
-            canvas.drawText(card.department.ifBlank { "Hub Dispatch Operations" }, width / 2f, 985f, deptPaint)
+            canvas.drawText(card.department.ifBlank { "Hub Dispatch Operations" }, width / 2f, 993f, deptPaint)
 
             // 2-COLUMN EMPLOYEE DETAILS (Generous Vertical Gaps - No Sticking!)
             val labelPaint = Paint().apply {

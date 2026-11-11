@@ -347,18 +347,18 @@ fun IdCardFront(
 
                     Spacer(modifier = Modifier.height((4 * minScale).dp))
 
-                    // RED DELIVERY ASSOCIATE CIRCULAR CAPSULE (Circular corners & compact/less width)
+                    // RED DELIVERY ASSOCIATE CIRCULAR CAPSULE (Circular corners with bigger height div)
                     Box(
                         modifier = Modifier
                             .background(DtdcRed, shape = RoundedCornerShape(percent = 50))
-                            .padding(horizontal = (20 * minScale).dp, vertical = (4 * minScale).dp),
+                            .padding(horizontal = (24 * minScale).dp, vertical = (8.5 * minScale).dp),
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
                             text = card.designation.uppercase().ifBlank { "DELIVERY ASSOCIATE" },
                             color = Color.White,
                             fontFamily = DtdcBrandFontFamily,
-                            fontSize = (12.5 * minScale).sp,
+                            fontSize = (13.5 * minScale).sp,
                             fontWeight = FontWeight.Black,
                             letterSpacing = (0.5 * minScale).sp
                         )
